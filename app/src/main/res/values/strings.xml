@@ -1,0 +1,141 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Correction Notebook</string>
+    <string name="name">Name</string>
+    <string name="score">Score</string>
+    <string name="test_page">Test papers</string>
+    <string name="my_notebooks">My notebooks</string>
+    <string name="new_notebook">New notebook</string>
+    <string name="notebook_name_hint">Notebook name</string>
+    <string name="new_test_page">New</string>
+    <string name="select_paper">Select the paper</string>
+    <string name="regenerate_paper">Regenerate the paper</string>
+    <string name="select_topics">Select topics</string>
+    <string name="save_changes_when_quit">Confirm to save the changes.</string>
+    <string name="confirm_delete_paper">Are you sure to delete this paper?
+        \n Delete paper will only delete the paper itself, and it will not remove the content of the notebook!</string>
+
+    <string name="stem">Stem</string>
+    <string name="correct">Correct</string>
+    <string name="incorrect">Incorrect</string>
+    <string name="key">Key</string>
+    <string name="cause">Cause</string>
+    <string name="topic_details">Topic details</string>
+    <string name="add_picture_camera">From camera</string>
+    <string name="add_picture_album">From photos</string>
+    <string name="add_text">Add text</string>
+
+    <string name="confirm_delete">Confirm</string>
+    <string name="ensure">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Yes</string>
+    <string name="unsave">No</string>
+    <string name="next_step">Next</string>
+    <string name="last_step">Return</string>
+    <string name="finish">Finish</string>
+    <string name="create">Add</string>
+    <string name="edit">Edit</string>
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+    <string name="favorites">Favorites</string>
+    <string name="collect">Added to favorites</string>
+    <string name="collect_cancel">Removed from favorites</string>
+    <string name="print">Print</string>
+    <string name="share">Share</string>
+    <string name="print_preview">Print preview</string>
+    <string name="print_time">Print Time</string>
+    <string name="select_print_content">Select print content</string>
+
+    <string name="tag">Tag</string>
+
+    <string name="more_tag">More tags</string>
+    <string name="tags">Tags</string>
+    <string name="delete_tag">Delete tag</string>
+    <string name="confirm_delete_tag">Please confirm to delete the tag</string>
+    <string name="input_tag_name">Tag name</string>
+    <string name="all_tag">Tags</string>
+    <string name="hint_repeated_tag">Tag name can not be the same.</string>
+    <string name="tags_num_limit">Number of tags reached the limit.</string>
+
+    <string name="choose_from_camera">From camera</string>
+    <string name="choose_from_album">From photos</string>
+
+    <string name="date_pattern">MM/dd/yyyy</string>
+    <string name="change_notebook_info">Notebook info</string>
+    <string name="confirm_delete_notebook_hint">Delete the notebook will also remove all of the contents of it. Confirm to continue.</string>
+    <string name="empty">Clear</string>
+    <string name="select_book">Notebook</string>
+    <string name="add_successful">Done</string>
+    <string name="permission_fail">Permission grant failed!</string>
+    <string name="mixed">Mixed</string>
+    <string name="enter_keyword">Enter the keywork</string>
+    <string name="loading">Loading....</string>
+    <string name="newest_order">Older to newer</string>
+    <string name="oldest_order">Newer to older</string>
+    <string name="confirm_delete_topic">Please confirm to delete</string>
+    <string name="notebook">Notebook</string>
+    <string name="empty_input">The content can not be empty.</string>
+    <string name="paper_empty_cant_print">You can not print the paper which content is empty.</string>
+    <string name="paper_empty_cant_share">You can not share the paper which content is empty.</string>
+    <string name="rotate">Rotate</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
+    <string name="erase">Erase</string>
+    <string name="width">Width</string>
+    <string name="highlighter">Highlighter</string>
+    <string name="smear_waring">The highlight area is too small or out of range!</string>
+    <string name="crop_failed">Crop failed</string>
+    <string name="warning_picture">Keep at least one picture!</string>
+    <string name="show_original_images">Display original images</string>
+    <string name="random_num_questions">Enter the number of the exam questions.</string>
+    <string name="wrong_input">Wrong Input</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
+    <string name="contrast_ratio">Contrast</string>
+    <string name="weak">Weak</string>
+    <string name="common">Medium</string>
+    <string name="strong">Strong</string>
+    <string name="details">Details</string>
+    <string name="display_all">Show all</string>
+    <string name="main_set">Settings</string>
+    <string name="recent_topic">Latest</string>
+    <string name="exit">Exit</string>
+    <string name="reset">reset</string>
+    <string name="version">Version</string>
+    <string name="white_out">White-Out</string>
+    <string name="tag_num_warn">Number of tags reached the limit.</string>
+    <string name="initial_width">Initial width : </string>
+<!--    <string name="title_activity_settings">Settings</string>-->
+
+<!--    &lt;!&ndash; Preference Titles &ndash;&gt;-->
+<!--    <string name="messages_header">Messages</string>-->
+<!--    <string name="sync_header">Sync</string>-->
+
+<!--    &lt;!&ndash; Messages Preferences &ndash;&gt;-->
+<!--    <string name="signature_title">Your signature</string>-->
+<!--    <string name="reply_title">Default reply action</string>-->
+
+<!--    &lt;!&ndash; Sync Preferences &ndash;&gt;-->
+<!--    <string name="sync_title">Sync email periodically</string>-->
+<!--    <string name="attachment_title">Download incoming attachments</string>-->
+<!--    <string name="attachment_summary_on">Automatically download attachments for incoming emails-->
+<!--    </string>-->
+<!--    <string name="attachment_summary_off">Only download attachments when manually requested</string>-->
+<!--    <string name="title_activity_settings2">Settings2</string>-->
+    <string name="show_translucency">Display in translucency</string>
+    <string name="view_topics_full_screen">Enter full screen mode when viewing questions</string>
+    <string name="view_topics_display_tags">Show tags when viewing questions</string>
+    <string name="about">About</string>
+    <string name="select_at_least_one">At least to choose one option.</string>
+    <string name="have_to_select_stem">"Stem" must be selected !</string>
+    <string name="show_nothing">Show nothing</string>
+    <string name="view_smear_method">Unhidden highlight areas by tapping</string>
+    <string name="click_highlighter_by">Highlighter</string>
+    <string name="click_button_by">Category button</string>
+    <string name="print_smear_content">Hide the highlight areas.</string>
+
+    <string name="delete_successful">Done</string>
+    <string name="alter_successful">Done</string>
+    <string name="delete_error">Delete failed</string>
+    <string name="emphasis">Emphasis</string>
+    <string name="error_prone">Error-prone</string>
+</resources>

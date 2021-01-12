@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/book_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="4dp"
+    android:layout_gravity="center">
+
+    <ImageView
+        android:id="@+id/book_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="56dp"
+        android:minHeight="56dp"
+        android:layout_margin="4dp"
+        android:scaleType="fitCenter"
+        android:background="@color/colorAccent"
+        android:layout_centerInParent="true" />
+
+    <TextView
+        android:id="@+id/book_name"
+        android:layout_below="@id/book_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:lines="1"
+        android:maxEms="10"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:text="@string/my_notebooks" />
+
+
+    <ImageView
+        android:id="@+id/delete_book"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignTop="@+id/book_image"
+        android:layout_alignEnd="@+id/book_image"
+        android:src="@drawable/delete_book"
+        android:visibility="gone"/>
+
+</RelativeLayout>
+
+
+
