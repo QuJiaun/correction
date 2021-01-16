@@ -21,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.presenter.CropImageViewPresenter;
 import com.luckyxmobile.correction.presenter.impl.CropImageViewPresenterImpl;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
 import com.luckyxmobile.correction.utils.ImageUtil;
 import com.luckyxmobile.correction.utils.impl.FilesUtils;
@@ -68,12 +68,12 @@ public class CropImageActivity extends AppCompatActivity implements View.OnClick
      */
     public static Intent getJumpIntent(Context context,String whichActivity,boolean fromAlbum,String whichImage,boolean isEditPhoto,boolean isTopic,int id){
         Intent intent = new Intent(context, CropImageActivity.class);
-        intent.putExtra(ConstantsUtil.WHICH_ACTIVITY,whichActivity);
-        intent.putExtra(ConstantsUtil.WHETHER_FROM_ALBUM,fromAlbum);
-        intent.putExtra(ConstantsUtil.WHICH_IMAGE,whichImage);
-        intent.putExtra(ConstantsUtil.WHETHER_EDIT_PHOTO,isEditPhoto);
-        intent.putExtra(ConstantsUtil.TOPIC_ID,id);
-        intent.putExtra(ConstantsUtil.IS_TOPIC,isTopic);
+        intent.putExtra(Constants.WHICH_ACTIVITY,whichActivity);
+        intent.putExtra(Constants.WHETHER_FROM_ALBUM,fromAlbum);
+        intent.putExtra(Constants.WHICH_IMAGE,whichImage);
+        intent.putExtra(Constants.WHETHER_EDIT_PHOTO,isEditPhoto);
+        intent.putExtra(Constants.TOPIC_ID,id);
+        intent.putExtra(Constants.IS_TOPIC,isTopic);
         return intent;
     }
 
@@ -104,7 +104,7 @@ public class CropImageActivity extends AppCompatActivity implements View.OnClick
             ContentResolver contentResolver = getContentResolver();
             Uri bmpUri = exterUri;
             try {
-                imageType = ConstantsUtil.IMAGE_ORIGINAL;
+                imageType = Constants.IMAGE_ORIGINAL;
                 whichActivity = MainActivity.TAG;
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
@@ -153,12 +153,12 @@ public class CropImageActivity extends AppCompatActivity implements View.OnClick
         rotateBtn.setOnClickListener(this);
 
 //        tempFile = new File(getExternalFilesDir("img"), "temp.jpg");
-        whichActivity = getIntent().getStringExtra(ConstantsUtil.WHICH_ACTIVITY);
-        isFromAlbum = getIntent().getBooleanExtra(ConstantsUtil.WHETHER_FROM_ALBUM,true);
-        imageType = getIntent().getStringExtra(ConstantsUtil.WHICH_IMAGE);
-        isEditPhoto = getIntent().getBooleanExtra(ConstantsUtil.WHETHER_EDIT_PHOTO,true);
-        topicID = getIntent().getIntExtra(ConstantsUtil.TOPIC_ID,-1);
-        isTopic = getIntent().getBooleanExtra(ConstantsUtil.IS_TOPIC,true);
+        whichActivity = getIntent().getStringExtra(Constants.WHICH_ACTIVITY);
+        isFromAlbum = getIntent().getBooleanExtra(Constants.WHETHER_FROM_ALBUM,true);
+        imageType = getIntent().getStringExtra(Constants.WHICH_IMAGE);
+        isEditPhoto = getIntent().getBooleanExtra(Constants.WHETHER_EDIT_PHOTO,true);
+        topicID = getIntent().getIntExtra(Constants.TOPIC_ID,-1);
+        isTopic = getIntent().getBooleanExtra(Constants.IS_TOPIC,true);
 
 
         if (!isEditPhoto){
@@ -174,14 +174,14 @@ public class CropImageActivity extends AppCompatActivity implements View.OnClick
             Intent selectIntent = new Intent(Intent.ACTION_PICK);
             selectIntent.setType("image/*");
             if (selectIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(selectIntent, ConstantsUtil.REQUEST_CODE_SELECT_ALBUM);
+                startActivityForResult(selectIntent, Constants.REQUEST_CODE_SELECT_ALBUM);
             }
         } else {
             Intent startCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             Uri uri = FilesUtils.getUri(CropImageActivity.this,tempFile);
             startCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             if (startCameraIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(startCameraIntent, ConstantsUtil.REQUEST_CODE_TAKE_PHOTO);
+                startActivityForResult(startCameraIntent, Constants.REQUEST_CODE_TAKE_PHOTO);
             }
         }
     }
@@ -241,7 +241,7 @@ public class CropImageActivity extends AppCompatActivity implements View.OnClick
         }
 
         //获取图片（来自拍照或图），传给imageBitmap
-        if (requestCode == ConstantsUtil.REQUEST_CODE_TAKE_PHOTO && tempFile.exists()) {
+        if (requestCode == Constants.REQUEST_CODE_TAKE_PHOTO && tempFile.exists()) {
 
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
@@ -253,7 +253,7 @@ public class CropImageActivity extends AppCompatActivity implements View.OnClick
             Log.d(TAG,"图片旋转方向："+degree);
             imageBitmap = ImageUtil.rotateBitmap(imageBitmap,degree);
 
-        } else if (requestCode == ConstantsUtil.REQUEST_CODE_SELECT_ALBUM && data != null && data.getData() != null) {
+        } else if (requestCode == Constants.REQUEST_CODE_SELECT_ALBUM && data != null && data.getData() != null) {
             ContentResolver contentResolver = getContentResolver();
             Uri bmpUri = data.getData();
             try {
@@ -295,16 +295,16 @@ public class CropImageActivity extends AppCompatActivity implements View.OnClick
 
         if (!isEditPhoto){
             Intent intent = new Intent();
-            intent.putExtra(ConstantsUtil.IMAGE_PATH, cropImagePath);
-            intent.putExtra(ConstantsUtil.WHICH_IMAGE, imageType);
+            intent.putExtra(Constants.IMAGE_PATH, cropImagePath);
+            intent.putExtra(Constants.WHICH_IMAGE, imageType);
             setResult(RESULT_OK, intent);
         }else{
             DestroyActivityUtil.addDestroyActivityToMap(CropImageActivity.this,TAG);
 
             //跳转到EditPhotoActivity页面
             Intent intent = new Intent(CropImageActivity.this, EditPhotoActivity.class);
-            intent.putExtra(ConstantsUtil.WHICH_ACTIVITY, whichActivity);
-            intent.putExtra(ConstantsUtil.IMAGE_PATH,  cropImagePath);
+            intent.putExtra(Constants.WHICH_ACTIVITY, whichActivity);
+            intent.putExtra(Constants.IMAGE_PATH,  cropImagePath);
             startActivity(intent);
         }
 

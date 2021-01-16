@@ -1,6 +1,15 @@
-package com.luckyxmobile.correction.utils;
+package com.luckyxmobile.correction.global;
 
-public class ConstantsUtil {
+import com.luckyxmobile.correction.model.bean.TopicImage;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import androidx.annotation.IntDef;
+
+public class Constants {
 
     //SharedPreferences
     public static final String TABLE_SHARED_CORRECTION = "correction_sharePer_table";
@@ -37,26 +46,49 @@ public class ConstantsUtil {
     public static final String IMAGE_PATH = "image_path";
     public static final String IS_TOPIC = "is_topic";
 
-    //图片类型
-    public static final  String IMAGE_BOOK_COVER = "image_book_cover";
-    public static final  String IMAGE_ORIGINAL = "image_original";
-    public static final  String IMAGE_RIGHT = "image_right";
-    public static final  String IMAGE_ERROR = "image_error";
-    public static final  String IMAGE_POINT = "image_point";
-    public static final  String IMAGE_REASON = "image_reason";
+    //book
+    public static final  int IMAGE_BOOK_COVER = 0x101;
 
-    //涂抹工具类型
-    public static final  String PAINT_RIGHT = "paint_right";
-    public static final  String PAINT_ERROR = "paint_error";
-    public static final  String PAINT_POINT = "paint_point";
-    public static final  String PAINT_REASON = "paint_reason";
-    public static final  String PAINT_ERASE = "paint_erase";
-    public static final  String PAINT_WHITE_OUT = "paint_white_out";
+    //topic_image
+    public static final int IMAGE_ORIGINAL = 0x201;
+    public static final int IMAGE_RIGHT = 0x202;
+    public static final int IMAGE_ERROR = 0x203;
+    public static final int IMAGE_POINT = 0x204;
+    public static final int IMAGE_REASON = 0x205;
+
+    @IntDef({IMAGE_ORIGINAL, IMAGE_RIGHT, IMAGE_ERROR, IMAGE_POINT, IMAGE_REASON})
+    @Target({ElementType.PARAMETER, ElementType.FIELD})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface TopicImageType {
+
+    }
 
     //对比度
-    public static final String CONTRAST_RADIO_WEAK = "contrast_radio_weak";
-    public static final String CONTRAST_RADIO_COMMON = "contrast_radio_common";
-    public static final String CONTRAST_RADIO_STRONG = "contrast_radio_strong";
+    public static final int CONTRAST_RADIO_WEAK = 0x210;
+    public static final int CONTRAST_RADIO_COMMON = 0x211;
+    public static final int CONTRAST_RADIO_STRONG = 0x212;
+
+    @IntDef({CONTRAST_RADIO_COMMON, CONTRAST_RADIO_WEAK, CONTRAST_RADIO_STRONG})
+    @Target({ElementType.PARAMETER, ElementType.FIELD})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ContrastRadio{
+
+    }
+
+    //涂抹工具类型
+    public static final int PAINT_BLUE = 0x220;
+    public static final int PAINT_RED = 0x222;
+    public static final int PAINT_GREEN = 0x223;
+    public static final int PAINT_YELLOW = 0x224;
+    public static final int PAINT_ERASE = 0x225;
+    public static final int PAINT_WHITE_OUT = 0x226;
+
+    @IntDef({PAINT_BLUE, PAINT_RED, PAINT_GREEN, PAINT_YELLOW, PAINT_ERASE, PAINT_WHITE_OUT})
+    @Target({ElementType.PARAMETER, ElementType.FIELD})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface HighlighterType{
+
+    }
 
     //橡皮擦宽度
     public static final int ERASE_THIN = 60, ERASE_MEDIUM = 80, ERASE_THICK = 100;

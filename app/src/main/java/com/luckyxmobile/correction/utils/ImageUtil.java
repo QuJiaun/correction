@@ -17,6 +17,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import com.luckyxmobile.correction.R;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.utils.impl.FilesUtils;
 
@@ -363,23 +364,23 @@ public class ImageUtil implements IImage{
 
         int color = R.color.blue_right;
         switch (whichPaint) {
-            case ConstantsUtil.PAINT_RIGHT:
+            case Constants.PAINT_BLUE:
                 color = R.color.blue_right;
                 break;
-            case ConstantsUtil.PAINT_ERROR:
+            case Constants.PAINT_RED:
                 color = R.color.red_error;
                 break;
-            case ConstantsUtil.PAINT_POINT:
+            case Constants.PAINT_GREEN:
                 color = R.color.green_point;
                 break;
-            case ConstantsUtil.PAINT_REASON:
+            case Constants.PAINT_YELLOW:
                 color = R.color.yellow_reason;
                 break;
-            case ConstantsUtil.PAINT_WHITE_OUT:
+            case Constants.PAINT_WHITE_OUT:
                 paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
                 color = R.color.colorWhite;
                 break;
-            case ConstantsUtil.PAINT_ERASE:
+            case Constants.PAINT_ERASE:
                 paint.setXfermode(new  PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
                 color = R.color.colorWhite;
                 break;
@@ -464,16 +465,16 @@ public class ImageUtil implements IImage{
         for (String s1:s){
             s1 = s1.replace(" ","");
             if (s1.equals("0")){
-                which.add(ConstantsUtil.PAINT_RIGHT);
+                which.add(Constants.PAINT_BLUE);
 
             }else if (s1.equals("1")){
-                which.add(ConstantsUtil.PAINT_ERROR);
+                which.add(Constants.PAINT_RED);
 
             }else if (s1.equals("2")){
-                which.add(ConstantsUtil.PAINT_POINT);
+                which.add(Constants.PAINT_GREEN);
 
             }else if (s1.equals("3")){
-                which.add(ConstantsUtil.PAINT_REASON);
+                which.add(Constants.PAINT_YELLOW);
 
             }else if (s1.equals("-1")){
                 return new ArrayList<>();
@@ -488,7 +489,7 @@ public class ImageUtil implements IImage{
     public void openAlbum() {
         Intent selectIntent = new Intent(Intent.ACTION_GET_CONTENT);
         selectIntent.setType("image/*");
-        ((Activity)context).startActivityForResult(selectIntent, ConstantsUtil.REQUEST_CODE_SELECT_ALBUM);
+        ((Activity)context).startActivityForResult(selectIntent, Constants.REQUEST_CODE_SELECT_ALBUM);
     }
 
     @Override
@@ -496,6 +497,6 @@ public class ImageUtil implements IImage{
         Intent startCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri uri = filesUtil.getTmpFileUri();
         startCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        ((Activity)context).startActivityForResult(startCameraIntent, ConstantsUtil.REQUEST_CODE_TAKE_PHOTO);
+        ((Activity)context).startActivityForResult(startCameraIntent, Constants.REQUEST_CODE_TAKE_PHOTO);
     }
 }

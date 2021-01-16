@@ -26,7 +26,7 @@ import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.impl.TagDaoImpl;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
 import com.luckyxmobile.correction.utils.ImageUtil;
 import com.zhy.view.flowlayout.FlowLayout;
@@ -102,7 +102,7 @@ public class BookDetailActivity extends AppCompatActivity {
         loadBar = findViewById(R.id.loadBar);
 
         // 获取Intent传过来的数据集
-        book_id = getIntent().getIntExtra(ConstantsUtil.BOOK_ID, 0);
+        book_id = getIntent().getIntExtra(Constants.BOOK_ID, 0);
         book = LitePal.find(Book.class, book_id);
         // 由错题本获取其中所有存储的错题
         if (book.getBook_cover().equals("R.mipmap.favorite")){
@@ -112,9 +112,9 @@ public class BookDetailActivity extends AppCompatActivity {
             topics = LitePal.where("book_id=?", String.valueOf(book_id)).find(Topic.class);
         }
 
-        preferences = getSharedPreferences(ConstantsUtil.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
+        preferences = getSharedPreferences(Constants.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
 
-        if (preferences.getBoolean(ConstantsUtil.TABLE_SHARED_IS_NEWEST_ORDER,true)){
+        if (preferences.getBoolean(Constants.TABLE_SHARED_IS_NEWEST_ORDER,true)){
             Collections.reverse(topics);
             isNewest = true;
         }else{
@@ -248,7 +248,7 @@ public class BookDetailActivity extends AppCompatActivity {
             addTopic.setVisible(true);
             //此活动返回时 将错题是否是从收藏夹添加的 标记为false
             editor = preferences.edit();
-            editor.putBoolean(ConstantsUtil.TABLE_FROM_FAVORITE, false);
+            editor.putBoolean(Constants.TABLE_FROM_FAVORITE, false);
             editor.apply();
             return;
         }
@@ -288,7 +288,7 @@ public class BookDetailActivity extends AppCompatActivity {
         oldestFirst = menu.findItem(R.id.sort_oldest_first);
         newestFirst = menu.findItem(R.id.sort_newest_first);
 
-        if (preferences.getBoolean(ConstantsUtil.TABLE_SHARED_IS_NEWEST_ORDER,true)){
+        if (preferences.getBoolean(Constants.TABLE_SHARED_IS_NEWEST_ORDER,true)){
             newestFirst.setTitle(getString(R.string.newest_order) + "   √");
             oldestFirst.setTitle(getString(R.string.oldest_order));
         }else{
@@ -382,14 +382,14 @@ public class BookDetailActivity extends AppCompatActivity {
         }
 
         editor = preferences.edit();
-        editor.putBoolean(ConstantsUtil.TABLE_SHARED_IS_NEWEST_ORDER,sortNewestFirst);
+        editor.putBoolean(Constants.TABLE_SHARED_IS_NEWEST_ORDER,sortNewestFirst);
         editor.apply();
     }
 
     private void createAddTopicDialog() {
 
         editor = preferences.edit();
-        editor.putInt(ConstantsUtil.TABLE_FROM_BOOK_ID, book_id);
+        editor.putInt(Constants.TABLE_FROM_BOOK_ID, book_id);
         editor.apply();
 
         @SuppressLint("InflateParams")
@@ -420,14 +420,14 @@ public class BookDetailActivity extends AppCompatActivity {
             ImageUtil.checkPermissions(BookDetailActivity.this);
         }
         //在此处判断是否是从收藏夹里添加的错题 记录到SharedPreferences 中
-        preferences = getSharedPreferences(ConstantsUtil.TABLE_SHARED_CORRECTION, MODE_PRIVATE);
+        preferences = getSharedPreferences(Constants.TABLE_SHARED_CORRECTION, MODE_PRIVATE);
         editor = preferences.edit();
         if(book.getId()==1){
-            editor.putBoolean(ConstantsUtil.TABLE_FROM_FAVORITE,true);
+            editor.putBoolean(Constants.TABLE_FROM_FAVORITE,true);
             editor.apply();
         }
         startActivityForResult(CropImageActivity.getJumpIntent(BookDetailActivity.this, MainActivity.TAG,
-                fromAlbum,ConstantsUtil.IMAGE_ORIGINAL,true,true,-1),ConstantsUtil.REQUEST_CODE);
+                fromAlbum, Constants.IMAGE_ORIGINAL,true,true,-1), Constants.REQUEST_CODE);
 
         DestroyActivityUtil.addDestroyActivityToMap(BookDetailActivity.this,MainActivity.TAG);
 

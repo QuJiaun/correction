@@ -4,19 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.luckyxmobile.correction.R;
-import com.luckyxmobile.correction.model.BookModel;
 import com.luckyxmobile.correction.model.bean.Book;
-import com.luckyxmobile.correction.model.impl.BookModelImpl;
-import com.luckyxmobile.correction.model.impl.CorrectionSharedPreImpl;
 import com.luckyxmobile.correction.model.impl.TagDaoImpl;
 import com.luckyxmobile.correction.presenter.MainViewPresenter;
 import com.luckyxmobile.correction.presenter.OnBookFinishedListener;
 import com.luckyxmobile.correction.utils.IImage;
 import com.luckyxmobile.correction.utils.ImageUtil;
 import com.luckyxmobile.correction.ui.activity.CropImageActivity;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.ui.dialog.BookInfoDialog;
-import com.luckyxmobile.correction.view.IMainView;
+import com.luckyxmobile.correction.view.MainView;
 import com.luckyxmobile.correction.ui.activity.MainActivity;
 
 import org.litepal.LitePal;
@@ -29,20 +26,20 @@ import org.litepal.LitePal;
  */
 public class MainViewPresenterImpl implements OnBookFinishedListener, MainViewPresenter {
 
-    private final IMainView mainView;
+    private final MainView mainView;
     private final BookModel bookModel;
     private volatile BookInfoDialog bookInfoDialog;
     private final IImage imageUtil;
 
     public MainViewPresenterImpl(Context context){
-        this.mainView = (IMainView) context;
+        this.mainView = (MainView) context;
         bookModel = new BookModelImpl();
         bookModel.setOnBookFinishedListener(this);
         imageUtil = new ImageUtil(context);
 
         initSQLFirst();
 
-        mainView.setHeadBookList(LitePal.findAll(Book.class));
+        mainView.setHeadBookRv(LitePal.findAll(Book.class));
     }
 
     /**
@@ -51,8 +48,8 @@ public class MainViewPresenterImpl implements OnBookFinishedListener, MainViewPr
     private void initSQLFirst(){
         CorrectionSharedPreImpl preferenceImpl = CorrectionSharedPreImpl.initPreferencesImpl(mainView.getMainViewContext());
 
-        if (preferenceImpl.getPreferences().getBoolean(ConstantsUtil.TABLE_SHARED_IS_FIRST_START, true)){
-            preferenceImpl.getEditor().putBoolean(ConstantsUtil.TABLE_SHARED_IS_FIRST_START, true).apply();
+        if (preferenceImpl.getPreferences().getBoolean(Constants.TABLE_SHARED_IS_FIRST_START, true)){
+            preferenceImpl.getEditor().putBoolean(Constants.TABLE_SHARED_IS_FIRST_START, true).apply();
 
             bookModel.newBook(mainView.getMainViewContext().getString(R.string.favorites),"R.mipmap.favorite");
 
@@ -77,12 +74,12 @@ public class MainViewPresenterImpl implements OnBookFinishedListener, MainViewPr
         bookInfoDialog.getAlterBookCoverBtn().setOnClickListener(v ->{
 
             mainView.startActivityForResult(CropImageActivity.getJumpIntent(mainView.getMainViewContext(),
-                    MainActivity.TAG, true, ConstantsUtil.IMAGE_BOOK_COVER,
+                    MainActivity.TAG, true, Constants.IMAGE_BOOK_COVER,
                     false,false,0),
                     100);
 
             Intent intent = new Intent(mainView.getMainViewContext(), CropImageActivity.class);
-            mainView.startActivityForResult(intent, ConstantsUtil.REQUEST_CODE);
+            mainView.startActivityForResult(intent, Constants.REQUEST_CODE);
         });
 
 

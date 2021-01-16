@@ -17,7 +17,7 @@ import android.view.View;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.ui.activity.EditPhotoActivity;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.OpenCvImageUtil;
 import com.luckyxmobile.correction.utils.ImageUtil;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class DrawingView extends View {
     /**当前的涂抹（涂抹类型，宽度，涂抹点）*/
     private TopicImagesHighlighter.ImageSmear imageSmear = new TopicImagesHighlighter.ImageSmear();
     /**当前涂抹类型*/
-    private String nowWhichSmear = ConstantsUtil.PAINT_RIGHT;
+    private String nowWhichSmear = Constants.PAINT_BLUE;
     /**当前画笔宽度*/
     private int nowBrushWidth = 40;
     /**当前涂抹点*/
@@ -104,24 +104,24 @@ public class DrawingView extends View {
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
 
         switch (whichSmear) {
-            case ConstantsUtil.PAINT_RIGHT:
+            case Constants.PAINT_BLUE:
                 color = R.color.blue_right;
                 break;
-            case ConstantsUtil.PAINT_ERROR:
+            case Constants.PAINT_RED:
                 color = R.color.red_error;
                 break;
-            case ConstantsUtil.PAINT_POINT:
+            case Constants.PAINT_GREEN:
                 color = R.color.green_point;
                 break;
-            case ConstantsUtil.PAINT_REASON:
+            case Constants.PAINT_YELLOW:
                 color = R.color.yellow_reason;
                 break;
-            case ConstantsUtil.PAINT_WHITE_OUT:
+            case Constants.PAINT_WHITE_OUT:
                 paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
                 color = R.color.colorWhite;
                 alpha = 255;
                 break;
-            case ConstantsUtil.PAINT_ERASE:
+            case Constants.PAINT_ERASE:
                 paint.setXfermode(new  PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
                 color = R.color.black;
                 alpha = 255;
@@ -189,7 +189,7 @@ public class DrawingView extends View {
         canvas.drawBitmap(mBgBitmap, 0, 0, null);
         canvas.drawBitmap(mFgBitmap, 0, 0, null);
 
-        if (nowWhichSmear.equals(ConstantsUtil.PAINT_ERASE)){
+        if (nowWhichSmear.equals(Constants.PAINT_ERASE)){
             Paint paint = nowBrush;
             paint.setAlpha(150);
            canvas.drawPath(ImageUtil.pointsToPath(nowPoints),paint);
@@ -316,7 +316,7 @@ public class DrawingView extends View {
                     Log.d(TAG, "滑动结束-->("+x+":"+y+")");
                     nowPoints.add(new Point((int)x,(int)y));
                     changePoints();//计算涂抹点是否合理
-                    if (nowWhichSmear.equals(ConstantsUtil.PAINT_ERASE)){
+                    if (nowWhichSmear.equals(Constants.PAINT_ERASE)){
                         nowPoints = new ArrayList<>();
                     }
                     invalidate(); // 刷新
@@ -417,7 +417,7 @@ public class DrawingView extends View {
 
         if (!imageSmearList.isEmpty()){
             int lastPosition = imageSmearList.size()-1;
-            if (imageSmearList.get(lastPosition).getWhichSmear().equals(ConstantsUtil.PAINT_ERASE)){
+            if (imageSmearList.get(lastPosition).getWhichSmear().equals(Constants.PAINT_ERASE)){
                 Toasty.normal(context,context.getString(R.string.undo)+":"+context.getString(R.string.erase)+"×1").show();
             }
             redoImageSmearList.add(imageSmearList.get(lastPosition));
@@ -434,7 +434,7 @@ public class DrawingView extends View {
 
         if (!redoImageSmearList.isEmpty()){
             int lastPosition = redoImageSmearList.size()-1;
-            if (redoImageSmearList.get(lastPosition).getWhichSmear().equals(ConstantsUtil.PAINT_ERASE)){
+            if (redoImageSmearList.get(lastPosition).getWhichSmear().equals(Constants.PAINT_ERASE)){
                 Toasty.normal(context,context.getString(R.string.redo)+":"+context.getString(R.string.erase)+"×1").show();
             }
             imageSmearList.add(redoImageSmearList.get(lastPosition));

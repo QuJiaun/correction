@@ -32,9 +32,8 @@ import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.SelectBookAdapter;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Topic;
-import com.luckyxmobile.correction.model.impl.CorrectionLab;
 import com.luckyxmobile.correction.ui.views.DrawingView;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
 import com.luckyxmobile.correction.utils.FastJsonUtil;
 import com.luckyxmobile.correction.utils.OpenCvImageUtil;
@@ -89,17 +88,17 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
     private HorizontalScrollView brushWidthLayout;
     private final String PAINT_WIDTH_LAYOUT = "PAINT_WIDTH_LAYOUT";
     private Button widthThinBtn, widthMediumBtn, widthThickBtn, initialWidthBtn;
-    private int nowPaintWidth = ConstantsUtil.PAINT_THIN;
-    private int INITIAL_PAINT_WIDTH = ConstantsUtil.PAINT_THIN;
+    private int nowPaintWidth = Constants.PAINT_THIN;
+    private int INITIAL_PAINT_WIDTH = Constants.PAINT_THIN;
     /**橡皮擦布局*/
     private HorizontalScrollView eraseLayout;
     private final String ERASE_WIDTH_LAYOUT = "ERASE_WIDTH_LAYOUT";
     private Button eraseThinBtn, eraseMediumBtn, eraseThickBtn;
-    private int nowEraseWidth = ConstantsUtil.ERASE_MEDIUM;
+    private int nowEraseWidth = Constants.ERASE_MEDIUM;
     /**对比度布局*/
     private HorizontalScrollView contrastRatioLayout;
     private final String CONTRAST_RATION_LAYOUT = "CONTRAST_RADIO_LAYOUT";
-    private String whichContrastRadio = ConstantsUtil.CONTRAST_RADIO_COMMON;
+    private String whichContrastRadio = Constants.CONTRAST_RADIO_COMMON;
     private Button contrastWeakBtn, contrastCommonBtn, contrastStrongBtn;
     /**选择错题本*/
     private List<Book> bookList;
@@ -206,9 +205,9 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
     private void initViewDate() {
 
         DestroyActivityUtil.addDestroyActivityToMap(EditPhotoActivity.this,TAG);
-        positionImage = getIntent().getIntExtra(ConstantsUtil.IMAGE_POSITION,0);
-        whichActivity = getIntent().getStringExtra(ConstantsUtil.WHICH_ACTIVITY);
-        topic = LitePal.find(Topic.class,getIntent().getIntExtra(ConstantsUtil.TOPIC_ID,0));
+        positionImage = getIntent().getIntExtra(Constants.IMAGE_POSITION,0);
+        whichActivity = getIntent().getStringExtra(Constants.WHICH_ACTIVITY);
+        topic = LitePal.find(Topic.class,getIntent().getIntExtra(Constants.TOPIC_ID,0));
         topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_original_picture(), TopicImagesHighlighter.class);
         assert topicImagesHighlighter != null;
         //获取指定图片路径
@@ -247,7 +246,7 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
             }
         }
 
-        setWhichBrush(ConstantsUtil.PAINT_RIGHT,true);
+        setWhichBrush(Constants.PAINT_BLUE,true);
         setContrastRadio(whichContrastRadio,true);
         setBrushWidth(INITIAL_PAINT_WIDTH,true);
 
@@ -283,9 +282,9 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
         redoImageSmearLists = null;
 
         //此活动返回时 将错题是否是从收藏夹添加的 标记为false
-        SharedPreferences sp = getSharedPreferences(ConstantsUtil.TABLE_SHARED_CORRECTION, MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences(Constants.TABLE_SHARED_CORRECTION, MODE_PRIVATE);
         Editor editor =sp.edit();
-        editor.putBoolean(ConstantsUtil.TABLE_FROM_FAVORITE, false);
+        editor.putBoolean(Constants.TABLE_FROM_FAVORITE, false);
         editor.apply();
 
         switch (whichActivity){
@@ -333,23 +332,23 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                 break;
             //切换 涂改液
             case R.id.edit_photo_white_out:
-                setWhichBrush(ConstantsUtil.PAINT_WHITE_OUT,true);
+                setWhichBrush(Constants.PAINT_WHITE_OUT,true);
                 break;
             //切换 正解 笔刷
             case R.id.doodle_paint_right:
-                setWhichBrush(ConstantsUtil.PAINT_RIGHT,true);
+                setWhichBrush(Constants.PAINT_BLUE,true);
                 break;
             //切换 错解 笔刷
             case R.id.doodle_paint_error:
-                setWhichBrush(ConstantsUtil.PAINT_ERROR,true);
+                setWhichBrush(Constants.PAINT_RED,true);
                 break;
             //切换 考点 笔刷
             case R.id.doodle_paint_point:
-                setWhichBrush(ConstantsUtil.PAINT_POINT,true);
+                setWhichBrush(Constants.PAINT_GREEN,true);
                 break;
             //切换 错误原因 笔刷
             case R.id.doodle_paint_error_reason:
-                setWhichBrush(ConstantsUtil.PAINT_REASON,true);
+                setWhichBrush(Constants.PAINT_YELLOW,true);
                 break;
             //涂抹完成-下一步
             case R.id.doodle_btn_next:
@@ -365,15 +364,15 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                 break;
             //画笔宽度 细
             case R.id.doodle_paint_width_thin:
-                setBrushWidth(ConstantsUtil.PAINT_THIN,true);
+                setBrushWidth(Constants.PAINT_THIN,true);
                 break;
             //画笔宽度 中
             case R.id.doodle_paint_width_medium:
-                setBrushWidth(ConstantsUtil.PAINT_MEDIUM,true);
+                setBrushWidth(Constants.PAINT_MEDIUM,true);
                 break;
             //画笔宽度 粗
             case R.id.doodle_paint_width_thick:
-                setBrushWidth(ConstantsUtil.PAINT_THICK,true);
+                setBrushWidth(Constants.PAINT_THICK,true);
                 break;
             //画笔宽度 初始设置
             case R.id.doodle_paint_initial_width:
@@ -381,27 +380,27 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                 break;
             //橡皮擦宽度 细
             case R.id.doodle_erase_width_thin:
-                setEraseWidth(ConstantsUtil.ERASE_THIN,true);
+                setEraseWidth(Constants.ERASE_THIN,true);
                 break;
             //橡皮擦宽度 中
             case R.id.doodle_erase_width_medium:
-                setEraseWidth(ConstantsUtil.ERASE_MEDIUM,true);
+                setEraseWidth(Constants.ERASE_MEDIUM,true);
                 break;
             //橡皮擦宽度 粗
             case R.id.doodle_erase_width_thick:
-                setEraseWidth(ConstantsUtil.ERASE_THICK,true);
+                setEraseWidth(Constants.ERASE_THICK,true);
                 break;
             //对比度 弱
             case R.id.contrast_weak_ratio_btn:
-                setContrastRadio(ConstantsUtil.CONTRAST_RADIO_WEAK,true);
+                setContrastRadio(Constants.CONTRAST_RADIO_WEAK,true);
                 break;
             //对比度 一般
             case R.id.contrast_common_ratio_btn:
-                setContrastRadio(ConstantsUtil.CONTRAST_RADIO_COMMON,true);
+                setContrastRadio(Constants.CONTRAST_RADIO_COMMON,true);
                 break;
             //对比度 强
             case R.id.contrast_strong_ratio_btn:
-                setContrastRadio(ConstantsUtil.CONTRAST_RADIO_STRONG,true);
+                setContrastRadio(Constants.CONTRAST_RADIO_STRONG,true);
                 break;
             case R.id.screen_rotation:
                 if (srceenRotationBtn.isChecked()){
@@ -439,9 +438,9 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
             case ERASE_WIDTH_LAYOUT:
                 if (isVisible){
                     whichToolLayoutText.setText(getString(R.string.width));
-                    Log.v(TAG,"setWhichPaint-->"+ConstantsUtil.PAINT_ERASE);
+                    Log.v(TAG,"setWhichPaint-->"+ Constants.PAINT_ERASE);
                     drawingView.setNowBrushWidth(nowEraseWidth);
-                    drawingView.setNowWhichSmear(ConstantsUtil.PAINT_ERASE);
+                    drawingView.setNowWhichSmear(Constants.PAINT_ERASE);
                     eraseLayout.setVisibility(View.VISIBLE);
                     eraseBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_erase_checked,0,0);
                     eraseBtn.setTextColor(getColor(R.color.orange_f7));
@@ -449,11 +448,11 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     changeLayout(PAINT_WIDTH_LAYOUT,false);
                     changeLayout(CONTRAST_RATION_LAYOUT,false);
 
-                    setWhichBrush(ConstantsUtil.PAINT_RIGHT,false);
-                    setWhichBrush(ConstantsUtil.PAINT_ERROR,false);
-                    setWhichBrush(ConstantsUtil.PAINT_POINT,false);
-                    setWhichBrush(ConstantsUtil.PAINT_REASON,false);
-                    setWhichBrush(ConstantsUtil.PAINT_WHITE_OUT,false);
+                    setWhichBrush(Constants.PAINT_BLUE,false);
+                    setWhichBrush(Constants.PAINT_RED,false);
+                    setWhichBrush(Constants.PAINT_GREEN,false);
+                    setWhichBrush(Constants.PAINT_YELLOW,false);
+                    setWhichBrush(Constants.PAINT_WHITE_OUT,false);
 
                 }else {
                     eraseLayout.setVisibility(View.GONE);
@@ -483,11 +482,11 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     changeLayout(ERASE_WIDTH_LAYOUT,false);
                     changeLayout(PAINT_WIDTH_LAYOUT,false);
 
-                    setWhichBrush(ConstantsUtil.PAINT_RIGHT,false);
-                    setWhichBrush(ConstantsUtil.PAINT_ERROR,false);
-                    setWhichBrush(ConstantsUtil.PAINT_POINT,false);
-                    setWhichBrush(ConstantsUtil.PAINT_REASON,false);
-                    setWhichBrush(ConstantsUtil.PAINT_WHITE_OUT,false);
+                    setWhichBrush(Constants.PAINT_BLUE,false);
+                    setWhichBrush(Constants.PAINT_RED,false);
+                    setWhichBrush(Constants.PAINT_GREEN,false);
+                    setWhichBrush(Constants.PAINT_YELLOW,false);
+                    setWhichBrush(Constants.PAINT_WHITE_OUT,false);
                 }else{
                     contrastRatioLayout.setVisibility(View.GONE);
                     contrastRadioBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_contrast_ratio_unchecked,0,0);
@@ -515,12 +514,12 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
         }
 
         switch (whichPaint) {
-            case ConstantsUtil.PAINT_RIGHT:
+            case Constants.PAINT_BLUE:
                 if (isSelect){
-                    setWhichBrush(ConstantsUtil.PAINT_ERROR,false);
-                    setWhichBrush(ConstantsUtil.PAINT_POINT,false);
-                    setWhichBrush(ConstantsUtil.PAINT_REASON,false);
-                    setWhichBrush(ConstantsUtil.PAINT_WHITE_OUT,false);
+                    setWhichBrush(Constants.PAINT_RED,false);
+                    setWhichBrush(Constants.PAINT_GREEN,false);
+                    setWhichBrush(Constants.PAINT_YELLOW,false);
+                    setWhichBrush(Constants.PAINT_WHITE_OUT,false);
                     brushRight.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_right,0,0);
                     brushRight.setTextColor(getColor(R.color.blue_right));
                 }else{
@@ -528,12 +527,12 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     brushRight.setTextColor(getColor(R.color.gray_9c));
                 }
                 break;
-            case ConstantsUtil.PAINT_ERROR:
+            case Constants.PAINT_RED:
                 if (isSelect){
-                    setWhichBrush(ConstantsUtil.PAINT_RIGHT,false);
-                    setWhichBrush(ConstantsUtil.PAINT_POINT,false);
-                    setWhichBrush(ConstantsUtil.PAINT_REASON,false);
-                    setWhichBrush(ConstantsUtil.PAINT_WHITE_OUT,false);
+                    setWhichBrush(Constants.PAINT_BLUE,false);
+                    setWhichBrush(Constants.PAINT_GREEN,false);
+                    setWhichBrush(Constants.PAINT_YELLOW,false);
+                    setWhichBrush(Constants.PAINT_WHITE_OUT,false);
                     brushError.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_error,0,0);
                     brushError.setTextColor(getColor(R.color.red_error));
                 }else{
@@ -541,12 +540,12 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     brushError.setTextColor(getColor(R.color.gray_9c));
                 }
                 break;
-            case ConstantsUtil.PAINT_POINT:
+            case Constants.PAINT_GREEN:
                 if (isSelect){
-                    setWhichBrush(ConstantsUtil.PAINT_RIGHT,false);
-                    setWhichBrush(ConstantsUtil.PAINT_ERROR,false);
-                    setWhichBrush(ConstantsUtil.PAINT_REASON,false);
-                    setWhichBrush(ConstantsUtil.PAINT_WHITE_OUT,false);
+                    setWhichBrush(Constants.PAINT_BLUE,false);
+                    setWhichBrush(Constants.PAINT_RED,false);
+                    setWhichBrush(Constants.PAINT_YELLOW,false);
+                    setWhichBrush(Constants.PAINT_WHITE_OUT,false);
                     brushPoint.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_point,0,0);
                     brushPoint.setTextColor(getColor(R.color.green_point));
                 }else{
@@ -554,12 +553,12 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     brushPoint.setTextColor(getColor(R.color.gray_9c));
                 }
                 break;
-            case ConstantsUtil.PAINT_REASON:
+            case Constants.PAINT_YELLOW:
                 if (isSelect){
-                    setWhichBrush(ConstantsUtil.PAINT_RIGHT,false);
-                    setWhichBrush(ConstantsUtil.PAINT_ERROR,false);
-                    setWhichBrush(ConstantsUtil.PAINT_POINT,false);
-                    setWhichBrush(ConstantsUtil.PAINT_WHITE_OUT,false);
+                    setWhichBrush(Constants.PAINT_BLUE,false);
+                    setWhichBrush(Constants.PAINT_RED,false);
+                    setWhichBrush(Constants.PAINT_GREEN,false);
+                    setWhichBrush(Constants.PAINT_WHITE_OUT,false);
                     brushErrorReason.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_error_reason,0,0);
                     brushErrorReason.setTextColor(getColor(R.color.yellow_reason));
                 }else{
@@ -567,12 +566,12 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     brushErrorReason.setTextColor(getColor(R.color.gray_9c));
                 }
                 break;
-            case ConstantsUtil.PAINT_WHITE_OUT:
+            case Constants.PAINT_WHITE_OUT:
                 if (isSelect){
-                    setWhichBrush(ConstantsUtil.PAINT_RIGHT,false);
-                    setWhichBrush(ConstantsUtil.PAINT_ERROR,false);
-                    setWhichBrush(ConstantsUtil.PAINT_POINT,false);
-                    setWhichBrush(ConstantsUtil.PAINT_REASON,false);
+                    setWhichBrush(Constants.PAINT_BLUE,false);
+                    setWhichBrush(Constants.PAINT_RED,false);
+                    setWhichBrush(Constants.PAINT_GREEN,false);
+                    setWhichBrush(Constants.PAINT_YELLOW,false);
                     whiteOutBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_white_out_check,0,0);
                     whiteOutBtn.setTextColor(getColor(R.color.orange_f7));
                 }else{
@@ -598,12 +597,12 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
         }
 
         switch (whichPrintWidth){
-            case ConstantsUtil.PAINT_THIN:
+            case Constants.PAINT_THIN:
                 if (isSelect){
                     widthThinBtn.setBackground(getDrawable(R.drawable.ic_paint_width_check_24dp));
                     widthThinBtn.setTextColor(getColor(R.color.orange_f7));
-                    setBrushWidth(ConstantsUtil.PAINT_MEDIUM,false);
-                    setBrushWidth(ConstantsUtil.PAINT_THICK,false);
+                    setBrushWidth(Constants.PAINT_MEDIUM,false);
+                    setBrushWidth(Constants.PAINT_THICK,false);
                     setBrushWidth(INITIAL_PAINT_WIDTH,false);
                 }else{
                     widthThinBtn.setBackground(getDrawable(R.drawable.ic_paint_width_uncheck_24dp));
@@ -611,24 +610,24 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                 }
 
                 break;
-            case ConstantsUtil.PAINT_MEDIUM:
+            case Constants.PAINT_MEDIUM:
                 if (isSelect){
                     widthMediumBtn.setBackground(getDrawable(R.drawable.ic_paint_width_check_24dp));
                     widthMediumBtn.setTextColor(getColor(R.color.orange_f7));
-                    setBrushWidth(ConstantsUtil.PAINT_THIN,false);
-                    setBrushWidth(ConstantsUtil.PAINT_THICK,false);
+                    setBrushWidth(Constants.PAINT_THIN,false);
+                    setBrushWidth(Constants.PAINT_THICK,false);
                     setBrushWidth(INITIAL_PAINT_WIDTH,false);
                 }else{
                     widthMediumBtn.setBackground(getDrawable(R.drawable.ic_paint_width_uncheck_24dp));
                     widthMediumBtn.setTextColor(getColor(R.color.gray_9c));
                 }
                 break;
-            case ConstantsUtil.PAINT_THICK:
+            case Constants.PAINT_THICK:
                 if (isSelect){
                     widthThickBtn.setBackground(getDrawable(R.drawable.ic_paint_width_check_24dp));
                     widthThickBtn.setTextColor(getColor(R.color.orange_f7));
-                    setBrushWidth(ConstantsUtil.PAINT_THIN,false);
-                    setBrushWidth(ConstantsUtil.PAINT_MEDIUM,false);
+                    setBrushWidth(Constants.PAINT_THIN,false);
+                    setBrushWidth(Constants.PAINT_MEDIUM,false);
                     setBrushWidth(INITIAL_PAINT_WIDTH,false);
                 }else{
                     widthThickBtn.setBackground(getDrawable(R.drawable.ic_paint_width_uncheck_24dp));
@@ -640,9 +639,9 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     if (isSelect){
                         initialWidthBtn.setBackground(getDrawable(R.drawable.ic_paint_width_check_24dp));
                         initialWidthBtn.setTextColor(getColor(R.color.red_ff));
-                        setBrushWidth(ConstantsUtil.PAINT_THIN,false);
-                        setBrushWidth(ConstantsUtil.PAINT_MEDIUM,false);
-                        setBrushWidth(ConstantsUtil.PAINT_THICK,false);
+                        setBrushWidth(Constants.PAINT_THIN,false);
+                        setBrushWidth(Constants.PAINT_MEDIUM,false);
+                        setBrushWidth(Constants.PAINT_THICK,false);
                     }else{
                         initialWidthBtn.setBackground(getDrawable(R.drawable.ic_paint_width_uncheck_24dp));
                         initialWidthBtn.setTextColor(getColor(R.color.gray_9c));
@@ -665,30 +664,30 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
         }
 
         switch (whichEraseWidth){
-            case ConstantsUtil.ERASE_THIN:
+            case Constants.ERASE_THIN:
                 if (isSelect){
                     eraseThinBtn.setBackground(getDrawable(R.drawable.ic_paint_width_check_24dp));
-                    setEraseWidth(ConstantsUtil.ERASE_MEDIUM,false);
-                    setEraseWidth(ConstantsUtil.ERASE_THICK,false);
+                    setEraseWidth(Constants.ERASE_MEDIUM,false);
+                    setEraseWidth(Constants.ERASE_THICK,false);
                 }else{
                     eraseThinBtn.setBackground(getDrawable(R.drawable.ic_paint_width_uncheck_24dp));
                 }
 
                 break;
-            case ConstantsUtil.ERASE_MEDIUM:
+            case Constants.ERASE_MEDIUM:
                 if (isSelect){
                     eraseMediumBtn.setBackground(getDrawable(R.drawable.ic_paint_width_check_24dp));
-                    setEraseWidth(ConstantsUtil.ERASE_THIN,false);
-                    setEraseWidth(ConstantsUtil.ERASE_THICK,false);
+                    setEraseWidth(Constants.ERASE_THIN,false);
+                    setEraseWidth(Constants.ERASE_THICK,false);
                 }else{
                     eraseMediumBtn.setBackground(getDrawable(R.drawable.ic_paint_width_uncheck_24dp));
                 }
                 break;
-            case ConstantsUtil.ERASE_THICK:
+            case Constants.ERASE_THICK:
                 if (isSelect){
                     eraseThickBtn.setBackground(getDrawable(R.drawable.ic_paint_width_check_24dp));
-                    setEraseWidth(ConstantsUtil.ERASE_THIN,false);
-                    setEraseWidth(ConstantsUtil.ERASE_MEDIUM,false);
+                    setEraseWidth(Constants.ERASE_THIN,false);
+                    setEraseWidth(Constants.ERASE_MEDIUM,false);
                 }else{
                     eraseThickBtn.setBackground(getDrawable(R.drawable.ic_paint_width_uncheck_24dp));
                 }
@@ -712,36 +711,36 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
         }
 
         switch (whichContrastRadio){
-            case ConstantsUtil.CONTRAST_RADIO_WEAK:
+            case Constants.CONTRAST_RADIO_WEAK:
                 if (isSelect){
                     contrastWeakBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_contrast_weak_ratio_checked,0,0);
                     contrastWeakBtn.setTextColor(getColor(R.color.orange_f7));
-                    setContrastRadio(ConstantsUtil.CONTRAST_RADIO_COMMON,false);
-                    setContrastRadio(ConstantsUtil.CONTRAST_RADIO_STRONG,false);
+                    setContrastRadio(Constants.CONTRAST_RADIO_COMMON,false);
+                    setContrastRadio(Constants.CONTRAST_RADIO_STRONG,false);
                 }else{
                     contrastWeakBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_contrast_weak_ratio_unchecked,0,0);
                     contrastWeakBtn.setTextColor(getColor(R.color.gray_9c));
                 }
                 break;
 
-            case ConstantsUtil.CONTRAST_RADIO_COMMON:
+            case Constants.CONTRAST_RADIO_COMMON:
                 if (isSelect){
                     contrastCommonBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_contrast_common_ratio_checked,0,0);
                     contrastCommonBtn.setTextColor(getColor(R.color.orange_f7));
-                    setContrastRadio(ConstantsUtil.CONTRAST_RADIO_WEAK,false);
-                    setContrastRadio(ConstantsUtil.CONTRAST_RADIO_STRONG,false);
+                    setContrastRadio(Constants.CONTRAST_RADIO_WEAK,false);
+                    setContrastRadio(Constants.CONTRAST_RADIO_STRONG,false);
                 }else{
                     contrastCommonBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_contrast_common_ratio_unchecked,0,0);
                     contrastCommonBtn.setTextColor(getColor(R.color.gray_9c));
                 }
                 break;
 
-            case ConstantsUtil.CONTRAST_RADIO_STRONG:
+            case Constants.CONTRAST_RADIO_STRONG:
                 if (isSelect){
                     contrastStrongBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_contrast_strong_ratio_checked,0,0);
                     contrastStrongBtn.setTextColor(getColor(R.color.orange_f7));
-                    setContrastRadio(ConstantsUtil.CONTRAST_RADIO_WEAK,false);
-                    setContrastRadio(ConstantsUtil.CONTRAST_RADIO_COMMON,false);
+                    setContrastRadio(Constants.CONTRAST_RADIO_WEAK,false);
+                    setContrastRadio(Constants.CONTRAST_RADIO_COMMON,false);
                 }else{
                     contrastStrongBtn.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_contrast_strong_ratio_unchecked,0,0);
                     contrastStrongBtn.setTextColor(getColor(R.color.gray_9c));
@@ -811,12 +810,12 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     topic.setBook_id(bookList.get(adapter.selectItem).getId());
 
                     //判断是否是从收藏夹中添加的错题 若是则标记为收藏
-                    SharedPreferences sp = getSharedPreferences(ConstantsUtil.TABLE_SHARED_CORRECTION, MODE_PRIVATE);
-                    Boolean fromFavorite = sp.getBoolean(ConstantsUtil.TABLE_FROM_FAVORITE, false);
+                    SharedPreferences sp = getSharedPreferences(Constants.TABLE_SHARED_CORRECTION, MODE_PRIVATE);
+                    Boolean fromFavorite = sp.getBoolean(Constants.TABLE_FROM_FAVORITE, false);
                     if(fromFavorite){
                         topic.setTopic_collection(1);
                         Editor editor = sp.edit();
-                        editor.putBoolean(ConstantsUtil.TABLE_FROM_FAVORITE, false);
+                        editor.putBoolean(Constants.TABLE_FROM_FAVORITE, false);
                         editor.apply();
                         //Toast.makeText(EditPhotoActivity.this, String.valueOf(topic.getTopic_collection()), Toast.LENGTH_LONG).show();
                     }
@@ -824,8 +823,8 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     finishNext();
 
                     Intent intent = new Intent(EditPhotoActivity.this, BookDetailActivity.class);
-                    intent.putExtra(ConstantsUtil.WHICH_ACTIVITY,whichActivity);
-                    intent.putExtra(ConstantsUtil.BOOK_ID,topic.getBook_id());
+                    intent.putExtra(Constants.WHICH_ACTIVITY,whichActivity);
+                    intent.putExtra(Constants.BOOK_ID,topic.getBook_id());
                     startActivity(intent);
 
                     //销毁活动
@@ -883,11 +882,11 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
      * @author zc
      */
     private void initAdapterSelectItem(SelectBookAdapter adapter) {
-        SharedPreferences sp = getSharedPreferences(ConstantsUtil.TABLE_SHARED_CORRECTION, MODE_PRIVATE);
-        int book_id = sp.getInt(ConstantsUtil.TABLE_FROM_BOOK_ID,0);
+        SharedPreferences sp = getSharedPreferences(Constants.TABLE_SHARED_CORRECTION, MODE_PRIVATE);
+        int book_id = sp.getInt(Constants.TABLE_FROM_BOOK_ID,0);
         //读完之后重置bookid的数据，防止造成干扰
         SharedPreferences.Editor editor = sp.edit();
-        editor.putInt(ConstantsUtil.BOOK_ID, 0);
+        editor.putInt(Constants.BOOK_ID, 0);
         editor.apply();
 
         adapter.selectItem = adapter.transferBookIdToIndex(book_id);

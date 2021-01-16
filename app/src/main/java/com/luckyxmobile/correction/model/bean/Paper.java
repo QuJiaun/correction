@@ -1,10 +1,10 @@
 package com.luckyxmobile.correction.model.bean;
 
-import com.luckyxmobile.correction.model.impl.CorrectionLab;
-
 import org.litepal.crud.LitePalSupport;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 复习卷的数据库表Paper
@@ -23,6 +23,8 @@ public class Paper extends LitePalSupport {
      * paper_name
      */
     private String paper_name;
+
+    private Set<Topic> topicSet = new HashSet<>();
 
     /**
      * 复习卷的创建时间
@@ -58,12 +60,21 @@ public class Paper extends LitePalSupport {
         this.paper_create_time = paper_create_time;
     }
 
+    public Set<Topic> getTopicSet() {
+        return topicSet;
+    }
+
+    public void setTopicSet(Set<Topic> topicSet) {
+        this.topicSet = topicSet;
+    }
+
     @Override
     public String toString() {
         return "Paper{" +
-                "id=" + id +
-                ", paper_name='" + paper_name + '\'' +
-                ", paper_create_time=" + paper_create_time +
-                '}';
+            "id=" + id +
+            ", paper_name='" + paper_name + '\'' +
+            ", topicSet=" + topicSet +
+            ", paper_create_time=" + paper_create_time +
+            '}';
     }
 }

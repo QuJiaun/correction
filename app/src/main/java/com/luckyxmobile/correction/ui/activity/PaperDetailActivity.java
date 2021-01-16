@@ -21,8 +21,6 @@ import com.luckyxmobile.correction.adapter.PaperDetailAdapter;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.model.bean.Topic;
-import com.luckyxmobile.correction.model.PaperTopicDao;
-import com.luckyxmobile.correction.model.impl.PaperTopicDaoImpl;
 import com.luckyxmobile.correction.ui.callback.ItemTouchCallback;
 import com.luckyxmobile.correction.utils.PdfUtils;
 import com.luckyxmobile.correction.utils.ProgressDialogUtil;

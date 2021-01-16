@@ -42,7 +42,7 @@ import com.luckyxmobile.correction.adapter.TopicRightAdapter;
 import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.impl.TagDaoImpl;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.ImageUtil;
 import com.like.LikeButton;
 import com.youth.banner.Banner;
@@ -196,11 +196,11 @@ public class TopicInfoActivity extends AppCompatActivity implements View.OnClick
         setTagBtn.setOnClickListener(this);
 
         //获取唯一的错题id
-        topicId = getIntent().getIntExtra(ConstantsUtil.TOPIC_ID, 0);
+        topicId = getIntent().getIntExtra(Constants.TOPIC_ID, 0);
         //判断从哪个活动跳转的
-        fromActivity = getIntent().getStringExtra(ConstantsUtil.WHICH_ACTIVITY);
+        fromActivity = getIntent().getStringExtra(Constants.WHICH_ACTIVITY);
         // 获取toolbarName
-        toolbarName = getIntent().getStringExtra(ConstantsUtil.TOOLBAR_NAME);
+        toolbarName = getIntent().getStringExtra(Constants.TOOLBAR_NAME);
         //确认唯一topic
         topic = LitePal.find(Topic.class, topicId);
         topicS = topic;
@@ -413,13 +413,13 @@ public class TopicInfoActivity extends AppCompatActivity implements View.OnClick
         addPicAlbum.setOnClickListener(v -> {
             dialog.dismiss();
             startActivityForResult(CropImageActivity.getJumpIntent(TopicInfoActivity.this,TAG,
-                    true, whichModule,isEdit,true,topicId),ConstantsUtil.REQUEST_CODE);
+                    true, whichModule,isEdit,true,topicId), Constants.REQUEST_CODE);
         });
 
         addPicCamera.setOnClickListener(v -> {
             dialog.dismiss();
             startActivityForResult(CropImageActivity.getJumpIntent(TopicInfoActivity.this,TAG,
-                    false, whichModule,isEdit,true,topicId),ConstantsUtil.REQUEST_CODE);
+                    false, whichModule,isEdit,true,topicId), Constants.REQUEST_CODE);
         });
 
         addWord.setOnClickListener(v -> {
@@ -439,27 +439,27 @@ public class TopicInfoActivity extends AppCompatActivity implements View.OnClick
                 break;
             //题干：更多按钮
             case R.id.btn_original:
-                setPopupWindow(ConstantsUtil.IMAGE_ORIGINAL,getString(R.string.stem),true);
+                setPopupWindow(Constants.IMAGE_ORIGINAL,getString(R.string.stem),true);
                 break;
             //正解：更多按钮
             case R.id.btn_right:
-                setPopupWindow(ConstantsUtil.IMAGE_RIGHT,getString(R.string.correct),false);
+                setPopupWindow(Constants.IMAGE_RIGHT,getString(R.string.correct),false);
                 break;
             //错解：更多按钮
             case R.id.btn_error:
-                setPopupWindow(ConstantsUtil.IMAGE_ERROR,getString(R.string.incorrect),false);
+                setPopupWindow(Constants.IMAGE_ERROR,getString(R.string.incorrect),false);
                 break;
             //考点：更多按钮
             case R.id.btn_point:
-                setPopupWindow(ConstantsUtil.IMAGE_POINT,getString(R.string.key),false);
+                setPopupWindow(Constants.IMAGE_POINT,getString(R.string.key),false);
                 break;
             //错误原因：更多按钮
             case R.id.btn_cause:
-                setPopupWindow(ConstantsUtil.IMAGE_REASON,getString(R.string.cause),false);
+                setPopupWindow(Constants.IMAGE_REASON,getString(R.string.cause),false);
                 break;
             case  R.id.set_tag:
                 Intent intent = new Intent(TopicInfoActivity.this, TagActivity.class);
-                intent.putExtra(ConstantsUtil.TOPIC_ID, topicId);
+                intent.putExtra(Constants.TOPIC_ID, topicId);
                 startActivity(intent);
             default:
                 break;
@@ -629,9 +629,9 @@ public class TopicInfoActivity extends AppCompatActivity implements View.OnClick
                 isEditing = false;
                 //保存之前一定要刷新topic
                 Intent intent = new Intent(this, TopicInfoActivity.class);
-                intent.putExtra(ConstantsUtil.TOPIC_ID, topicId);
-                intent.putExtra(ConstantsUtil.TOOLBAR_NAME, toolbarName);
-                intent.putExtra(ConstantsUtil.WHICH_ACTIVITY, fromActivity);
+                intent.putExtra(Constants.TOPIC_ID, topicId);
+                intent.putExtra(Constants.TOOLBAR_NAME, toolbarName);
+                intent.putExtra(Constants.WHICH_ACTIVITY, fromActivity);
                 startActivity(intent);
                 finish();
             }
@@ -644,11 +644,11 @@ public class TopicInfoActivity extends AppCompatActivity implements View.OnClick
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == ConstantsUtil.REQUEST_CODE) {
+            if (requestCode == Constants.REQUEST_CODE) {
 
                 String whichImage;
                 try {
-                    whichImage = data.getStringExtra(ConstantsUtil.WHICH_IMAGE);
+                    whichImage = data.getStringExtra(Constants.WHICH_IMAGE);
                 }catch (Exception e){
                     whichImage = whichModule;
                     Log.w(TAG, "onActivityResult: "+whichImage,e );
@@ -658,19 +658,19 @@ public class TopicInfoActivity extends AppCompatActivity implements View.OnClick
                 topic = LitePal.find(Topic.class,topic.getId());
                 //根据whichPhoto来显示对应的图片
                 switch (whichImage) {
-                    case ConstantsUtil.IMAGE_ORIGINAL:
+                    case Constants.IMAGE_ORIGINAL:
                         topicOriginalAdapter.flashImagePath();
                         break;
-                    case ConstantsUtil.IMAGE_RIGHT:
+                    case Constants.IMAGE_RIGHT:
                         topicRightAdapter.flashImagePath();
                         break;
-                    case ConstantsUtil.IMAGE_REASON:
+                    case Constants.IMAGE_REASON:
                         topicErrorCauseAdapter.flashImagePath();
                         break;
-                    case ConstantsUtil.IMAGE_ERROR:
+                    case Constants.IMAGE_ERROR:
                         topicErrorAdapter.flashImagePath();
                         break;
-                    case ConstantsUtil.IMAGE_POINT:
+                    case Constants.IMAGE_POINT:
                         topicPointAdapter.flashImagePath();
                         break;
                     default:
@@ -687,7 +687,7 @@ public class TopicInfoActivity extends AppCompatActivity implements View.OnClick
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == ConstantsUtil.REQUEST_PERMISSION) {
+        if (requestCode == Constants.REQUEST_PERMISSION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 ImageUtil.hasPermission = true;
             } else {
@@ -757,7 +757,7 @@ public class TopicInfoActivity extends AppCompatActivity implements View.OnClick
         String getTextString = null;
 
         switch (whichModule) {
-            case ConstantsUtil.IMAGE_ORIGINAL:
+            case Constants.IMAGE_ORIGINAL:
                 getTextString = topic.getTopic_original_text();
                 if (isSet){
                     topic.setTopic_original_text(setTextString);
@@ -765,7 +765,7 @@ public class TopicInfoActivity extends AppCompatActivity implements View.OnClick
                     setTextViewToShow(setTextString,originalText);
                 }
                 break;
-            case ConstantsUtil.IMAGE_RIGHT:
+            case Constants.IMAGE_RIGHT:
                 getTextString = topic.getTopic_right_solution_text();
                 if (isSet){
                     topic.setTopic_right_solution_text(setTextString);
@@ -773,7 +773,7 @@ public class TopicInfoActivity extends AppCompatActivity implements View.OnClick
                     setTextViewToShow(setTextString,rightSolutionText);
                 }
                 break;
-            case ConstantsUtil.IMAGE_REASON:
+            case Constants.IMAGE_REASON:
                 getTextString = topic.getTopic_error_cause_text();
                 if (isSet){
                     topic.setTopic_error_cause_text(setTextString);
@@ -781,7 +781,7 @@ public class TopicInfoActivity extends AppCompatActivity implements View.OnClick
                     setTextViewToShow(setTextString,causeText);
                 }
                 break;
-            case ConstantsUtil.IMAGE_ERROR:
+            case Constants.IMAGE_ERROR:
                 getTextString = topic.getTopic_error_solution_text();
                 if (isSet){
                     topic.setTopic_error_solution_text(setTextString);
@@ -789,7 +789,7 @@ public class TopicInfoActivity extends AppCompatActivity implements View.OnClick
                     setTextViewToShow(setTextString,errorSolutionText);
                 }
                 break;
-            case ConstantsUtil.IMAGE_POINT:
+            case Constants.IMAGE_POINT:
                 getTextString = topic.getTopic_knowledge_point_text();
                 if (isSet){
                     topic.setTopic_knowledge_point_text(setTextString);

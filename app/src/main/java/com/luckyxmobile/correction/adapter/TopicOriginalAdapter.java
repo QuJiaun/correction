@@ -18,7 +18,7 @@ import com.bumptech.glide.request.target.Target;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.FastJsonUtil;
 import com.luckyxmobile.correction.utils.ImageUtil;
 
@@ -52,8 +52,8 @@ public class TopicOriginalAdapter extends RecyclerView.Adapter<TopicOriginalAdap
         this.context = context;
         this.topic = topic;
         imagesPath = getImagesPath();
-        preferences = context.getSharedPreferences(ConstantsUtil.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
-        String s = preferences.getString(ConstantsUtil.TABLE_SHOW_SMEAR,"");
+        preferences = context.getSharedPreferences(Constants.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
+        String s = preferences.getString(Constants.TABLE_SHOW_SMEAR,"");
         if (TextUtils.isEmpty(s)){
             whichShowPrint = new ArrayList<>();
         }else{

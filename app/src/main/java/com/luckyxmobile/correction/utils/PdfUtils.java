@@ -11,11 +11,10 @@ import android.util.Log;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.PaperDetailAdapter;
 import com.luckyxmobile.correction.adapter.PrintPreviewAdapter;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.model.bean.Topic;
-import com.luckyxmobile.correction.model.PaperTopicDao;
-import com.luckyxmobile.correction.model.impl.PaperTopicDaoImpl;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -236,11 +235,11 @@ public class PdfUtils {
     public static String CreatePaperPdf(Context context, String title, String pattern, String CacheDir, List<Topic> topicList, List<Book> booksList) {
         SimpleDateFormat format = new SimpleDateFormat(pattern);
 
-        SharedPreferences preferences = context.getSharedPreferences(ConstantsUtil.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences(Constants.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
 
-        boolean hideHighlightAreas = preferences.getBoolean(ConstantsUtil.TABLE_SHOW_SMEAR_MARK,false);
+        boolean hideHighlightAreas = preferences.getBoolean(Constants.TABLE_SHOW_SMEAR_MARK,false);
 
-        String printPage = preferences.getString(ConstantsUtil.TABLE_PRINT_PAGE,"0");
+        String printPage = preferences.getString(Constants.TABLE_PRINT_PAGE,"0");
 
         PdfUtils pu = null;
         //生成的pdf名称
@@ -294,7 +293,7 @@ public class PdfUtils {
                         topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_right_solution_picture(), TopicImagesHighlighter.class);
                         if (topicImagesHighlighter != null){
                             for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
-                                bitmap = OpenCvImageUtil.setImageContrastRadioByPath(ConstantsUtil.CONTRAST_RADIO_COMMON,path);
+                                bitmap = OpenCvImageUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
                                 if (bitmap != null){
                                     bitmap = ImageUtil.resizeBitmapByImageWordSize(bitmap, topicImagesHighlighter.getImageWordSizeList().get(j));
                                     //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
@@ -326,7 +325,7 @@ public class PdfUtils {
                         topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_error_solution_picture(), TopicImagesHighlighter.class);
                         if (topicImagesHighlighter != null){
                             for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
-                                bitmap = OpenCvImageUtil.setImageContrastRadioByPath(ConstantsUtil.CONTRAST_RADIO_COMMON,path);
+                                bitmap = OpenCvImageUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
                                 //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
                                 pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
                             }
@@ -350,7 +349,7 @@ public class PdfUtils {
                         topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_knowledge_point_picture(), TopicImagesHighlighter.class);
                         if (topicImagesHighlighter != null){
                             for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
-                                bitmap = OpenCvImageUtil.setImageContrastRadioByPath(ConstantsUtil.CONTRAST_RADIO_COMMON,path);
+                                bitmap = OpenCvImageUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
                                 //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
                                 pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
                             }
@@ -373,7 +372,7 @@ public class PdfUtils {
                         topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_error_cause_picture(), TopicImagesHighlighter.class);
                         if (topicImagesHighlighter != null){
                             for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
-                                bitmap = OpenCvImageUtil.setImageContrastRadioByPath(ConstantsUtil.CONTRAST_RADIO_COMMON,path);
+                                bitmap = OpenCvImageUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
                                 //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
                                 pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
                             }

@@ -22,9 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.SelectPaperAdapter;
 import com.luckyxmobile.correction.model.bean.Paper;
-import com.luckyxmobile.correction.model.PaperTopicDao;
-import com.luckyxmobile.correction.model.impl.CorrectionLab;
-import com.luckyxmobile.correction.model.impl.PaperTopicDaoImpl;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
 
 import org.litepal.LitePal;

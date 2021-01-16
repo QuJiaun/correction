@@ -90,40 +90,14 @@
 
    </androidx.core.widget.NestedScrollView>
 
-
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/fab_menu"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floating_button_add_topic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"
-        fab:fab_addButtonColorNormal="@color/colorAccent"
-        fab:fab_addButtonColorPressed="@color/colorAccent"
-        fab:fab_addButtonPlusIconColor="@color/colorWhite"
-        app:fab_addButtonSize="normal"
-        fab:fab_labelStyle="@style/menu_labels_style">
-
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_camera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_icon="@drawable/ic_camera"
-            fab:fab_colorNormal="@color/colorWhite"
-            fab:fab_title="@string/choose_from_camera"
-            fab:fab_colorPressed="#f1f1f1"/>
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_album"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_icon="@drawable/ic_album"
-            fab:fab_colorNormal="@color/colorWhite"
-            fab:fab_title="@string/choose_from_album"
-            fab:fab_colorPressed="#f1f1f1"/>
-
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
-
+        android:layout_margin="32dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_add_white_24dp"/>
 
 </RelativeLayout>

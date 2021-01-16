@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 
 import com.luckyxmobile.correction.R;
-import com.luckyxmobile.correction.model.TopicImageModel;
-import com.luckyxmobile.correction.model.impl.TopicImageModelImpl;
 import com.luckyxmobile.correction.presenter.CropImageViewPresenter;
 import com.luckyxmobile.correction.utils.IFiles;
 import com.luckyxmobile.correction.utils.impl.FilesUtils;

@@ -28,7 +28,6 @@ import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.PaperAdapter;
 import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.model.bean.Topic;
-import com.luckyxmobile.correction.model.impl.PaperTopicDaoImpl;
 import com.luckyxmobile.correction.utils.PdfUtils;
 import com.luckyxmobile.correction.utils.ProgressDialogUtil;
 import com.luckyxmobile.correction.utils.ThreadPool;

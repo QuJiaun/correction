@@ -17,8 +17,7 @@ import android.widget.Toast;
 import androidx.core.content.FileProvider;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Topic;
-import com.luckyxmobile.correction.model.impl.CorrectionLab;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.FastJsonUtil;
 import com.luckyxmobile.correction.utils.IFiles;
 
@@ -213,7 +212,7 @@ public class FilesUtils implements IFiles{
         if (Build.VERSION.SDK_INT >= 24) {
             //如果在Android7.0以上,使用FileProvider获取Uri
             try {
-                return FileProvider.getUriForFile(context.getApplicationContext(), ConstantsUtil.FILE_PROVIDER, tmp);
+                return FileProvider.getUriForFile(context.getApplicationContext(), Constants.FILE_PROVIDER, tmp);
             } catch (Exception e) {
                 e.printStackTrace();
             }

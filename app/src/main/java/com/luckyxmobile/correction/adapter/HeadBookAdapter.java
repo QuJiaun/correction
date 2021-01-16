@@ -14,18 +14,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Book;
-import com.luckyxmobile.correction.ui.activity.MainActivity;
 import com.noober.menu.FloatMenu;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
  *
  */
 public class HeadBookAdapter extends RecyclerView.Adapter<HeadBookAdapter.ViewHolder> {
+
+    private static final String TAG = "HeadBookAdapter";
 
     public static int MENU_DELETE = 0;
     public static int MENU_BOOK_INFO = 1;
@@ -34,11 +35,10 @@ public class HeadBookAdapter extends RecyclerView.Adapter<HeadBookAdapter.ViewHo
     private final Context context;
     private final OnHeadBookAdapterListener listener;
     private final FloatMenu menu;
-    private Animation onLongClickAnim;
-
-    private static final String TAG = "HeadBookAdapter";
+    private final Animation onLongClickAnim;
 
     public HeadBookAdapter(Context context,List<Book> bookList){
+
         this.context = context;
         this.bookList = bookList;
         this.listener = (OnHeadBookAdapterListener) context;
@@ -59,7 +59,9 @@ public class HeadBookAdapter extends RecyclerView.Adapter<HeadBookAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+
+        Book book = bookList.get(position);
 
         //设置封面图片和删除效果
         if (position == 0){
@@ -67,20 +69,17 @@ public class HeadBookAdapter extends RecyclerView.Adapter<HeadBookAdapter.ViewHo
         }else{
             //Glide 加载封面图
             Glide.with(context)
-                    .load(bookList.get(position).getBook_cover())
+                    .load(book.getCover())
                     .placeholder(R.drawable.correction_book)
                     .fitCenter()
                     .centerCrop()
-                    .skipMemoryCache(true) // 不使用内存缓存
-                    .diskCacheStrategy(DiskCacheStrategy.NONE) // 不使用磁盘缓存
                     .into(holder.bookImage);
         }
 
-
-        holder.bookName.setText(bookList.get(position).getBook_name());
+        holder.bookName.setText(book.getName());
 
         holder.bookLayout.setOnClickListener(v ->
-                listener.onBookClickListener(bookList.get(position), position));
+                listener.onBookClickListener(book));
 
         holder.bookLayout.setOnLongClickListener(v -> {
             menu.showAsDropDown(holder.itemView);
@@ -88,8 +87,15 @@ public class HeadBookAdapter extends RecyclerView.Adapter<HeadBookAdapter.ViewHo
             return false;
         });
 
-        menu.setOnItemClickListener((v, positionMenu) ->
-                listener.onBookMenuClickListener(positionMenu, bookList.get(position)));
+        menu.setOnItemClickListener((v, positionMenu) -> {
+            if (positionMenu == MENU_DELETE) {
+                listener.onBookMenuRemove(book);
+                bookList.remove(position);
+                notifyItemRemoved(position);
+            } else if(positionMenu == MENU_BOOK_INFO) {
+                listener.onBookMenuAlter(book);
+            }
+        });
 
     }
 
@@ -101,31 +107,19 @@ public class HeadBookAdapter extends RecyclerView.Adapter<HeadBookAdapter.ViewHo
     public void addBook(Book book){
         if (book != null){
             bookList.add(book);
-            notifyDataSetChanged();
-        }
-    }
-
-    public void deleteBook(Book book){
-        int i=0;
-        for (Book b: bookList){
-            i++;
-            if (b.getId() == book.getId()){
-                bookList.remove(b);
-                notifyItemRemoved(i);
-                return;
-            }
+            notifyItemInserted(bookList.size()-1);
         }
     }
 
     public void alterBook(Book book){
-        if (book != null){
-            for (Book bk : bookList){
-                if (bk.getId() == book.getId()){
-                    bk.setBook_name(book.getBook_name());
-                    bk.setBook_cover(book.getBook_cover());
-                    notifyDataSetChanged();
-                    return;
-                }
+        int position = -1;
+        for (Book b : bookList) {
+            position++;
+            if (b.equals(book)) {
+                b.setName(book.getName());
+                b.setCover(book.getCover());
+                notifyItemChanged(position);
+                return;
             }
         }
     }
@@ -142,15 +136,15 @@ public class HeadBookAdapter extends RecyclerView.Adapter<HeadBookAdapter.ViewHo
             bookLayout = itemView.findViewById(R.id.book_layout);
             bookImage = itemView.findViewById(R.id.book_image);
             bookName = itemView.findViewById(R.id.book_name);
-
         }
     }
 
 
     //声明点击、长按接口供外部调用
     public interface OnHeadBookAdapterListener {
-        void onBookClickListener(Book book, int position);
-        void onBookMenuClickListener(int menuPosition, Book book);
+        void onBookClickListener(Book book);
+        void onBookMenuRemove(Book book);
+        void onBookMenuAlter(Book book);
     }
 
 

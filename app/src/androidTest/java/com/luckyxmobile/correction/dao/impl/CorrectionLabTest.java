@@ -1,7 +1,6 @@
 package com.luckyxmobile.correction.dao.impl;
 
 import com.luckyxmobile.correction.model.bean.Book;
-import com.luckyxmobile.correction.model.impl.CorrectionLab;
 
 import org.junit.Assert;
 import org.junit.Test;

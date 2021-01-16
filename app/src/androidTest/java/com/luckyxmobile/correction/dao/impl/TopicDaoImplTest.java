@@ -7,10 +7,8 @@ import androidx.test.runner.AndroidJUnit4;
 import com.luckyxmobile.correction.LitePalTestCase;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Paper;
-import com.luckyxmobile.correction.model.bean.PaperTopic;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.TopicDao;
-import com.luckyxmobile.correction.model.impl.TopicDaoImpl;
 
 import org.junit.After;
 import org.junit.Before;

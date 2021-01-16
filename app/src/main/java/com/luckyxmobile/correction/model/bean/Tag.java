@@ -3,6 +3,11 @@ package com.luckyxmobile.correction.model.bean;
 import org.litepal.crud.LitePalSupport;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+
+import androidx.annotation.NonNull;
 
 
 /**
@@ -18,16 +23,15 @@ public class Tag extends LitePalSupport {
     private int id;
 
     /**
-     * 标签与错题的关联
-     * tag_topic
-     */
-    private int tag_topic;
-
-    /**
      * 标签名称
      * tag_name
      */
     private String tag_name;
+
+    /**
+     * 标签与错题的关联
+     */
+    private Set<Topic> topicSet = new HashSet<>();
 
     /**
      * 标签的创建时间
@@ -35,6 +39,9 @@ public class Tag extends LitePalSupport {
      */
     private Date tag_create_time;
 
+    public Tag(@NonNull String tag_name) {
+        this.tag_name = tag_name;
+    }
 
 
     public int getId() {
@@ -53,14 +60,6 @@ public class Tag extends LitePalSupport {
         this.tag_name = tag_name;
     }
 
-    public int getTag_topic() {
-        return tag_topic;
-    }
-
-    public void setTag_topic(int tag_topic) {
-        this.tag_topic = tag_topic;
-    }
-
     public Date getTag_create_time() {
         return tag_create_time;
     }
@@ -69,13 +68,21 @@ public class Tag extends LitePalSupport {
         this.tag_create_time = tag_create_time;
     }
 
+    public Set<Topic> getTopicSet() {
+        return topicSet;
+    }
+
+    public void setTopicSet(Set<Topic> topicSet) {
+        this.topicSet = topicSet;
+    }
+
     @Override
     public String toString() {
         return "Tag{" +
-                "id=" + id +
-                ", tag_topic=" + tag_topic +
-                ", tag_name='" + tag_name + '\'' +
-                ", tag_create_time=" + tag_create_time +
-                '}';
+            "id=" + id +
+            ", tag_name='" + tag_name + '\'' +
+            ", topicSet=" + topicSet +
+            ", tag_create_time=" + tag_create_time +
+            '}';
     }
 }

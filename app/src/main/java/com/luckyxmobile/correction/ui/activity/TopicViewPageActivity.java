@@ -29,9 +29,8 @@ import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicViewPageItem;
-import com.luckyxmobile.correction.model.impl.CorrectionLab;
 import com.luckyxmobile.correction.model.impl.TagDaoImpl;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.impl.FilesUtils;
 import com.noober.menu.FloatMenu;
 import com.zhy.view.flowlayout.FlowLayout;
@@ -83,9 +82,9 @@ public class TopicViewPageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initView() {
-        book_id = getIntent().getIntExtra(ConstantsUtil.BOOK_ID,0);
-        positionPager = getIntent().getIntExtra(ConstantsUtil.TOPIC_POSITION,0);
-        preferences = getSharedPreferences(ConstantsUtil.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
+        book_id = getIntent().getIntExtra(Constants.BOOK_ID,0);
+        positionPager = getIntent().getIntExtra(Constants.TOPIC_POSITION,0);
+        preferences = getSharedPreferences(Constants.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
 
         viewPagerTopics = findViewById(R.id.topic_view_pager);
         storeButton = findViewById(R.id.store_button);
@@ -100,11 +99,11 @@ public class TopicViewPageActivity extends AppCompatActivity implements View.OnC
         fullScreenBtn.setOnClickListener(this);
         editBtn.setOnClickListener(this);
 
-        isFullScreen = preferences.getBoolean(ConstantsUtil.TABLE_FULL_SCREEN,false);
+        isFullScreen = preferences.getBoolean(Constants.TABLE_FULL_SCREEN,false);
 
-        isShowTag = preferences.getBoolean(ConstantsUtil.TABLE_SHOW_TAG,true);
+        isShowTag = preferences.getBoolean(Constants.TABLE_SHOW_TAG,true);
 
-        viewSmearBy = preferences.getString(ConstantsUtil.TABLE_VIEW_SMEAR_BY,"0,1").split(",");
+        viewSmearBy = preferences.getString(Constants.TABLE_VIEW_SMEAR_BY,"0,1").split(",");
 
         setFullScreen(isFullScreen);
 
@@ -156,7 +155,7 @@ public class TopicViewPageActivity extends AppCompatActivity implements View.OnC
                 topics = LitePal.where("book_id=?", String.valueOf(book_id)).find(Topic.class);
             }
 
-            if (preferences.getBoolean(ConstantsUtil.TABLE_SHARED_IS_NEWEST_ORDER,true)){
+            if (preferences.getBoolean(Constants.TABLE_SHARED_IS_NEWEST_ORDER,true)){
                 Collections.reverse(topics);
             }
         }
@@ -376,8 +375,8 @@ public class TopicViewPageActivity extends AppCompatActivity implements View.OnC
             } else {
                 //最后一个为“更多”
                 Intent intent = new Intent(TopicViewPageActivity.this, TagActivity.class);
-                intent.putExtra(ConstantsUtil.TOPIC_ID, nowTopic.getId());
-                intent.putExtra(ConstantsUtil.WHICH_ACTIVITY,BookDetailActivity.TAG);
+                intent.putExtra(Constants.TOPIC_ID, nowTopic.getId());
+                intent.putExtra(Constants.WHICH_ACTIVITY,BookDetailActivity.TAG);
                 startActivity(intent);
             }
 
@@ -390,7 +389,7 @@ public class TopicViewPageActivity extends AppCompatActivity implements View.OnC
      * @param position radioButton的位置, 第一个一定是显示全部
      */
     private void setFocus(int position) {
-        String[] display_tips = {ConstantsUtil.PAINT_RIGHT, ConstantsUtil.PAINT_ERROR, ConstantsUtil.PAINT_POINT, ConstantsUtil.PAINT_REASON};
+        String[] display_tips = {Constants.PAINT_BLUE, Constants.PAINT_RED, Constants.PAINT_GREEN, Constants.PAINT_YELLOW};
         show_tips_states.set(position, !show_tips_states.get(position));
         reverseButtonDrawable(displayRadioGroup.getChildAt(position));
 
@@ -521,8 +520,8 @@ public class TopicViewPageActivity extends AppCompatActivity implements View.OnC
                                             CorrectionLab.deleteTopic(topics.get(viewPagerTopics.getCurrentItem()).getId());
                                             if (topics.size()-1 > 0){
                                                 Intent intent = new Intent(TopicViewPageActivity.this,TopicViewPageActivity.class);
-                                                intent.putExtra(ConstantsUtil.BOOK_ID, book_id);
-                                                intent.putExtra(ConstantsUtil.TOPIC_POSITION, Math.max((positionPager - 1), 0));
+                                                intent.putExtra(Constants.BOOK_ID, book_id);
+                                                intent.putExtra(Constants.TOPIC_POSITION, Math.max((positionPager - 1), 0));
                                                 startActivity(intent);
                                                 finish();
                                             }else{
@@ -536,9 +535,10 @@ public class TopicViewPageActivity extends AppCompatActivity implements View.OnC
 
                             case 1:
                                 Intent intent = new Intent(TopicViewPageActivity.this, TopicInfoActivity.class);
-                                intent.putExtra(ConstantsUtil.TOPIC_ID, topics.get(viewPagerTopics.getCurrentItem()).getId());
-                                intent.putExtra(ConstantsUtil.WHICH_ACTIVITY, BookDetailActivity.TAG);
-                                intent.putExtra(ConstantsUtil.TOOLBAR_NAME,LitePal.find(Book.class,topics.get(viewPagerTopics.getCurrentItem()).getBook_id()).getBook_name());
+                                intent.putExtra(Constants.TOPIC_ID, topics.get(viewPagerTopics.getCurrentItem()).getId());
+                                intent.putExtra(Constants.WHICH_ACTIVITY, BookDetailActivity.TAG);
+                                intent.putExtra(
+                                    Constants.TOOLBAR_NAME,LitePal.find(Book.class,topics.get(viewPagerTopics.getCurrentItem()).getBook_id()).getBook_name());
                                 startActivity(intent);
                                 menu.dismiss();
                                 break;
@@ -552,9 +552,9 @@ public class TopicViewPageActivity extends AppCompatActivity implements View.OnC
 
             case R.id.edit_image_btn:
                 Intent intent = new Intent(TopicViewPageActivity.this, EditPhotoActivity.class);
-                intent.putExtra(ConstantsUtil.TOPIC_ID, topics.get(viewPagerTopics.getCurrentItem()).getId());
-                intent.putExtra(ConstantsUtil.WHICH_ACTIVITY, TAG);
-                intent.putExtra(ConstantsUtil.IMAGE_POSITION,whichImage);
+                intent.putExtra(Constants.TOPIC_ID, topics.get(viewPagerTopics.getCurrentItem()).getId());
+                intent.putExtra(Constants.WHICH_ACTIVITY, TAG);
+                intent.putExtra(Constants.IMAGE_POSITION,whichImage);
                 startActivity(intent);
                 break;
             default:

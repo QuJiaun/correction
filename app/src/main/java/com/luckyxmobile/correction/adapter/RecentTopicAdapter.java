@@ -1,9 +1,6 @@
 package com.luckyxmobile.correction.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,24 +8,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide;
+
+
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Topic;
-import com.luckyxmobile.correction.ui.activity.MainActivity;
-import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
-import com.luckyxmobile.correction.ui.activity.TopicViewPageActivity;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
-import com.luckyxmobile.correction.utils.ImageUtil;
 
 
-import org.litepal.LitePal;
-
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class RecentTopicAdapter extends RecyclerView.Adapter<RecentTopicAdapter.ViewHolder> {
 

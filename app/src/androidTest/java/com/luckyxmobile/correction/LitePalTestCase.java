@@ -1,8 +1,5 @@
 package com.luckyxmobile.correction;
 
-import com.luckyxmobile.correction.model.PaperTopicDao;
-import com.luckyxmobile.correction.model.impl.PaperTopicDaoImpl;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.litepal.LitePal;

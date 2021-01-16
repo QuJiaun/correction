@@ -3,7 +3,7 @@ package com.luckyxmobile.correction.utils.impl;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class PermissionsUtil {
 
         if (!deniedPer.isEmpty()){
             activity.requestPermissions(
-                    (String[]) deniedPer.toArray(), ConstantsUtil.REQUEST_PERMISSION);
+                    (String[]) deniedPer.toArray(), Constants.REQUEST_PERMISSION);
         }
     }
 }

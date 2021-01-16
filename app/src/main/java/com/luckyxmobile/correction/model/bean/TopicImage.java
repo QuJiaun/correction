@@ -2,6 +2,7 @@ package com.luckyxmobile.correction.model.bean;
 
 import android.graphics.Point;
 
+import com.luckyxmobile.correction.global.Constants;
 import org.litepal.crud.LitePalSupport;
 
 import java.util.ArrayList;
@@ -14,6 +15,11 @@ import java.util.List;
 public class TopicImage extends LitePalSupport {
 
     private int id;
+
+    /**
+     * 绑定唯一的topic
+     */
+    private Topic topic;
 
     /**
      * 图片类型
@@ -40,6 +46,10 @@ public class TopicImage extends LitePalSupport {
      */
     private List<Highlighter> highlighterList;
 
+    public TopicImage(@Constants.TopicImageType int type) {
+        this.type = type;
+    }
+
     public int getId() {
         return id;
     }
@@ -52,7 +62,7 @@ public class TopicImage extends LitePalSupport {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(@Constants.TopicImageType int type) {
         this.type = type;
     }
 
@@ -76,7 +86,7 @@ public class TopicImage extends LitePalSupport {
         return contrast_radio;
     }
 
-    public void setContrast_radio(int contrast_radio) {
+    public void setContrast_radio(@Constants.ContrastRadio int contrast_radio) {
         this.contrast_radio = contrast_radio;
     }
 
@@ -88,6 +98,26 @@ public class TopicImage extends LitePalSupport {
         this.highlighterList = highlighterList;
     }
 
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
+
+    @Override
+    public String toString() {
+        return "TopicImage{" +
+            "id=" + id +
+            ", topic=" + topic +
+            ", type=" + type +
+            ", path='" + path + '\'' +
+            ", word_size=" + word_size +
+            ", contrast_radio=" + contrast_radio +
+            ", highlighterList=" + highlighterList +
+            '}';
+    }
 
     public static class Highlighter {
 
@@ -106,11 +136,15 @@ public class TopicImage extends LitePalSupport {
          */
         private List<Point> pointList = new ArrayList<>();
 
+        public Highlighter(@Constants.HighlighterType int type) {
+            this.type = type;
+        }
+
         public int getType() {
             return type;
         }
 
-        public void setType(int type) {
+        public void setType(@Constants.HighlighterType int type) {
             this.type = type;
         }
 
@@ -128,6 +162,15 @@ public class TopicImage extends LitePalSupport {
 
         public void setPointList(List<Point> pointList) {
             this.pointList = pointList;
+        }
+
+        @Override
+        public String toString() {
+            return "Highlighter{" +
+                "type=" + type +
+                ", width=" + width +
+                ", pointList=" + pointList +
+                '}';
         }
     }
 }

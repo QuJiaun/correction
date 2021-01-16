@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.util.Log;
 
+import com.luckyxmobile.correction.global.Constants;
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -128,13 +129,13 @@ public class OpenCvImageUtil {
         Bitmap bitmap = ImageUtil.getBitmapByImagePath(imagePath);
 
         switch(contrastRadio){
-            case ConstantsUtil.CONTRAST_RADIO_WEAK:
+            case Constants.CONTRAST_RADIO_WEAK:
                 return  OpenCvImageUtil.convertBlurThreshod(bitmap);
 
-            case ConstantsUtil.CONTRAST_RADIO_COMMON:
+            case Constants.CONTRAST_RADIO_COMMON:
                 return OpenCvImageUtil.convertThreshod(bitmap);
 
-            case ConstantsUtil.CONTRAST_RADIO_STRONG:
+            case Constants.CONTRAST_RADIO_STRONG:
                 return OpenCvImageUtil.convertThreshodOTSU(bitmap);
 
             default:

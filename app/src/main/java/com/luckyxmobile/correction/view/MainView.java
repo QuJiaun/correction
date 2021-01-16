@@ -4,13 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.luckyxmobile.correction.model.bean.Book;
+import com.luckyxmobile.correction.model.bean.Topic;
 
 import java.util.List;
 
-public interface IMainView {
+public interface MainView {
 
 
-    void setHeadBookList(List<Book> bookList);
+    void setHeadBookRv(List<Book> bookList);
+
+    void setRecentTopicRv(List<Topic> topicList);
 
     /**
      * 完成错题本的添加后

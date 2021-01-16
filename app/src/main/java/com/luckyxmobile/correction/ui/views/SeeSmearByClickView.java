@@ -13,7 +13,7 @@ import android.view.View;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.ui.activity.TopicViewPageActivity;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.FastJsonUtil;
 import com.luckyxmobile.correction.utils.OpenCvImageUtil;
 import com.luckyxmobile.correction.utils.ImageUtil;
@@ -273,7 +273,7 @@ public class SeeSmearByClickView extends View {
             for (Point p: imageSmear.getSmearPoints()){
                 if (Math.abs(p.x-point.x)< imageSmear.getBrushWidth()
                         && Math.abs(p.y-point.y)< imageSmear.getBrushWidth()){
-                    String[] which = {ConstantsUtil.PAINT_WHITE_OUT,ConstantsUtil.PAINT_ERASE};
+                    String[] which = {Constants.PAINT_WHITE_OUT, Constants.PAINT_ERASE};
                     //排除橡皮擦/涂改液
                     if (!imageSmear.getWhichSmear().equals(which[0]) && !imageSmear.getWhichSmear().equals(which[1])){
                         return true;

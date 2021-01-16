@@ -17,7 +17,7 @@ import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.ui.activity.PaperDetailActivity;
 import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.ImageUtil;
 import com.like.LikeButton;
 import org.litepal.LitePal;
@@ -185,9 +185,9 @@ public class PaperDetailAdapter extends RecyclerView.Adapter<PaperDetailAdapter.
                 public void onClick(View v) {
                     //跳转到题目详情页面 并传递该题id
                     Intent intent = new Intent(mContext, TopicInfoActivity.class);
-                    intent.putExtra(ConstantsUtil.TOPIC_ID, topics.get(getAdapterPosition()).getId());
-                    intent.putExtra(ConstantsUtil.TOOLBAR_NAME, paperName);
-                    intent.putExtra(ConstantsUtil.WHICH_ACTIVITY, PaperDetailActivity.TAG);
+                    intent.putExtra(Constants.TOPIC_ID, topics.get(getAdapterPosition()).getId());
+                    intent.putExtra(Constants.TOOLBAR_NAME, paperName);
+                    intent.putExtra(Constants.WHICH_ACTIVITY, PaperDetailActivity.TAG);
                     mContext.startActivity(intent);
                 }
             });

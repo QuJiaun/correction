@@ -16,7 +16,7 @@ import com.bumptech.glide.request.target.Target;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.FastJsonUtil;
 import com.luckyxmobile.correction.utils.OpenCvImageUtil;
 import com.luckyxmobile.correction.utils.ImageUtil;
@@ -90,7 +90,7 @@ public class TopicErrorCauseAdapter extends RecyclerView.Adapter<TopicErrorCause
         try {
             contrastRadio = topicImagesHighlighter.getImageContrastRadioList().get(position);
         }catch (Exception e){
-            contrastRadio = ConstantsUtil.CONTRAST_RADIO_COMMON;
+            contrastRadio = Constants.CONTRAST_RADIO_COMMON;
         }
 
         Bitmap bitmap = OpenCvImageUtil.setImageContrastRadioByPath(contrastRadio,imagesPath.get(position));

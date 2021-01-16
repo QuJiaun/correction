@@ -27,11 +27,9 @@ import com.like.LikeButton;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
-import com.luckyxmobile.correction.model.impl.CorrectionLab;
 import com.luckyxmobile.correction.model.impl.TagDaoImpl;
-import com.luckyxmobile.correction.model.impl.TopicDaoImpl;
 import com.luckyxmobile.correction.ui.activity.TopicViewPageActivity;
-import com.luckyxmobile.correction.utils.ConstantsUtil;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.ImageTask;
 import com.luckyxmobile.correction.utils.ImageUtil;
 import com.luckyxmobile.correction.utils.impl.FilesUtils;
@@ -86,8 +84,8 @@ public class BookDetailAdapter extends RecyclerView.Adapter<BookDetailAdapter.Vi
         this.topics = topics;
         this.topicsFilter = topics;
         this.book_id = book_id;
-        preferences = context.getSharedPreferences(ConstantsUtil.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
-        String s = preferences.getString(ConstantsUtil.TABLE_SHOW_SMEAR,"");
+        preferences = context.getSharedPreferences(Constants.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
+        String s = preferences.getString(Constants.TABLE_SHOW_SMEAR,"");
         List<String> whichShowPrint;
         if (TextUtils.isEmpty(s)){
             whichShowPrint = new ArrayList<>();
@@ -252,8 +250,8 @@ public class BookDetailAdapter extends RecyclerView.Adapter<BookDetailAdapter.Vi
                 public void onClick(View view) {
                     if (!mShowDelete){
                         Intent intent = new Intent(mContext, TopicViewPageActivity.class);
-                        intent.putExtra(ConstantsUtil.BOOK_ID, book_id);
-                        intent.putExtra(ConstantsUtil.TOPIC_POSITION, findPositionByFilter(getAdapterPosition()));
+                        intent.putExtra(Constants.BOOK_ID, book_id);
+                        intent.putExtra(Constants.TOPIC_POSITION, findPositionByFilter(getAdapterPosition()));
                         mContext.startActivity(intent);
                     }else{
                         if (TopicDaoImpl.isTopicsContainTopic(topicsDelete,topicsFilter.get(getAdapterPosition()))){
