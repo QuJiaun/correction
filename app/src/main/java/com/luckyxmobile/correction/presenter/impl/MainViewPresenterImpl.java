@@ -93,7 +93,7 @@ public class MainViewPresenterImpl implements OnBookFinishedListener, MainViewPr
      */
     public void alterBookCoverPath(String path){
         if (bookInfoDialog != null){//修改错题本封面
-            bookInfoDialog.setBookCoverView(path);
+            bookInfoDialog.setBookCover(path);
         }
     }
 
@@ -120,7 +120,7 @@ public class MainViewPresenterImpl implements OnBookFinishedListener, MainViewPr
         bookInfoDialog = getBookInfoDialog();
 
         bookInfoDialog.setBookName(book.getBook_name())
-        .setBookCoverView(book.getBook_cover());
+        .setBookCover(book.getBook_cover());
 
         bookInfoDialog.setPositiveButton(R.string.ensure, (dialogInterface, i) -> {
             if(bookInfoDialog.getBookName() == null){//错题本名字为空

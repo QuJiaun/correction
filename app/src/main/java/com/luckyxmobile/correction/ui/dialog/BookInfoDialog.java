@@ -1,7 +1,8 @@
 package com.luckyxmobile.correction.ui.dialog;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -10,23 +11,25 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luckyxmobile.correction.R;
-import com.luckyxmobile.correction.view.BookInfoView;
+import com.luckyxmobile.correction.model.bean.Book;
 
-public class BookInfoDialog extends AlertDialog.Builder implements BookInfoView {
+
+import androidx.annotation.NonNull;
+
+public class BookInfoDialog extends AlertDialog.Builder {
 
     private final ImageButton alterBookCoverBtn;
-    private final ImageButton deleteBookCoverBtn;
-    private final ImageView bookCoverView;
-    private final EditText bookNameEt;
-    private final TextView bookNameNum;
-    private String bookName = null, bookCoverPath = "default";
+    private ImageButton deleteBookCoverBtn;
+    private ImageView bookCoverView;
+    private EditText bookNameEt;
+    private TextView bookNameNum;
+    private String bookCoverPath = "default";
 
-    public BookInfoDialog(Context context){
-        super(context);
+    public BookInfoDialog(Activity activity){
+        super(activity);
 
         View view =  LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_book,null);
         setView(view);
@@ -37,15 +40,16 @@ public class BookInfoDialog extends AlertDialog.Builder implements BookInfoView 
         bookNameNum = view.findViewById(R.id.bookNameEdtNum);
         deleteBookCoverBtn = view.findViewById(R.id.delete_book_cover);
 
+        setNegativeButton(R.string.cancel, null);
+
         deleteBookCoverBtn.setOnClickListener(view1 -> {
-            setBookCoverView(null);
+            setBookCover(null);
         });
 
         //输入框字数提示和限制
         bookNameEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                bookName = bookNameEt.getText().toString();
                 bookNameNum.setText(s.length()+"/10");
             }
 
@@ -55,19 +59,38 @@ public class BookInfoDialog extends AlertDialog.Builder implements BookInfoView 
 
             @Override
             public void afterTextChanged(Editable s) {
-                bookName = bookNameEt.getText().toString();
                 bookNameNum.setText(s.length()+"/10");
             }
         });
 
     }
 
-    public ImageButton getAlterBookCoverBtn() {
-        return alterBookCoverBtn;
+    public BookInfoDialog build() {
+        return build(null);
     }
 
-    @Override
-    public void setBookCoverView(String path) {
+    public BookInfoDialog build(Book book) {
+        if (book != null) {
+            setBookName(book.getName());
+            setBookCover(book.getCover());
+        } else {
+            setBookName("");
+            setBookCover("default");
+        }
+
+        return this;
+    }
+
+    public void setAlterCoverButton(View.OnClickListener listener) {
+        alterBookCoverBtn.setOnClickListener(listener);
+    }
+
+
+    public void alterBookCover(String path) {
+        setBookCover(path);
+    }
+
+    private void setBookCover(String path) {
         if (path == null || "".equals(path) || "default".equals(path)){
             bookCoverPath = "default";
             deleteBookCoverBtn.setVisibility(View.GONE);
@@ -84,35 +107,16 @@ public class BookInfoDialog extends AlertDialog.Builder implements BookInfoView 
 
     }
 
-    @Override
-    public BookInfoView setBookName(String name) {
-        bookName = name == null ? "":name;
-        bookNameEt.setText(bookName);
-        bookNameNum.setText(String.format("%d/10", bookName.length()));
-        return this;
+    private void setBookName(@NonNull String name) {
+        bookNameEt.setText(name);
+        bookNameNum.setText(name.length() + "/10");
     }
 
-    @Override
-    public BookInfoDialog build() {
-        if(bookName == null) setBookName("");
-        if(bookCoverPath == null) setBookCoverView("default");
-        return this;
-    }
-
-    @Override
     public String getBookName() {
-        bookName = bookNameEt.getText().toString().trim();
-        if ("".equals(bookName)) bookName = null;
-        return bookName;
+        return bookNameEt.getText().toString();
     }
 
-    @Override
     public String getBookCoverPath() {
         return bookCoverPath;
-    }
-
-    @Override
-    public void onFailToast(String log) {
-        Toast.makeText(getContext(), log, Toast.LENGTH_SHORT).show();
     }
 }

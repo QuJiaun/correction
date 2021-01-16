@@ -1,22 +1,15 @@
 package com.luckyxmobile.correction.ui.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
+
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.HeadBookAdapter;
 import com.luckyxmobile.correction.adapter.RecentTopicAdapter;
@@ -36,7 +29,7 @@ import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.presenter.MainViewPresenter;
 import com.luckyxmobile.correction.presenter.impl.MainViewPresenterImpl;
 import com.luckyxmobile.correction.global.Constants;
-import com.luckyxmobile.correction.utils.ImageUtil;
+import com.luckyxmobile.correction.ui.dialog.BookInfoDialog;
 import com.luckyxmobile.correction.utils.impl.PermissionsUtil;
 import com.luckyxmobile.correction.view.MainView;
 
@@ -66,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
     private HeadBookAdapter headBookAdapter;
 
     private RecentTopicAdapter recentTopicAdapter;
+
+    private BookInfoDialog bookInfoDialog;
 
     private MainViewPresenter mainViewPresenter;
 
@@ -123,17 +118,17 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
 
     private void initView() {
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView addBookBtn = findViewById(R.id.add_book_main);
+        setSupportActionBar(findViewById(R.id.toolbar));
+
+        findViewById(R.id.add_book_main).setOnClickListener(this);
+
         recentTopicTv = findViewById(R.id.tv_recent_topic);
 
-        addBookBtn.setOnClickListener(this);
-
-        setSupportActionBar(toolbar);
+        bookInfoDialog = new BookInfoDialog(this);
+        bookInfoDialog.setAlterCoverButton(this);
 
         //初始化裁剪框
         SmartCropper.buildImageDetector(this);
-
     }
 
     @Override
@@ -201,6 +196,10 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
                 //TODO:打开相机
                 break;
 
+            case R.id.alter_cover_image:
+                //TODO：dialog 修改bookCover
+                break;
+
             default:
                 break;
         }
@@ -260,12 +259,6 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
     }
 
     @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        super.startActivityForResult(intent, requestCode);
-    }
-
-
-    @Override
     public void onBookClickListener(Book book) {
         //防止多次点击
         if (System.currentTimeMillis() - lastClickTime < Constants.MIN_CLICK_DELAY_TIME){
@@ -291,17 +284,13 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
 
     @Override
     public void onBookMenuAlter(Book book) {
-        //修改错题本 调用presenter层 修改错题本
-        mainViewPresenter.alterBookInfo(book);
-    }
+        bookInfoDialog.build(book)
+            .setPositiveButton(R.string.ensure, (dialogInterface, i) -> {
+                if(TextUtils.isEmpty(bookInfoDialog.getBookName())){
 
-    @Override
-    public void onBookMenuClickListener(int menuPosition, Book book) {
-        if (menuPosition == HeadBookAdapter.MENU_DELETE) {
+                }else{//调用model层，在数据库修改错题本
 
-
-        } else if (menuPosition == HeadBookAdapter.MENU_BOOK_INFO) {
-
-        }
+                }
+            }).show();
     }
 }
