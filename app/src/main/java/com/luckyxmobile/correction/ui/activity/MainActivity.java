@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.add_book_main:
-                mainViewPresenter.addBook();
+                addBook();
                 break;
 
             case R.id.floating_button_add_topic:
@@ -203,6 +203,17 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
             default:
                 break;
         }
+    }
+
+    private void addBook() {
+        bookInfoDialog.build().setPositiveButton(R.string.ensure, (dialog, which) -> {
+            Book book = bookInfoDialog.getBookInfo();
+            if(TextUtils.isEmpty(book.getName())){
+                onToast(getString(R.string.empty_input));
+            }else{
+                mainViewPresenter.addBook(book);
+            }
+        }).show();
     }
 
     /**
@@ -286,11 +297,16 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
     public void onBookMenuAlter(Book book) {
         bookInfoDialog.build(book)
             .setPositiveButton(R.string.ensure, (dialogInterface, i) -> {
-                if(TextUtils.isEmpty(bookInfoDialog.getBookName())){
-
-                }else{//调用model层，在数据库修改错题本
-
+                if(TextUtils.isEmpty(bookInfoDialog.getBookInfo().getName())){
+                    onToast(getString(R.string.empty_input));
+                }else{
+                    //TODO 调用model层，在数据库修改错题本
+                    mainViewPresenter.alterBookInfo(bookInfoDialog.getBookInfo());
                 }
             }).show();
+    }
+
+    private void onToast(String log) {
+        Toast.makeText(this, log, Toast.LENGTH_SHORT).show();
     }
 }

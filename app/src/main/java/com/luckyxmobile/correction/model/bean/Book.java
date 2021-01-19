@@ -23,6 +23,8 @@ public class Book extends LitePalSupport {
 
     private Date create_date;
 
+    public Book() {}
+
     public Book(@NonNull String name) {
         setName(name);
         setCreate_date(new Date(System.currentTimeMillis()));

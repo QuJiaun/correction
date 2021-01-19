@@ -26,7 +26,7 @@ public class BookInfoDialog extends AlertDialog.Builder {
     private ImageView bookCoverView;
     private EditText bookNameEt;
     private TextView bookNameNum;
-    private String bookCoverPath = "default";
+    private Book book;
 
     public BookInfoDialog(Activity activity){
         super(activity);
@@ -43,7 +43,7 @@ public class BookInfoDialog extends AlertDialog.Builder {
         setNegativeButton(R.string.cancel, null);
 
         deleteBookCoverBtn.setOnClickListener(view1 -> {
-            setBookCover(null);
+            alterBookCover(null);
         });
 
         //输入框字数提示和限制
@@ -59,6 +59,7 @@ public class BookInfoDialog extends AlertDialog.Builder {
 
             @Override
             public void afterTextChanged(Editable s) {
+                book.setName(bookNameEt.getText().toString());
                 bookNameNum.setText(s.length()+"/10");
             }
         });
@@ -66,18 +67,14 @@ public class BookInfoDialog extends AlertDialog.Builder {
     }
 
     public BookInfoDialog build() {
-        return build(null);
+        this.book = new Book();
+        return this;
     }
 
     public BookInfoDialog build(Book book) {
-        if (book != null) {
-            setBookName(book.getName());
-            setBookCover(book.getCover());
-        } else {
-            setBookName("");
-            setBookCover("default");
-        }
-
+        this.book = book;
+        setBookCover();
+        setBookNameEt();
         return this;
     }
 
@@ -85,21 +82,27 @@ public class BookInfoDialog extends AlertDialog.Builder {
         alterBookCoverBtn.setOnClickListener(listener);
     }
 
-
     public void alterBookCover(String path) {
-        setBookCover(path);
+        if (path == null || path.isEmpty()) {
+           path = "default";
+        }
+        book.setCover(path);
+        setBookCover();
     }
 
-    private void setBookCover(String path) {
-        if (path == null || "".equals(path) || "default".equals(path)){
-            bookCoverPath = "default";
+    public Book getBookInfo() {
+        return book;
+    }
+
+    private void setBookCover() {
+
+        if ("default".equals(book.getCover())){
             deleteBookCoverBtn.setVisibility(View.GONE);
         }else{
-            bookCoverPath = path;
             deleteBookCoverBtn.setVisibility(View.VISIBLE);
         }
 
-        Glide.with(getContext()).load(bookCoverPath)
+        Glide.with(getContext()).load(book.getCover())
                 .placeholder(R.drawable.correction_book)
                 .skipMemoryCache(true) // 不使用内存缓存
                 .diskCacheStrategy(DiskCacheStrategy.NONE) // 不使用磁盘缓存
@@ -107,16 +110,8 @@ public class BookInfoDialog extends AlertDialog.Builder {
 
     }
 
-    private void setBookName(@NonNull String name) {
-        bookNameEt.setText(name);
-        bookNameNum.setText(name.length() + "/10");
-    }
-
-    public String getBookName() {
-        return bookNameEt.getText().toString();
-    }
-
-    public String getBookCoverPath() {
-        return bookCoverPath;
+    private void setBookNameEt() {
+        bookNameEt.setText(book.getName());
+        bookNameNum.setText(book.getName().length() + "/10");
     }
 }

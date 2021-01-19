@@ -7,7 +7,7 @@ public interface MainViewPresenter {
     /**
      * 添加错题本：弹出添加dialog进行操作
      */
-    void addBook();
+    void addBook(Book book);
 
     void alterBookInfo(Book book);
 

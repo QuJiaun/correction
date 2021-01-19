@@ -104,23 +104,23 @@
     <string name="white_out">White-Out</string>
     <string name="tag_num_warn">Number of tags reached the limit.</string>
     <string name="initial_width">Initial width : </string>
-<!--    <string name="title_activity_settings">Settings</string>-->
+    <!--    <string name="title_activity_settings">Settings</string>-->
 
-<!--    &lt;!&ndash; Preference Titles &ndash;&gt;-->
-<!--    <string name="messages_header">Messages</string>-->
-<!--    <string name="sync_header">Sync</string>-->
+    <!--    &lt;!&ndash; Preference Titles &ndash;&gt;-->
+    <!--    <string name="messages_header">Messages</string>-->
+    <!--    <string name="sync_header">Sync</string>-->
 
-<!--    &lt;!&ndash; Messages Preferences &ndash;&gt;-->
-<!--    <string name="signature_title">Your signature</string>-->
-<!--    <string name="reply_title">Default reply action</string>-->
+    <!--    &lt;!&ndash; Messages Preferences &ndash;&gt;-->
+    <!--    <string name="signature_title">Your signature</string>-->
+    <!--    <string name="reply_title">Default reply action</string>-->
 
-<!--    &lt;!&ndash; Sync Preferences &ndash;&gt;-->
-<!--    <string name="sync_title">Sync email periodically</string>-->
-<!--    <string name="attachment_title">Download incoming attachments</string>-->
-<!--    <string name="attachment_summary_on">Automatically download attachments for incoming emails-->
-<!--    </string>-->
-<!--    <string name="attachment_summary_off">Only download attachments when manually requested</string>-->
-<!--    <string name="title_activity_settings2">Settings2</string>-->
+    <!--    &lt;!&ndash; Sync Preferences &ndash;&gt;-->
+    <!--    <string name="sync_title">Sync email periodically</string>-->
+    <!--    <string name="attachment_title">Download incoming attachments</string>-->
+    <!--    <string name="attachment_summary_on">Automatically download attachments for incoming emails-->
+    <!--    </string>-->
+    <!--    <string name="attachment_summary_off">Only download attachments when manually requested</string>-->
+    <!--    <string name="title_activity_settings2">Settings2</string>-->
     <string name="show_translucency">Display in translucency</string>
     <string name="view_topics_full_screen">Enter full screen mode when viewing questions</string>
     <string name="view_topics_display_tags">Show tags when viewing questions</string>
