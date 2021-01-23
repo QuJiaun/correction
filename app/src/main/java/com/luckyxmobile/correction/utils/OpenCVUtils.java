@@ -26,7 +26,7 @@ import java.util.List;
  * @date 2019年8月8日
  * 用于opencv图像处理工具类
  */
-public class OpenCvImageUtil {
+public class OpenCVUtils {
     /**
      * 转换图片为灰色
      *
@@ -124,19 +124,19 @@ public class OpenCvImageUtil {
     }
 
 
-    public static Bitmap setImageContrastRadioByPath(String contrastRadio,String imagePath){
+    public static Bitmap setImageContrastRadioByPath(int contrastRadio,String imagePath){
 
         Bitmap bitmap = ImageUtil.getBitmapByImagePath(imagePath);
 
         switch(contrastRadio){
             case Constants.CONTRAST_RADIO_WEAK:
-                return  OpenCvImageUtil.convertBlurThreshod(bitmap);
+                return  OpenCVUtils.convertBlurThreshod(bitmap);
 
             case Constants.CONTRAST_RADIO_COMMON:
-                return OpenCvImageUtil.convertThreshod(bitmap);
+                return OpenCVUtils.convertThreshod(bitmap);
 
             case Constants.CONTRAST_RADIO_STRONG:
-                return OpenCvImageUtil.convertThreshodOTSU(bitmap);
+                return OpenCVUtils.convertThreshodOTSU(bitmap);
 
             default:
                 break;

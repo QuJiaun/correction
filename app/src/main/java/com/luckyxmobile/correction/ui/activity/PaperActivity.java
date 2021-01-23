@@ -244,7 +244,7 @@ public class PaperActivity extends AppCompatActivity{
         AlertDialog.Builder dialog = new AlertDialog.Builder(PaperActivity.this);
         View view = LayoutInflater.from(PaperActivity.this).inflate(R.layout.dialog_add_paper,null);
         dialog.setView(view);
-        final EditText inputText = view.findViewById(R.id.add_page_text);
+        final EditText inputText = view.findViewById(R.id.add_topic_text);
         final TextView inputTextNum = (TextView) view.findViewById(R.id.add_page_text_hint);
         inputText.setText(paper.getPaper_name());
         inputText.setSelection(paper.getPaper_name().length());
@@ -331,7 +331,7 @@ public class PaperActivity extends AppCompatActivity{
     //添加复习卷
     private void addPaperDialog() {
         View view =  LayoutInflater.from(PaperActivity.this).inflate(R.layout.dialog_add_paper,null);
-        final EditText paperNameEdt = view.findViewById(R.id.add_page_text);
+        final EditText paperNameEdt = view.findViewById(R.id.add_topic_text);
         final TextView paperNameNum = (TextView) view.findViewById(R.id.add_page_text_hint);
 
         //输入框字数提示和限制

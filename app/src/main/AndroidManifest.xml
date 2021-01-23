@@ -15,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.TopicInfoActivity"></activity>
         <activity
             android:name=".ui.activity.SettingsActivity"
             android:label="@string/main_set" />
@@ -49,22 +50,23 @@
 
         <activity android:name=".ui.activity.TopicInfoActivity" />
         <activity android:name=".ui.activity.SearchActivity" />
-        <activity android:name=".ui.activity.CropImageActivity" >
+        <activity android:name=".ui.activity.CropImageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.SetTagActivity" />
-
 
         <receiver
             android:name=".utils.LanguageReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="1000">
-                <action android:name="android.intent.action.LOCALE_CHANGED"/>
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
             </intent-filter>
         </receiver>
     </application>

@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class OpenCvImageUtilTest {
+public class OpenCVUtilsTest {
 
     private static final String TAG = "ImageUtilTest";
 
@@ -24,7 +24,7 @@ public class OpenCvImageUtilTest {
             Log.e(TAG, "Cannot connect to OpenCV Manager");
         }
 
-        Bitmap bitmap = OpenCvImageUtil.file2Bitmap(PdfUtilsTestTest.getImagePath());
+        Bitmap bitmap = OpenCVUtils.file2Bitmap(PdfUtilsTestTest.getImagePath());
 
 //        byte pixels[] = new byte[bitmap1.getWidth() * bitmap1.getHeight() * 4];
 //

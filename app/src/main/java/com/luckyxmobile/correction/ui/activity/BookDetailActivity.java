@@ -427,7 +427,7 @@ public class BookDetailActivity extends AppCompatActivity {
             editor.apply();
         }
         startActivityForResult(CropImageActivity.getJumpIntent(BookDetailActivity.this, MainActivity.TAG,
-                fromAlbum, Constants.IMAGE_ORIGINAL,true,true,-1), Constants.REQUEST_CODE);
+                fromAlbum, Constants.TOPIC_STEM,true,true,-1), Constants.REQUEST_CODE);
 
         DestroyActivityUtil.addDestroyActivityToMap(BookDetailActivity.this,MainActivity.TAG);
 

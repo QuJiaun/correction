@@ -11,15 +11,15 @@
 
     <ImageView
         android:id="@+id/item_topic_image"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
         android:background="@color/colorWhite"
-        android:adjustViewBounds="true"
         tools:ignore="ContentDescription" />
 
     <ImageView
-        android:id="@+id/item_topic_image_delete"
+        android:id="@+id/item_remove_topic_image"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_gravity="end|top"

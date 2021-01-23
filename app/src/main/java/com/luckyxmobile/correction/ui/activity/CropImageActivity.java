@@ -104,7 +104,7 @@ public class CropImageActivity extends AppCompatActivity implements View.OnClick
             ContentResolver contentResolver = getContentResolver();
             Uri bmpUri = exterUri;
             try {
-                imageType = Constants.IMAGE_ORIGINAL;
+                imageType = Constants.TOPIC_STEM;
                 whichActivity = MainActivity.TAG;
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;

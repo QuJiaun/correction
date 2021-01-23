@@ -1,6 +1,6 @@
 package com.luckyxmobile.correction.global;
 
-import com.luckyxmobile.correction.model.bean.TopicImage;
+import com.luckyxmobile.correction.R;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -50,13 +50,13 @@ public class Constants {
     public static final  int IMAGE_BOOK_COVER = 0x101;
 
     //topic_image
-    public static final int IMAGE_ORIGINAL = 0x201;
-    public static final int IMAGE_RIGHT = 0x202;
-    public static final int IMAGE_ERROR = 0x203;
-    public static final int IMAGE_POINT = 0x204;
-    public static final int IMAGE_REASON = 0x205;
+    public static final int TOPIC_STEM = R.string.stem;
+    public static final int TOPIC_CORRECT = R.string.correct;
+    public static final int TOPIC_INCORRECT = R.string.incorrect;
+    public static final int TOPIC_KEY = R.string.key;
+    public static final int TOPIC_CAUSE = R.string.cause;
 
-    @IntDef({IMAGE_ORIGINAL, IMAGE_RIGHT, IMAGE_ERROR, IMAGE_POINT, IMAGE_REASON})
+    @IntDef({TOPIC_STEM, TOPIC_CORRECT, TOPIC_INCORRECT, TOPIC_KEY, TOPIC_CAUSE})
     @Target({ElementType.PARAMETER, ElementType.FIELD})
     @Retention(RetentionPolicy.SOURCE)
     public @interface TopicImageType {

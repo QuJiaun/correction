@@ -3,8 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/topic_menu_edit"
-        android:title="@string/edit"
-        app:showAsAction="always" />
+        android:id="@+id/topic_menu_like"
+        android:title="@string/collect"
+        android:icon="@drawable/like_button_status"
+        android:checked="false"
+        android:checkable="true"
+        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/topic_menu_add_text"
+        android:title="@string/add_text"
+        android:icon="@drawable/ic_text_fields_24"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/topic_menu_add_camera"
+        android:title="@string/add_picture_camera"
+        android:icon="@drawable/ic_camera_orange_24dp"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/topic_menu_add_album"
+        android:title="@string/add_picture_album"
+        android:icon="@drawable/ic_album_orange_24dp"
+        app:showAsAction="never"/>
+
+
+
+    <item android:id="@+id/topic_menu_show_original"
+        android:title="@string/show_original_images"
+        app:showAsAction="never"/>
 
 </menu>

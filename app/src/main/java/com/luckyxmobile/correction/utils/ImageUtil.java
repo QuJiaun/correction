@@ -211,7 +211,7 @@ public class ImageUtil implements IImage{
     public static Bitmap resizeBitmapByImageWordSize(Bitmap bitmap,int wordSize){
         int newWidth,newHeight;
         if (wordSize <= 0){
-            wordSize = OpenCvImageUtil.calculateImageWordSize(bitmap);
+            wordSize = OpenCVUtils.calculateImageWordSize(bitmap);
         }
         //25是打印时要求的文字大小
         newHeight = 25*bitmap.getHeight()/wordSize;
@@ -297,7 +297,7 @@ public class ImageUtil implements IImage{
             whichs.add("no_path");
         }
 
-        Bitmap bgBitmap = OpenCvImageUtil.setImageContrastRadioByPath(contrastRadio,imagePath);
+        Bitmap bgBitmap = OpenCVUtils.setImageContrastRadioByPath(contrastRadio,imagePath);
         Bitmap fgBitmap = Bitmap.createBitmap(bgBitmap.getWidth(),bgBitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(fgBitmap);
         canvas.drawBitmap(bgBitmap,0,0,null);

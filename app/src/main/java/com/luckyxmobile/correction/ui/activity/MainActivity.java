@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
 
     private void initView() {
 
-        setSupportActionBar(findViewById(R.id.toolbar));
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         findViewById(R.id.add_book_main).setOnClickListener(this);
 
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         bookInfoDialog.build(book)
             .setPositiveButton(R.string.ensure, (dialogInterface, i) -> {
                 if(TextUtils.isEmpty(bookInfoDialog.getBookName())){
-
+                    Toast.makeText(this, getString(R.string.empty_input), Toast.LENGTH_SHORT).show();
                 }else{//调用model层，在数据库修改错题本
 
                 }

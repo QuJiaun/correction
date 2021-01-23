@@ -20,6 +20,7 @@
     <string name="key">考点</string>
     <string name="cause">错误原因</string>
     <string name="topic_details">题目详情</string>
+    <string name="add_image">添加图片</string>
     <string name="add_picture_camera">添加图片(拍照)</string>
     <string name="add_picture_album">添加图片(相册)</string>
     <string name="add_text">添加文字</string>

@@ -18,7 +18,7 @@ import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.FastJsonUtil;
-import com.luckyxmobile.correction.utils.OpenCvImageUtil;
+import com.luckyxmobile.correction.utils.OpenCVUtils;
 import com.luckyxmobile.correction.utils.ImageUtil;
 
 import org.litepal.LitePal;
@@ -93,7 +93,7 @@ public class TopicErrorAdapter extends RecyclerView.Adapter<TopicErrorAdapter.Vi
             contrastRadio = Constants.CONTRAST_RADIO_COMMON;
         }
 
-        Bitmap bitmap = OpenCvImageUtil.setImageContrastRadioByPath(contrastRadio,imagesPath.get(position));
+        Bitmap bitmap = OpenCVUtils.setImageContrastRadioByPath(contrastRadio,imagesPath.get(position));
 
         if (isPrimitiveImage){
             bitmap = ImageUtil.getBitmapByImagePath(imagesPath.get(position));
@@ -138,7 +138,7 @@ public class TopicErrorAdapter extends RecyclerView.Adapter<TopicErrorAdapter.Vi
             super(itemView);
             frameLayout = itemView.findViewById(R.id.item_topic_image_layout);
             imageView = itemView.findViewById(R.id.item_topic_image);
-            deleteImage = itemView.findViewById(R.id.item_topic_image_delete);
+            deleteImage = itemView.findViewById(R.id.item_remove_topic_image);
 
 
             frameLayout.setOnClickListener(new View.OnClickListener() {
