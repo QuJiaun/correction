@@ -18,7 +18,7 @@ import android.view.View;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.ui.activity.EditPhotoActivity;
 import com.luckyxmobile.correction.global.Constants;
-import com.luckyxmobile.correction.utils.OpenCvImageUtil;
+import com.luckyxmobile.correction.utils.OpenCVUtils;
 import com.luckyxmobile.correction.utils.ImageUtil;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -160,7 +160,7 @@ public class DrawingView extends View {
 
     public void setImageBitmap(String contrastRadio, String imagePath){
 
-        this.mBgBitmap = OpenCvImageUtil.setImageContrastRadioByPath(contrastRadio,imagePath);
+        this.mBgBitmap = OpenCVUtils.setImageContrastRadioByPath(contrastRadio,imagePath);
         this.mFgBitmap = Bitmap.createBitmap(mBgBitmap.getWidth(),mBgBitmap.getHeight(), Bitmap.Config.ARGB_8888);
 
         imageWidth = mBgBitmap.getWidth();

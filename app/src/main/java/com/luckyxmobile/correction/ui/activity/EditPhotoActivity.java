@@ -36,7 +36,7 @@ import com.luckyxmobile.correction.ui.views.DrawingView;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
 import com.luckyxmobile.correction.utils.FastJsonUtil;
-import com.luckyxmobile.correction.utils.OpenCvImageUtil;
+import com.luckyxmobile.correction.utils.OpenCVUtils;
 import com.luckyxmobile.correction.utils.ImageUtil;
 import com.luckyxmobile.correction.utils.impl.FilesUtils;
 
@@ -237,7 +237,7 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
             Log.i(TAG, "旋转:false");
             if (isNewTopicPaints){
                 drawingView.setImageBitmap(whichContrastRadio,imagePath);
-                INITIAL_PAINT_WIDTH = OpenCvImageUtil.calculateImageWordSize(drawingView.getImageBitmap());
+                INITIAL_PAINT_WIDTH = OpenCVUtils.calculateImageWordSize(drawingView.getImageBitmap());
                 drawingView.setImageSmearList(new ArrayList<>());
             }else {
                 INITIAL_PAINT_WIDTH = topicImagesHighlighter.getImageWordSizeList().get(positionImage);

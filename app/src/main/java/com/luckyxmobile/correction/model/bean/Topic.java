@@ -2,6 +2,7 @@ package com.luckyxmobile.correction.model.bean;
 
 import org.litepal.crud.LitePalSupport;
 
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -31,6 +32,8 @@ public class Topic extends LitePalSupport {
      * 文字备注
      */
     private String text;
+
+    private Date create_date;
 
 
     public int getId() {
@@ -65,6 +68,22 @@ public class Topic extends LitePalSupport {
         this.text = text;
     }
 
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public Date getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(Date create_date) {
+        this.create_date = create_date;
+    }
+
     @Override
     public String toString() {
         return "Topic{" +
@@ -73,6 +92,7 @@ public class Topic extends LitePalSupport {
             ", collection=" + collection +
             ", importance=" + importance +
             ", text='" + text + '\'' +
+            ", create_date=" + create_date +
             '}';
     }
 

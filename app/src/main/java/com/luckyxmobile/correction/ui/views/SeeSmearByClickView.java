@@ -15,7 +15,7 @@ import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.ui.activity.TopicViewPageActivity;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.FastJsonUtil;
-import com.luckyxmobile.correction.utils.OpenCvImageUtil;
+import com.luckyxmobile.correction.utils.OpenCVUtils;
 import com.luckyxmobile.correction.utils.ImageUtil;
 import org.litepal.LitePal;
 import java.util.ArrayList;
@@ -95,7 +95,7 @@ public class SeeSmearByClickView extends View {
      * @param imagePath 图片路径
      */
     private void setImageBitmap(String contrastRadio, String imagePath){
-        this.mBgBitmap = OpenCvImageUtil.setImageContrastRadioByPath(contrastRadio,imagePath);
+        this.mBgBitmap = OpenCVUtils.setImageContrastRadioByPath(contrastRadio,imagePath);
         this.mFgBitmap = Bitmap.createBitmap(mBgBitmap.getWidth(),mBgBitmap.getHeight(), Bitmap.Config.ARGB_8888);
         mFgBitmap.eraseColor(getContext().getColor(R.color.black));
         invalidate();

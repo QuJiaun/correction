@@ -134,7 +134,7 @@ public class TopicOriginalAdapter extends RecyclerView.Adapter<TopicOriginalAdap
             super(itemView);
             frameLayout = itemView.findViewById(R.id.item_topic_image_layout);
             imageView = itemView.findViewById(R.id.item_topic_image);
-            deleteImage = itemView.findViewById(R.id.item_topic_image_delete);
+            deleteImage = itemView.findViewById(R.id.item_remove_topic_image);
 
 
             frameLayout.setOnClickListener(new View.OnClickListener() {

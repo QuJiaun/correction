@@ -7,120 +7,100 @@
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/problem_content_toolbar"
+        android:id="@+id/topic_info_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:layout_alignParentTop="true"
         android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        app:title="@string/topic_details"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
+        app:title="@string/app_name"/>
 
-    <LinearLayout
-        android:id="@+id/topic_tool"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/topics_rv"
         android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:layout_below="@id/problem_content_toolbar"
-        android:orientation="horizontal"
-        android:layout_marginBottom="1dp"
-        android:gravity="center"
-        android:background="@color/colorWhite">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"/>
 
-        <com.like.LikeButton
-            android:id="@+id/store_button"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            app:icon_type="heart"
-            app:icon_size="@dimen/common_icon_size"
-            app:is_enabled="true"
-            app:circle_start_color="@color/colorPrimary"
-            app:dots_primary_color="@color/colorAccent"
-            app:dots_secondary_color="@color/colorPrimary"
-            app:circle_end_color="@color/colorAccent"
-            app:anim_scale_factor="2"
-            app:like_drawable="@drawable/ic_favorite_black_24dp"
-            app:unlike_drawable="@drawable/ic_favorite_border_black_24dp"/>
-
-        <CheckBox
-            android:id="@+id/show_original_images"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:padding="4dp"
-            android:button="@null"
-            android:background="@drawable/show_original_images_button"
-            android:text="@string/show_original_images"
-            android:textColor="@color/blue_title"/>
-
-
-        <TextView
-            android:id="@+id/topic_create_date"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:padding="4dp"
-            android:gravity="center|end"
-            android:hint="2020-02-02"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
-
-
-
-    </LinearLayout>
-
-    <ScrollView
+    <include
+        android:id="@+id/topic_text"
+        layout="@layout/dialog_add_text_info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/topic_tool"
-        android:background="@color/black_f5">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topics_rv"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+<!--    <TextView-->
+<!--        android:id="@+id/topic_text"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/topics_rv"-->
+<!--        android:background="@drawable/border_edit_text"-->
+<!--        android:hint="@string/add_text"-->
+<!--        android:textSize="@dimen/topic_paper_text_size"/>-->
 
-            <include
-                layout="@layout/activity_topic_original"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+    <include
+        layout="@layout/activity_topic_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topic_text"
+        android:layout_marginTop="8dp"/>
 
+    <TextView
+        android:id="@+id/topic_create_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="8dp"
+        android:layout_margin="8dp"
+        android:gravity="center|end"
+        android:hint="2020-02-02"/>
 
-            <include
-                layout="@layout/activity_topic_right"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
+<!--    <ScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_below="@id/topic_tool"-->
+<!--        android:background="@color/black_f5">-->
 
-            <include
-                layout="@layout/activity_topic_error"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical">-->
 
-            <include
-                layout="@layout/activity_topic_point"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
+<!--            <include-->
+<!--                layout="@layout/activity_topic_original"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content" />-->
 
-            <include
-                layout="@layout/activity_topic_error_cause"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
+<!--            <ViewStub-->
+<!--                android:layout="@layout/activity_topic_right"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"/>-->
 
-            <include
-                layout="@layout/activity_topic_tag"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
+<!--            <ViewStub-->
+<!--                android:layout="@layout/activity_topic_error"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"/>-->
 
-        </LinearLayout>
+<!--            <ViewStub-->
+<!--                android:layout="@layout/activity_topic_point"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"/>-->
 
-    </ScrollView>
+<!--            <ViewStub-->
+<!--                android:layout="@layout/activity_topic_error_cause"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"/>-->
+
+<!--            <include-->
+<!--                layout="@layout/activity_topic_tag"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"/>-->
+
+<!--        </LinearLayout>-->
+
+<!--    </ScrollView>-->
 
 </RelativeLayout>

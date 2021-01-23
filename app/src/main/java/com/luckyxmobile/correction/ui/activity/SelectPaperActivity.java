@@ -128,7 +128,7 @@ public class SelectPaperActivity extends AppCompatActivity {
 
         //获得控件
         final EditText ReviewPageNameET = (EditText) editReviewPageDialog.
-                findViewById(R.id.add_page_text);
+                findViewById(R.id.add_topic_text);
         final TextView ReviewPageETNum = (TextView) editReviewPageDialog.
                 findViewById(R.id.add_page_text_hint);
         ReviewPageNameET.setHint(R.string.test_page);

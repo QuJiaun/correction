@@ -20,9 +20,10 @@
     <string name="key">Key</string>
     <string name="cause">Cause</string>
     <string name="topic_details">Topic details</string>
-    <string name="add_picture_camera">From camera</string>
-    <string name="add_picture_album">From photos</string>
-    <string name="add_text">Add text</string>
+    <string name="add_image">ADD</string>
+    <string name="add_picture_camera"> + From camera</string>
+    <string name="add_picture_album"> + From photos</string>
+    <string name="add_text"> + Text</string>
 
     <string name="confirm_delete">Confirm</string>
     <string name="ensure">Confirm</string>
