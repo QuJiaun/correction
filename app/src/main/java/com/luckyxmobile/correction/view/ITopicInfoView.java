@@ -11,7 +11,7 @@ public interface ITopicInfoView {
 
     void setTopicTags(List<Tag> tags);
 
-    void addTopicTextFinished(String text);
+    void setTopicTextFinished(String text);
 
     void addTopicImageFinished(TopicImage topicImage);
 }

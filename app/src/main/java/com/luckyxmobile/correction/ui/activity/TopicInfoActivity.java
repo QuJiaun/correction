@@ -1,31 +1,21 @@
 package com.luckyxmobile.correction.ui.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.TopicInfoAdapter;
 import com.luckyxmobile.correction.adapter.TopicTagAdapter;
@@ -33,57 +23,19 @@ import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.global.Constants;
-import com.luckyxmobile.correction.utils.ImageUtil;
 import com.luckyxmobile.correction.view.ITopicInfoView;
-import com.youth.banner.Banner;
-import com.youth.banner.loader.ImageLoader;
 import com.zhy.view.flowlayout.TagFlowLayout;
 import org.litepal.LitePal;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * @author rfa
- * 错题详情界面
- *
- * LiuGen
- *  2019/07/24
- * 关于错题详情页面的信息筛选显示，修改按钮的优化
- *
- * @date 2019/07/30
- * 当前存在问题：
- * 1.点击查看大图
- * 2.图片显示——长图被压缩，短图被拉伸，效果不好
- * 3.从数据库读出原有文字描述回显的添加文字描述的对话框
- * 4.光标显示移动到文本末端
- * 5.活动的进入方式
- *
- * 2019/08/08
- * 当前存在的问题：
- * 如果拍摄的图片过小，在该页面显示的时候，
- * 图片会被不等比例拉伸，显示出来比较难看
- *
- * 2019/07/31
- * @author lg
- * 题目详情页面查看时默认隐藏工具栏
- *
- * 2019/08/28
- * @author qjj
- * 每个模块显示多张图片（recyclerView），规整代码（将topic进行唯一化）
- *
- * @date 2020/02/08
- * @author qjj
- * 规整
- */
 
 @SuppressLint("NonConstantResourceId")
 public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoView ,
@@ -175,7 +127,7 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
     }
 
     @Override
-    public void addTopicTextFinished(String text) {
+    public void setTopicTextFinished(String text) {
         if (TextUtils.isEmpty(text)) {
             topicTextLayout.setVisibility(View.GONE);
             topicEditText.setText("");
