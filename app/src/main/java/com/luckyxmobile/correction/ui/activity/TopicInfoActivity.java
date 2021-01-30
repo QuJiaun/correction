@@ -19,10 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.TopicInfoAdapter;
 import com.luckyxmobile.correction.adapter.TopicTagAdapter;
-import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.presenter.TopicInfoViewPresenter;
+import com.luckyxmobile.correction.presenter.impl.TopicInfoViewPresenterImpl;
 import com.luckyxmobile.correction.view.ITopicInfoView;
 import com.zhy.view.flowlayout.TagFlowLayout;
 import org.litepal.LitePal;
@@ -62,16 +63,20 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
 
     private Topic currentTopic;
 
+    private TopicInfoViewPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic);
 
         ButterKnife.bind(this);
+        presenter = new TopicInfoViewPresenterImpl(this);
 
         // 初始化布局
         initView();
 
+        presenter.initTopicInfo(currentTopic);
     }
 
     /**
@@ -113,9 +118,10 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
     }
 
     @Override
-    public void setTopicTags(List<Tag> tags) {
-        TopicTagAdapter tagAdapter = new TopicTagAdapter(tags, currentTopic);
-        tagAdapter.setClickable(false);
+    public void setTopicTags() {
+        TopicTagAdapter tagAdapter = new TopicTagAdapter(null);
+        tagAdapter.setCurTopic(currentTopic);
+        tagAdapter.setItemClickable(false);
         tagAdapter.setShowUnchecked(false);
         tagAdapter.setTextColor(getColor(R.color.white));
         tagLayout.setAdapter(tagAdapter);
@@ -139,7 +145,7 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
 
     @Override
     public void removeTopicImage(TopicImage topicImage) {
-
+        presenter.removeTopicImage(topicImage);
     }
 
     @Override
@@ -182,6 +188,8 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu_topic, menu);
 
+        MenuItem item = findViewById(R.id.topic_menu_like);
+        item.setChecked(currentTopic.isCollection());
         return true;
     }
 
@@ -192,18 +200,24 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
 
         switch (item.getItemId()) {
             case R.id.topic_menu_like:
+                item.setChecked(!item.isChecked());
                 break;
 
             case R.id.topic_menu_add_text:
+                presenter.showTopicTextDialog();
                 break;
 
             case R.id.topic_menu_add_camera:
+
                 break;
 
             case R.id.topic_menu_add_album:
+
                 break;
 
             case R.id.topic_menu_show_original:
+                item.setChecked(!item.isChecked());
+                topicInfoAdapter.setShowOriginalImage(item.isChecked());
                 break;
             default:
                 break;
@@ -219,7 +233,6 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
             if (requestCode == Constants.REQUEST_CODE) {
 
             }
-
         }
     }
 }

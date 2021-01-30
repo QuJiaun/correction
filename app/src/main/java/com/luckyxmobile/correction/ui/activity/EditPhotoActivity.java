@@ -36,7 +36,7 @@ import com.luckyxmobile.correction.ui.views.DrawingView;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
 import com.luckyxmobile.correction.utils.FastJsonUtil;
-import com.luckyxmobile.correction.utils.OpenCVUtils;
+import com.luckyxmobile.correction.utils.OpenCVUtil;
 import com.luckyxmobile.correction.utils.ImageUtil;
 import com.luckyxmobile.correction.utils.impl.FilesUtils;
 
@@ -237,7 +237,7 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
             Log.i(TAG, "旋转:false");
             if (isNewTopicPaints){
                 drawingView.setImageBitmap(whichContrastRadio,imagePath);
-                INITIAL_PAINT_WIDTH = OpenCVUtils.calculateImageWordSize(drawingView.getImageBitmap());
+                INITIAL_PAINT_WIDTH = OpenCVUtil.calculateImageWordSize(drawingView.getImageBitmap());
                 drawingView.setImageSmearList(new ArrayList<>());
             }else {
                 INITIAL_PAINT_WIDTH = topicImagesHighlighter.getImageWordSizeList().get(positionImage);
@@ -521,7 +521,7 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     setWhichBrush(Constants.PAINT_YELLOW,false);
                     setWhichBrush(Constants.PAINT_WHITE_OUT,false);
                     brushRight.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_right,0,0);
-                    brushRight.setTextColor(getColor(R.color.blue_right));
+                    brushRight.setTextColor(getColor(R.color.highlighter_blue));
                 }else{
                     brushRight.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_unchecked,0,0);
                     brushRight.setTextColor(getColor(R.color.gray_9c));
@@ -534,7 +534,7 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     setWhichBrush(Constants.PAINT_YELLOW,false);
                     setWhichBrush(Constants.PAINT_WHITE_OUT,false);
                     brushError.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_error,0,0);
-                    brushError.setTextColor(getColor(R.color.red_error));
+                    brushError.setTextColor(getColor(R.color.highlighter_red));
                 }else{
                     brushError.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_unchecked,0,0);
                     brushError.setTextColor(getColor(R.color.gray_9c));
@@ -547,7 +547,7 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     setWhichBrush(Constants.PAINT_YELLOW,false);
                     setWhichBrush(Constants.PAINT_WHITE_OUT,false);
                     brushPoint.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_point,0,0);
-                    brushPoint.setTextColor(getColor(R.color.green_point));
+                    brushPoint.setTextColor(getColor(R.color.highlighter_green));
                 }else{
                     brushPoint.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_unchecked,0,0);
                     brushPoint.setTextColor(getColor(R.color.gray_9c));
@@ -560,7 +560,7 @@ public class EditPhotoActivity extends AppCompatActivity implements View.OnClick
                     setWhichBrush(Constants.PAINT_GREEN,false);
                     setWhichBrush(Constants.PAINT_WHITE_OUT,false);
                     brushErrorReason.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_error_reason,0,0);
-                    brushErrorReason.setTextColor(getColor(R.color.yellow_reason));
+                    brushErrorReason.setTextColor(getColor(R.color.highlighter_yellow));
                 }else{
                     brushErrorReason.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_paint_unchecked,0,0);
                     brushErrorReason.setTextColor(getColor(R.color.gray_9c));

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.TopicImage;
-import com.luckyxmobile.correction.utils.OpenCVUtils;
+import com.luckyxmobile.correction.utils.OpenCVUtil;
 
 
 import java.util.ArrayList;
@@ -23,9 +23,13 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private final Context context;
+    private boolean isShowOriginalImage = false;
     private final TopicInfoListener listener;
     private final List<Integer> typeList = new ArrayList<>();
     private final Map<Integer, List<TopicImage>> topicMap = new LinkedHashMap<>();
@@ -40,12 +44,16 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             int type = topicImage.getType();
 
             if (!topicMap.containsKey(type)) {
-                topicMap.put(type, new ArrayList<TopicImage>());
+                topicMap.put(type, new ArrayList<>());
             }
             topicMap.get(type).add(topicImage);
         }
     }
 
+    public void setShowOriginalImage(boolean showOriginalImage) {
+        isShowOriginalImage = showOriginalImage;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
@@ -74,11 +82,16 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             TopicImage topicImage = topicMap.get(currentType).get(-type);
 
             TopicInfoHolder viewHolder = (TopicInfoHolder) holder;
-            Glide.with(context).load(
-                OpenCVUtils.setImageContrastRadioByPath(
-                    topicImage.getContrast_radio(), topicImage.getPath()
-                )
-            ).into(viewHolder.topicIv);
+            if (isShowOriginalImage) {
+                Glide.with(context).load(topicImage.getPath()).into(viewHolder.topicIv);
+            } else {
+                Glide.with(context).load(
+                        OpenCVUtil.setImageContrastRadioByPath(
+                                topicImage.getContrast_radio(), topicImage.getPath()
+                        )
+                ).into(viewHolder.topicIv);
+            }
+
 
             viewHolder.removeTopicBtn.setVisibility(isEdit?View.VISIBLE:View.GONE);
 
@@ -129,24 +142,22 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public static class TopicLabelHolder extends RecyclerView.ViewHolder {
 
-        TextView topicLabelTv;
+        @BindView(R.id.item_topic_label) TextView topicLabelTv;
 
-        public TopicLabelHolder(@NonNull View itemView) {
+        TopicLabelHolder(@NonNull View itemView) {
             super(itemView);
-            topicLabelTv = itemView.findViewById(R.id.item_topic_label);
+            ButterKnife.bind(this, itemView);
         }
     }
 
     public static class TopicInfoHolder extends RecyclerView.ViewHolder {
 
-        ImageView topicIv;
-        ImageView removeTopicBtn;
+        @BindView(R.id.item_topic_image) ImageView topicIv;
+        @BindView(R.id.item_remove_topic_image) ImageView removeTopicBtn;
 
-        public TopicInfoHolder(@NonNull View itemView) {
+        TopicInfoHolder(@NonNull View itemView) {
             super(itemView);
-
-            topicIv = itemView.findViewById(R.id.item_topic_image);
-            removeTopicBtn = itemView.findViewById(R.id.item_remove_topic_image);
+            ButterKnife.bind(this, itemView);
         }
     }
 

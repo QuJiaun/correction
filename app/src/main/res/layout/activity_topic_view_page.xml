@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,127 +9,97 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.activity.TopicViewPageActivity">
 
-    <LinearLayout
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/topic_view_pager"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="match_parent"/>
+
+    <com.zhy.view.flowlayout.TagFlowLayout
+        android:id="@+id/topic_view_pager_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toBottomOf=
+            "@id/topic_view_pager_top_bar"/>
+
+    <LinearLayout
+        android:id="@+id/topic_view_pager_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:gravity="center"
         android:orientation="horizontal">
 
-        <com.like.LikeButton
-            android:id="@+id/store_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:background="@color/transparent"
-            app:anim_scale_factor="2"
-            app:circle_end_color="@color/colorAccent"
-            app:dots_primary_color="@color/colorAccent"
-            app:icon_size="@dimen/common_icon_size"
-            app:icon_type="heart"
-            app:is_enabled="true"
-            app:like_drawable="@drawable/ic_favorite_black_24dp"
-            app:unlike_drawable="@drawable/ic_favorite_border_black_24dp" />
+        <ImageButton
+            android:id="@+id/collect_button"
+            android:src="@drawable/like_button_status"
+            style="@style/normal_icon_button"/>
 
-        <View
+        <TextView
+            android:id="@+id/tv_topic_date"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:text="2020-01-01"
+            android:textColor="@color/colorWhite"/>
 
         <ImageButton
-            android:id="@+id/full_screen_btn"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="12dp"
-            android:background="@drawable/ic_fullscreen_24dp" />
+            android:id="@+id/topic_image_edit_btn"
+            android:src="@drawable/ic_edit"
+            style="@style/normal_icon_button"/>
 
         <ImageButton
-            android:id="@+id/edit_image_btn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:padding="12dp"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_edit_white_24dp" />
-
-        <ImageButton
-            android:id="@+id/more_btn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:scaleType="center"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_menu_white_24dp" />
+            android:id="@+id/topic_info_btn"
+            android:src="@drawable/ic_info_24dp"
+            style="@style/normal_icon_button"/>
 
     </LinearLayout>
 
-    <FrameLayout
+    <ProgressBar
+        android:id="@+id/progress_bar_topic_view_page"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="1">
+        android:layout_height="2dp"
+        android:progressDrawable="@drawable/progress_indeterminate_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/topic_view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+<!--    <LinearLayout-->
+<!--        android:id="@+id/topic_view_pager_bottom_bar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="?actionBarSize"-->
+<!--        android:paddingStart="16dp"-->
+<!--        android:paddingEnd="16dp"-->
+<!--        android:gravity="center"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:orientation="horizontal">-->
 
-        <com.zhy.view.flowlayout.TagFlowLayout
-            android:id="@+id/tags"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="top|center"/>
+<!--        <CheckedTextView-->
+<!--            android:text="@string/correct"-->
+<!--            android:singleLine="true"-->
+<!--            style="@style/DisplayHighlighterButton"-->
+<!--            android:background="@drawable/rb_transition_right" />-->
 
-        <com.zhy.view.flowlayout.TagFlowLayout
-            android:id="@+id/num_topic_images"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:tag_gravity="center"
-            android:layout_gravity="bottom|center"/>
+<!--        <CheckedTextView-->
+<!--            android:text="@string/incorrect"-->
+<!--            android:singleLine="true"-->
+<!--            style="@style/DisplayHighlighterButton"-->
+<!--            android:background="@drawable/rb_transition_error" />-->
 
-        <ProgressBar
-            android:id="@+id/progress_bar_topic_view_page"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_gravity="top|center"
-            style="@style/update_progress_horizontal"/>
+<!--        <CheckedTextView-->
+<!--            android:text="@string/key"-->
+<!--            android:singleLine="true"-->
+<!--            style="@style/DisplayHighlighterButton"-->
+<!--            android:background="@drawable/rb_transition_point" />-->
 
-    </FrameLayout>
+<!--        <CheckedTextView-->
+<!--            android:text="@string/cause"-->
+<!--            android:singleLine="true"-->
+<!--            style="@style/DisplayHighlighterButton"-->
+<!--            android:background="@drawable/rb_transition_reason" />-->
 
-    <RadioGroup
-        android:id="@+id/display_what"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+<!--    </LinearLayout>-->
 
-        <RadioButton
-            android:text="@string/display_all"
-            style="@style/NoIconRadioButton"
-            android:background="@drawable/rb_transition_all"/>
-
-        <RadioButton
-            android:text="@string/correct"
-            style="@style/NoIconRadioButton"
-            android:background="@drawable/rb_transition_right" />
-
-        <RadioButton
-            android:text="@string/incorrect"
-            style="@style/NoIconRadioButton"
-            android:background="@drawable/rb_transition_error" />
-
-        <RadioButton
-            android:text="@string/key"
-            style="@style/NoIconRadioButton"
-            android:background="@drawable/rb_transition_point" />
-
-        <RadioButton
-            android:text="@string/cause"
-            style="@style/NoIconRadioButton"
-            android:background="@drawable/rb_transition_reason" />
-
-    </RadioGroup>
-
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,9 +18,9 @@ public class Constants {
     public static final String TABLE_FROM_BOOK_ID = "from_book_id";
     public static final String TABLE_PRINT_PAGE = "print_page";
     public static final String TABLE_SHOW_SMEAR = "show_smear";
-    public static final String TABLE_FULL_SCREEN = "is_full_screen";
-    public static final String TABLE_SHOW_TAG = "is_show_tag";
-    public static final String TABLE_VIEW_SMEAR_BY = "show_smear_by";
+//    public static final String TABLE_FULL_SCREEN = "is_full_screen";
+    public static final String TABLE_SHOW_TAG_IN_TOPIC_VIEW_PAGE = "is_show_tag_in_topic_view_page";
+//    public static final String TABLE_VIEW_SMEAR_BY = "show_smear_by";
     public static final String TABLE_SHOW_SMEAR_MARK = "print_smear_content";
     public static final String TABLE_FROM_FAVORITE = "from_favorite";
 
@@ -76,12 +76,12 @@ public class Constants {
     }
 
     //涂抹工具类型
-    public static final int PAINT_BLUE = 0x220;
-    public static final int PAINT_RED = 0x222;
-    public static final int PAINT_GREEN = 0x223;
-    public static final int PAINT_YELLOW = 0x224;
-    public static final int PAINT_ERASE = 0x225;
-    public static final int PAINT_WHITE_OUT = 0x226;
+    public static final int PAINT_BLUE = R.color.highlighter_blue;
+    public static final int PAINT_RED = R.color.highlighter_red;
+    public static final int PAINT_GREEN = R.color.highlighter_green;
+    public static final int PAINT_YELLOW = R.color.highlighter_yellow;
+    public static final int PAINT_ERASE = R.color.highlighter_erase;
+    public static final int PAINT_WHITE_OUT = R.color.highlighter_white_out;
 
     @IntDef({PAINT_BLUE, PAINT_RED, PAINT_GREEN, PAINT_YELLOW, PAINT_ERASE, PAINT_WHITE_OUT})
     @Target({ElementType.PARAMETER, ElementType.FIELD})

@@ -55,9 +55,15 @@
     <color name="colorText">#9b9b9b</color>
     <color name="tag_check">#00bcd4</color>
 
-    <color name="blue_right">#536dfe</color>
-    <color name="red_error">#FF008A</color>
-    <color name="green_point">#69E147</color>
-    <color name="yellow_reason">#EDFA00</color>
+    <color name="checked_menu_icon">#f7a805</color>
+    <color name="checked_menu_text">#fff</color>
+    <color name="unchecked_menu">#9c9c9c</color>
+
+    <color name="highlighter_blue">#536dfe</color>
+    <color name="highlighter_red">#FF008A</color>
+    <color name="highlighter_green">#69E147</color>
+    <color name="highlighter_yellow">#EDFA00</color>
+    <color name="highlighter_erase">#88000000</color>
+    <color name="highlighter_white_out">#fff</color>
 
 </resources>

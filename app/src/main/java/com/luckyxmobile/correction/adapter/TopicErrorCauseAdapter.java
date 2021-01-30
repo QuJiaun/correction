@@ -18,7 +18,7 @@ import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.FastJsonUtil;
-import com.luckyxmobile.correction.utils.OpenCVUtils;
+import com.luckyxmobile.correction.utils.OpenCVUtil;
 import com.luckyxmobile.correction.utils.ImageUtil;
 
 import org.litepal.LitePal;
@@ -93,7 +93,7 @@ public class TopicErrorCauseAdapter extends RecyclerView.Adapter<TopicErrorCause
             contrastRadio = Constants.CONTRAST_RADIO_COMMON;
         }
 
-        Bitmap bitmap = OpenCVUtils.setImageContrastRadioByPath(contrastRadio,imagesPath.get(position));
+        Bitmap bitmap = OpenCVUtil.setImageContrastRadioByPath(contrastRadio,imagesPath.get(position));
 
         if (isPrimitiveImage){
             bitmap = ImageUtil.getBitmapByImagePath(imagesPath.get(position));

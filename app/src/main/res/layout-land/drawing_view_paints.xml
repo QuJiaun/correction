@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scrollbars="none"
     android:gravity="center"
     android:orientation="vertical">
@@ -25,7 +26,7 @@
                     android:gravity="center"
                     android:button="@null"
                     android:text="@string/correct"
-                    android:textColor="@color/blue_right"
+                    android:textColor="@color/highlighter_blue"
                     android:textSize="@dimen/print_button_text_size"
                     android:drawableTop="@drawable/ic_paint_right"
                     android:background="@color/transparent"

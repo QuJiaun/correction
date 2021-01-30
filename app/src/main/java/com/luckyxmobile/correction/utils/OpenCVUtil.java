@@ -26,7 +26,7 @@ import java.util.List;
  * @date 2019年8月8日
  * 用于opencv图像处理工具类
  */
-public class OpenCVUtils {
+public class OpenCVUtil {
     /**
      * 转换图片为灰色
      *
@@ -130,13 +130,13 @@ public class OpenCVUtils {
 
         switch(contrastRadio){
             case Constants.CONTRAST_RADIO_WEAK:
-                return  OpenCVUtils.convertBlurThreshod(bitmap);
+                return  OpenCVUtil.convertBlurThreshod(bitmap);
 
             case Constants.CONTRAST_RADIO_COMMON:
-                return OpenCVUtils.convertThreshod(bitmap);
+                return OpenCVUtil.convertThreshod(bitmap);
 
             case Constants.CONTRAST_RADIO_STRONG:
-                return OpenCVUtils.convertThreshodOTSU(bitmap);
+                return OpenCVUtil.convertThreshodOTSU(bitmap);
 
             default:
                 break;

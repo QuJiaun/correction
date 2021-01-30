@@ -2,11 +2,20 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <com.luckyxmobile.correction.ui.views.SeeSmearByClickView
+    <com.luckyxmobile.correction.ui.views.ShowHighlighterView
         android:id="@+id/see_paints_click"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <com.zhy.view.flowlayout.TagFlowLayout
+        android:id="@+id/topic_image_num_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_margin="16dp"
+        app:tag_gravity="center"/>
 
 </FrameLayout>

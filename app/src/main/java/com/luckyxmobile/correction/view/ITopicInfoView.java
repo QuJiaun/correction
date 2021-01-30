@@ -9,7 +9,7 @@ public interface ITopicInfoView {
 
     void setTopicImages(List<TopicImage> topicImages);
 
-    void setTopicTags(List<Tag> tags);
+    void setTopicTags();
 
     void setTopicTextFinished(String text);
 

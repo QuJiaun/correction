@@ -211,7 +211,7 @@ public class ImageUtil implements IImage{
     public static Bitmap resizeBitmapByImageWordSize(Bitmap bitmap,int wordSize){
         int newWidth,newHeight;
         if (wordSize <= 0){
-            wordSize = OpenCVUtils.calculateImageWordSize(bitmap);
+            wordSize = OpenCVUtil.calculateImageWordSize(bitmap);
         }
         //25是打印时要求的文字大小
         newHeight = 25*bitmap.getHeight()/wordSize;
@@ -297,7 +297,7 @@ public class ImageUtil implements IImage{
             whichs.add("no_path");
         }
 
-        Bitmap bgBitmap = OpenCVUtils.setImageContrastRadioByPath(contrastRadio,imagePath);
+        Bitmap bgBitmap = OpenCVUtil.setImageContrastRadioByPath(contrastRadio,imagePath);
         Bitmap fgBitmap = Bitmap.createBitmap(bgBitmap.getWidth(),bgBitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(fgBitmap);
         canvas.drawBitmap(bgBitmap,0,0,null);
@@ -362,19 +362,19 @@ public class ImageUtil implements IImage{
         paint.setStrokeCap(Paint.Cap.SQUARE);
         paint.setStrokeJoin(Paint.Join.BEVEL);
 
-        int color = R.color.blue_right;
+        int color = R.color.highlighter_blue;
         switch (whichPaint) {
             case Constants.PAINT_BLUE:
-                color = R.color.blue_right;
+                color = R.color.highlighter_blue;
                 break;
             case Constants.PAINT_RED:
-                color = R.color.red_error;
+                color = R.color.highlighter_red;
                 break;
             case Constants.PAINT_GREEN:
-                color = R.color.green_point;
+                color = R.color.highlighter_green;
                 break;
             case Constants.PAINT_YELLOW:
-                color = R.color.yellow_reason;
+                color = R.color.highlighter_yellow;
                 break;
             case Constants.PAINT_WHITE_OUT:
                 paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));

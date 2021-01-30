@@ -78,8 +78,8 @@
                     android:layout_gravity="end"
                     android:layout_width="@dimen/common_icon_width"
                     android:layout_height="@dimen/common_icon_height"
-                    app:like_drawable="@drawable/ic_favorite_black_24dp"
-                    app:unlike_drawable="@drawable/ic_favorite_border_black_24dp" />
+                    app:like_drawable="@drawable/ic_collect"
+                    app:unlike_drawable="@drawable/ic_uncollect" />
 
             </LinearLayout>
 

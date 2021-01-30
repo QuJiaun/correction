@@ -19,7 +19,7 @@ public class TopicImage extends LitePalSupport {
     /**
      * 绑定唯一的topic
      */
-    private Topic topic;
+    private int topic_id;
 
     /**
      * 图片类型
@@ -44,7 +44,7 @@ public class TopicImage extends LitePalSupport {
     /**
      * 荧光笔涂抹信息
      */
-    private List<Highlighter> highlighterList;
+    private List<Highlighter> highlighterList = new ArrayList<>();
 
     public TopicImage(@Constants.TopicImageType int type) {
         this.type = type;
@@ -98,25 +98,25 @@ public class TopicImage extends LitePalSupport {
         this.highlighterList = highlighterList;
     }
 
-    public Topic getTopic() {
-        return topic;
+    public int getTopic_id() {
+        return topic_id;
     }
 
-    public void setTopic(Topic topic) {
-        this.topic = topic;
+    public void setTopic_id(int topic_id) {
+        this.topic_id = topic_id;
     }
 
     @Override
     public String toString() {
         return "TopicImage{" +
-            "id=" + id +
-            ", topic=" + topic +
-            ", type=" + type +
-            ", path='" + path + '\'' +
-            ", word_size=" + word_size +
-            ", contrast_radio=" + contrast_radio +
-            ", highlighterList=" + highlighterList +
-            '}';
+                "id=" + id +
+                ", topic_id=" + topic_id +
+                ", type=" + type +
+                ", path='" + path + '\'' +
+                ", word_size=" + word_size +
+                ", contrast_radio=" + contrast_radio +
+                ", highlighterList=" + highlighterList +
+                '}';
     }
 
     public static class Highlighter {

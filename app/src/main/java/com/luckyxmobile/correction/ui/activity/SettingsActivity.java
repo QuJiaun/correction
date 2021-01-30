@@ -85,7 +85,7 @@ public class SettingsActivity extends AppCompatActivity{
 
             printSmearPre.setChecked(preferences.getBoolean(Constants.TABLE_SHOW_SMEAR_MARK,false));
 
-            showTagViewPagePre.setChecked(preferences.getBoolean(Constants.TABLE_SHOW_TAG,true));
+            showTagViewPagePre.setChecked(preferences.getBoolean(Constants.TABLE_SHOW_TAG_IN_TOPIC_VIEW_PAGE,true));
 
             fullScreenViewPagePre.setChecked(preferences.getBoolean(Constants.TABLE_FULL_SCREEN,false));
 
@@ -101,7 +101,7 @@ public class SettingsActivity extends AppCompatActivity{
             if (preference==setTagPre){
                 startActivity(new Intent(getActivity(),SetTagActivity.class));
             }else if (preference==showTagViewPagePre){
-                editor.putBoolean(Constants.TABLE_SHOW_TAG,showTagViewPagePre.isChecked());
+                editor.putBoolean(Constants.TABLE_SHOW_TAG_IN_TOPIC_VIEW_PAGE,showTagViewPagePre.isChecked());
                 editor.apply();
             }else if (preference==fullScreenViewPagePre){
                 editor.putBoolean(Constants.TABLE_FULL_SCREEN,fullScreenViewPagePre.isChecked());

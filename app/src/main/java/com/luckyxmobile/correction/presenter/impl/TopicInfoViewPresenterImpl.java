@@ -7,6 +7,8 @@ import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.presenter.TopicInfoViewPresenter;
 import com.luckyxmobile.correction.view.ITopicInfoView;
 
+import org.litepal.LitePal;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,22 +17,20 @@ public class TopicInfoViewPresenterImpl implements TopicInfoViewPresenter {
 
     private ITopicInfoView topicInfoView;
 
-    private Topic currentTopic;
+    private Topic curTopic;
     private List<TopicImage> topicImageList;
 
     public TopicInfoViewPresenterImpl(Context context) {
         this.topicInfoView = (ITopicInfoView) context;
 
-        topicImageList = new ArrayList<>();
-
     }
 
     @Override
     public void initTopicInfo(Topic currentTopic) {
-        this.currentTopic = currentTopic;
+        this.curTopic = currentTopic;
+        topicImageList = LitePal.where("topic_id = ?", curTopic.getId()+"").find(TopicImage.class);
 
-        
-
+        topicInfoView.setTopicImages(topicImageList);
         topicInfoView.setTopicTextFinished(currentTopic.getText());
     }
 
