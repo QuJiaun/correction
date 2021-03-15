@@ -13,8 +13,6 @@
 
         <mapping class="com.luckyxmobile.correction.model.bean.Paper" />
 
-        <mapping class="com.luckyxmobile.correction.model.bean.PaperTopic" />
-
         <mapping class="com.luckyxmobile.correction.model.bean.Tag" />
 
     </list>

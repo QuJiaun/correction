@@ -4,7 +4,7 @@
     <dimen name="text_body_size">15sp</dimen>
     <dimen name="layout_padding">8dp</dimen>
     <dimen name="tag_tiny_text_size">12sp</dimen>
-    <dimen name="print_button_text_size">12sp</dimen>
+    <dimen name="drawing_view_btn_text_size">12sp</dimen>
     <dimen name="topic_paper_text_size">14sp</dimen>
     <dimen name="menu_text_size">14sp</dimen>
     <dimen name="bar_height">56dp</dimen>

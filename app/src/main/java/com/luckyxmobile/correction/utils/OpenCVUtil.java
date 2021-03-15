@@ -137,9 +137,6 @@ public class OpenCVUtil {
 
             case Constants.CONTRAST_RADIO_STRONG:
                 return OpenCVUtil.convertThreshodOTSU(bitmap);
-
-            default:
-                break;
         }
 
         return bitmap;

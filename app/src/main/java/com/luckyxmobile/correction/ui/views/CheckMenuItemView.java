@@ -26,31 +26,26 @@ public class CheckMenuItemView extends LinearLayout implements View.OnClickListe
         super(context);
     }
 
-    public CheckMenuItemView(Context context, @Nullable @android.support.annotation.Nullable AttributeSet attrs) {
+    public CheckMenuItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
 
-    public CheckMenuItemView(Context context, @Nullable @android.support.annotation.Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
         View view = LayoutInflater.from(context).inflate(R.layout.view_check_menu,this);
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CheckMenuItemView);
 
         checkedImg = typedArray.getDrawable(R.styleable.CheckMenuItemView_checked_img);
         uncheckedImg = typedArray.getDrawable(R.styleable.CheckMenuItemView_unchecked_img);
-        checkedColor = typedArray.getColor(R.styleable.CheckMenuItemView_checked_color,getContext().getColor(R.color.checked_menu_text));
-        uncheckedColor = typedArray.getColor(R.styleable.CheckMenuItemView_unchecked_color,getContext().getColor(R.color.unchecked_menu));
+        checkedColor = typedArray.getColor(R.styleable.CheckMenuItemView_checked_text_color,getContext().getColor(R.color.checked_menu_text));
+        uncheckedColor = typedArray.getColor(R.styleable.CheckMenuItemView_unchecked_text_color,getContext().getColor(R.color.unchecked_menu));
 
         String text = typedArray.getString(R.styleable.CheckMenuItemView_menu_text);
         isChecked = typedArray.getBoolean(R.styleable.CheckMenuItemView_default_checked, false);
-
-        typedArray.recycle();
 
         view.setOnClickListener(this);
         iconIv = view.findViewById(R.id.check_menu_icon);
         menuTv = view.findViewById(R.id.check_menu_text);
 
-        iconIv.setBackground(isChecked?checkedImg:uncheckedImg);
+        iconIv.setImageDrawable(isChecked?checkedImg:uncheckedImg);
 
         if (text == null || text.isEmpty()) {
             menuTv.setVisibility(GONE);
@@ -59,6 +54,7 @@ public class CheckMenuItemView extends LinearLayout implements View.OnClickListe
             menuTv.setTextColor(isChecked?checkedColor:uncheckedColor);
         }
 
+        typedArray.recycle();
     }
 
     public void setCheckedImg(Drawable checkedImg) {
@@ -81,11 +77,16 @@ public class CheckMenuItemView extends LinearLayout implements View.OnClickListe
         return isChecked;
     }
 
-    @Override
-    public void onClick(View view) {
-        isChecked = !isChecked;
+    public void setChecked(boolean checked) {
+
+        isChecked = checked;
 
         iconIv.setBackground(isChecked?checkedImg:uncheckedImg);
         menuTv.setTextColor(isChecked?checkedColor:uncheckedColor);
+    }
+
+    @Override
+    public void onClick(View view) {
+        setChecked(!isChecked);
     }
 }

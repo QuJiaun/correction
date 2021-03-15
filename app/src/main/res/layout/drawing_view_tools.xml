@@ -1,104 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="16dp"
-    android:scrollbars="none"
-    android:gravity="center|start"
-    android:orientation="horizontal">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center|start">
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_tool_highlighter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            app:checked_img="@drawable/ic_paint_right"
+            app:unchecked_img="@drawable/ic_paint_unchecked"
+            app:menu_text="荧光笔"
+            app:checked_text_color="@color/orange_f7"
+            app:default_checked="true"/>
 
-            <TextView
-                android:id="@+id/edit_photo_undo_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:padding="4dp"
-                android:gravity="center"
-                android:background="@color/transparent"
-                android:drawableTop="@drawable/ic_paint_undo_no"
-                android:text="@string/undo"
-                android:textColor="@color/gray_9c"
-                android:textSize="@dimen/print_button_text_size"
-                tools:ignore="ContentDescription" />
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_tool_white_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:checked_img="@drawable/ic_paint_white_out_check"
+            app:unchecked_img="@drawable/ic_paint_white_out_uncheck"
+            app:checked_text_color="@color/orange_f7"
+            app:menu_text="@string/white_out"/>
 
-            <TextView
-                android:id="@+id/edit_photo_redo_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:padding="4dp"
-                android:gravity="center"
-                android:background="@color/transparent"
-                android:drawableTop="@drawable/ic_paint_redo_no"
-                android:text="@string/redo"
-                android:textColor="@color/gray_9c"
-                android:textSize="@dimen/print_button_text_size"
-                tools:ignore="ContentDescription" />
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_tool_erase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:checked_img="@drawable/ic_paint_erase_checked"
+            app:unchecked_img="@drawable/ic_paint_erase_unchecked"
+            app:checked_text_color="@color/orange_f7"
+            app:menu_text="@string/erase"/>
 
-            <TextView
-                android:id="@+id/edit_photo_contrast_ratio_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:padding="4dp"
-                android:gravity="center"
-                android:background="@color/transparent"
-                android:drawableTop="@drawable/ic_paint_contrast_ratio_unchecked"
-                android:text="@string/contrast_ratio"
-                android:textColor="@color/gray_9c"
-                android:textSize="@dimen/print_button_text_size"
-                tools:ignore="ContentDescription" />
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_tool_width"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:checked_img="@drawable/ic_paint_width_check_24dp"
+            app:unchecked_img="@drawable/ic_paint_width_uncheck_24dp"
+            app:checked_text_color="@color/orange_f7"
+            app:menu_text="@string/width"/>
 
-            <TextView
-                android:id="@+id/edit_photo_erase"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:padding="4dp"
-                android:gravity="center"
-                android:background="@color/transparent"
-                android:drawableTop="@drawable/ic_paint_erase_unchecked"
-                android:text="@string/erase"
-                android:textColor="@color/gray_9c"
-                android:textSize="@dimen/print_button_text_size"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:id="@+id/edit_photo_white_out"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:padding="4dp"
-                android:gravity="center"
-                android:background="@color/transparent"
-                android:text="@string/white_out"
-                android:textColor="@color/gray_9c"
-                android:textSize="@dimen/print_button_text_size"
-                android:drawableTop="@drawable/ic_paint_white_out_uncheck"
-                tools:ignore="ContentDescription"/>
-
-        </LinearLayout>
-
-</HorizontalScrollView>
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_tool_contrast_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:checked_img="@drawable/ic_paint_contrast_ratio_checked"
+            app:unchecked_img="@drawable/ic_paint_contrast_ratio_unchecked"
+            app:checked_text_color="@color/orange_f7"
+            app:menu_text="@string/contrast_ratio"/>
+</merge>

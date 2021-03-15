@@ -40,7 +40,7 @@
         android:gravity="center"
         android:layout_margin="8dp"
         android:padding="8dp"
-        android:drawableStart="@drawable/ic_orange_font"
+        android:drawableStart="@drawable/ic_text_fields_24"
         android:text="@string/add_text"
         android:textColor="@color/colorOrange"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"

@@ -3,115 +3,99 @@ package com.luckyxmobile.correction.ui.dialog;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luckyxmobile.correction.R;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.Book;
-
-
-import androidx.annotation.NonNull;
+import com.luckyxmobile.correction.ui.activity.CropImageActivity;
 
 public class BookInfoDialog extends AlertDialog.Builder {
 
-    private final ImageButton alterBookCoverBtn;
     private ImageButton deleteBookCoverBtn;
     private ImageView bookCoverView;
     private EditText bookNameEt;
-    private TextView bookNameNum;
     private Book book;
+    private final OnBtnClickListener listener;
 
-    public BookInfoDialog(Activity activity){
+    public BookInfoDialog(Activity activity) {
         super(activity);
 
-        View view =  LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_book,null);
+        this.listener = (OnBtnClickListener) activity;
+
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_book, null);
         setView(view);
 
-        alterBookCoverBtn = view.findViewById(R.id.alter_cover_image);
+        ImageButton alterBookCoverBtn = view.findViewById(R.id.alter_cover_image);
         bookCoverView = view.findViewById(R.id.coverImg);
         bookNameEt = view.findViewById(R.id.bookNameEdt);
-        bookNameNum = view.findViewById(R.id.bookNameEdtNum);
         deleteBookCoverBtn = view.findViewById(R.id.delete_book_cover);
 
         setNegativeButton(R.string.cancel, null);
 
-        deleteBookCoverBtn.setOnClickListener(view1 -> {
-            alterBookCover(null);
+        setPositiveButton(R.string.ensure, (dialog, which) ->{
+            book.setName(bookNameEt.getText().toString());
+            listener.onBookInfoDialogEnsure(book);
         });
 
-        //输入框字数提示和限制
-        bookNameEt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                bookNameNum.setText(s.length()+"/10");
-            }
+        deleteBookCoverBtn.setOnClickListener(v1 -> alterBookCover(null));
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                book.setName(bookNameEt.getText().toString());
-                bookNameNum.setText(s.length()+"/10");
-            }
+        alterBookCoverBtn.setOnClickListener(v2 ->{
+            Intent intent =  CropImageActivity.getCropImageActivityIntent(activity, true, false);
+            activity.startActivityForResult(intent, Constants.REQUEST_CODE_BOOK_COVER_IMAGE);
         });
-
     }
 
-    public BookInfoDialog build() {
-        this.book = new Book();
-        return this;
-    }
-
-    public BookInfoDialog build(Book book) {
+    public void setBook(Book book) {
+        if (book == null) {
+            book = new Book();
+        }
         this.book = book;
-        setBookCover();
         setBookNameEt();
-        return this;
-    }
-
-    public void setAlterCoverButton(View.OnClickListener listener) {
-        alterBookCoverBtn.setOnClickListener(listener);
+        setBookCover();
     }
 
     public void alterBookCover(String path) {
-        if (path == null || path.isEmpty()) {
-           path = "default";
-        }
         book.setCover(path);
         setBookCover();
     }
 
-    public Book getBookInfo() {
-        return book;
-    }
-
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void setBookCover() {
 
-        if ("default".equals(book.getCover())){
+        if (TextUtils.isEmpty(book.getCover())) {
             deleteBookCoverBtn.setVisibility(View.GONE);
-        }else{
+            bookCoverView.setImageDrawable(getContext().getDrawable(R.drawable.correction_book));
+        } else {
             deleteBookCoverBtn.setVisibility(View.VISIBLE);
+            Glide.with(getContext())
+                    .load(book.getCover())
+                    .skipMemoryCache(true) // 不使用内存缓存
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) // 不使用磁盘缓存
+                    .into(bookCoverView);
         }
-
-        Glide.with(getContext()).load(book.getCover())
-                .placeholder(R.drawable.correction_book)
-                .skipMemoryCache(true) // 不使用内存缓存
-                .diskCacheStrategy(DiskCacheStrategy.NONE) // 不使用磁盘缓存
-                .into(bookCoverView);
 
     }
 
     private void setBookNameEt() {
-        bookNameEt.setText(book.getName());
-        bookNameNum.setText(book.getName().length() + "/10");
+        if (book.getName() != null && !book.getName().isEmpty()) {
+            bookNameEt.setText(book.getName());
+            bookNameEt.setSelection(book.getName().length());
+        }
     }
+
+    public interface OnBtnClickListener {
+        void onBookInfoDialogEnsure(Book book);
+    }
+
 }
+
+

@@ -17,7 +17,7 @@
         android:drawableStart="@drawable/ic_camera"
         android:drawablePadding="8dp"
         android:drawableEnd="@drawable/ic_radio_button_uncheck_24dp"
-        android:background="@color/transparent"
+        android:background="?android:attr/selectableItemBackground"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
 
     <View
@@ -36,7 +36,7 @@
         android:drawableStart="@drawable/ic_album"
         android:drawablePadding="8dp"
         android:drawableEnd="@drawable/ic_radio_button_uncheck_24dp"
-        android:background="@color/transparent"
+        android:background="?android:attr/selectableItemBackground"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
 
 </LinearLayout>

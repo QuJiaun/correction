@@ -11,96 +11,48 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:theme="@style/menu_pop_window"
         app:title="@string/app_name"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/topics_rv"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"/>
+        android:layout_below="@id/topic_info_toolbar">
 
-    <include
-        android:id="@+id/topic_text"
-        layout="@layout/dialog_add_text_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/topics_rv"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-<!--    <TextView-->
-<!--        android:id="@+id/topic_text"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/topics_rv"-->
-<!--        android:background="@drawable/border_edit_text"-->
-<!--        android:hint="@string/add_text"-->
-<!--        android:textSize="@dimen/topic_paper_text_size"/>-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/topics_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-    <include
-        layout="@layout/activity_topic_tag"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/topic_text"
-        android:layout_marginTop="8dp"/>
+            <TextView
+                android:id="@+id/topic_text"
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:background="@color/colorWhite"/>
 
-    <TextView
-        android:id="@+id/topic_create_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:padding="8dp"
-        android:layout_margin="8dp"
-        android:gravity="center|end"
-        android:hint="2020-02-02"/>
+            <include
+                layout="@layout/activity_topic_tag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"/>
 
-<!--    <ScrollView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_below="@id/topic_tool"-->
-<!--        android:background="@color/black_f5">-->
+            <TextView
+                android:id="@+id/topic_create_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_margin="8dp"
+                android:gravity="center|end"
+                android:hint="2020-02-02"/>
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical">-->
-
-<!--            <include-->
-<!--                layout="@layout/activity_topic_original"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content" />-->
-
-<!--            <ViewStub-->
-<!--                android:layout="@layout/activity_topic_right"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="8dp"/>-->
-
-<!--            <ViewStub-->
-<!--                android:layout="@layout/activity_topic_error"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="8dp"/>-->
-
-<!--            <ViewStub-->
-<!--                android:layout="@layout/activity_topic_point"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="8dp"/>-->
-
-<!--            <ViewStub-->
-<!--                android:layout="@layout/activity_topic_error_cause"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="8dp"/>-->
-
-<!--            <include-->
-<!--                layout="@layout/activity_topic_tag"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="8dp"/>-->
-
-<!--        </LinearLayout>-->
-
-<!--    </ScrollView>-->
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>

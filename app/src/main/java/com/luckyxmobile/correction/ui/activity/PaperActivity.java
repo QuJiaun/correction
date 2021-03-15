@@ -22,7 +22,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.PaperAdapter;
@@ -35,8 +34,6 @@ import com.luckyxmobile.correction.utils.ThreadPool;
 import org.litepal.LitePal;
 
 import java.util.List;
-
-import es.dmoral.toasty.Toasty;
 
 public class PaperActivity extends AppCompatActivity{
 
@@ -78,7 +75,7 @@ public class PaperActivity extends AppCompatActivity{
         });
 
         initData();
-        add_paper_main = findViewById(R.id.add_paper_main);
+//        add_paper_main = findViewById(R.id.add_paper_main);
         review_recyclerview = findViewById(R.id.review_recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         review_recyclerview.setLayoutManager(layoutManager);
@@ -191,7 +188,7 @@ public class PaperActivity extends AppCompatActivity{
                                             handler.post(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    Toasty.warning(PaperActivity.this, R.string.paper_empty_cant_share, Toast.LENGTH_SHORT).show();
+//                                                    Toasty.warning(PaperActivity.this, R.string.paper_empty_cant_share, Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                         }
@@ -211,7 +208,7 @@ public class PaperActivity extends AppCompatActivity{
                                     handler.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toasty.warning(PaperActivity.this, R.string.paper_empty_cant_print, Toast.LENGTH_SHORT).show();
+//                                            Toasty.warning(PaperActivity.this, R.string.paper_empty_cant_print, Toast.LENGTH_SHORT).show();
                                             ProgressDialogUtil.dismiss();
                                         }
                                     });
@@ -244,7 +241,7 @@ public class PaperActivity extends AppCompatActivity{
         AlertDialog.Builder dialog = new AlertDialog.Builder(PaperActivity.this);
         View view = LayoutInflater.from(PaperActivity.this).inflate(R.layout.dialog_add_paper,null);
         dialog.setView(view);
-        final EditText inputText = view.findViewById(R.id.add_topic_text);
+        final EditText inputText = view.findViewById(R.id.topic_text_et);
         final TextView inputTextNum = (TextView) view.findViewById(R.id.add_page_text_hint);
         inputText.setText(paper.getPaper_name());
         inputText.setSelection(paper.getPaper_name().length());
@@ -282,7 +279,7 @@ public class PaperActivity extends AppCompatActivity{
                     reviewAdapter.notifyDataSetChanged();
 
                 }else {
-                    Toasty.warning(PaperActivity.this,R.string.empty_input,Toast.LENGTH_SHORT).show();
+//                    Toasty.warning(PaperActivity.this,R.string.empty_input,Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -311,8 +308,8 @@ public class PaperActivity extends AppCompatActivity{
             public void onClick(DialogInterface dialog, int which) {
                 paper_id = paperList.get(position).getId();
                 LitePal.delete(Paper.class,paper_id);
-                PaperTopicDaoImpl paper_topic_dao = new PaperTopicDaoImpl();
-                paper_topic_dao.deleteByPaperId(paper_id);
+//                PaperTopicDaoImpl paper_topic_dao = new PaperTopicDaoImpl();
+//                paper_topic_dao.deleteByPaperId(paper_id);
                 initData();
                 reviewAdapter.setDatas(paperList);
                 reviewAdapter.notifyDataSetChanged();
@@ -331,7 +328,7 @@ public class PaperActivity extends AppCompatActivity{
     //添加复习卷
     private void addPaperDialog() {
         View view =  LayoutInflater.from(PaperActivity.this).inflate(R.layout.dialog_add_paper,null);
-        final EditText paperNameEdt = view.findViewById(R.id.add_topic_text);
+        final EditText paperNameEdt = view.findViewById(R.id.topic_text_et);
         final TextView paperNameNum = (TextView) view.findViewById(R.id.add_page_text_hint);
 
         //输入框字数提示和限制
@@ -362,7 +359,7 @@ public class PaperActivity extends AppCompatActivity{
                 //保存创建
                 if (paperName.length() <= 0) {
 
-                    Toasty.warning(PaperActivity.this,R.string.empty_input, Toast.LENGTH_SHORT, true).show();
+//                    Toasty.warning(PaperActivity.this,R.string.empty_input, Toast.LENGTH_SHORT, true).show();
                 } else {
                     Paper newPaper = new Paper();
                     newPaper.setPaper_name(paperNameEdt.getText().toString());
@@ -372,7 +369,7 @@ public class PaperActivity extends AppCompatActivity{
 //                    mBookAdapter.notifyDataSetChanged();
                     reviewAdapter.addPaper(newPaper);
                     reviewAdapter.notifyDataSetChanged();
-                    Toasty.success(PaperActivity.this, R.string.add_successful, Toast.LENGTH_SHORT, true).show();
+//                    Toasty.success(PaperActivity.this, R.string.add_successful, Toast.LENGTH_SHORT, true).show();
                     //复习卷不为空，背景提示图片隐藏
                     if (paperList.size()>0){
                         paperTopicNothing.setVisibility(View.GONE);

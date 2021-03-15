@@ -7,8 +7,6 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,19 +17,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.TopicInfoAdapter;
 import com.luckyxmobile.correction.adapter.TopicTagAdapter;
+import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.presenter.TopicInfoViewPresenter;
 import com.luckyxmobile.correction.presenter.impl.TopicInfoViewPresenterImpl;
+import com.luckyxmobile.correction.ui.dialog.SetTopicTextDialog;
+import com.luckyxmobile.correction.utils.DestroyActivityUtil;
+import com.luckyxmobile.correction.utils.impl.FilesUtils;
 import com.luckyxmobile.correction.view.ITopicInfoView;
 import com.zhy.view.flowlayout.TagFlowLayout;
 import org.litepal.LitePal;
 
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,10 +39,10 @@ import butterknife.OnClick;
 
 
 @SuppressLint("NonConstantResourceId")
-public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoView ,
-    TopicInfoAdapter.TopicInfoListener {
+public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoView,
+        TopicInfoAdapter.TopicInfoListener, SetTopicTextDialog.OnBtnClickListener {
 
-    public static final  String TAG = "TopicActivity";
+    public static final  String TAG = TopicInfoActivity.class.getSimpleName();
 
     @BindView(R.id.topic_info_toolbar)
     Toolbar toolbar;
@@ -52,16 +52,13 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
     @BindView(R.id.topics_rv)
     RecyclerView topicsRv;
     @BindView(R.id.topic_text)
-    LinearLayout topicTextLayout;
-    @BindView(R.id.add_topic_text)
-    EditText topicEditText;
+    TextView topicTextTv;
     @BindView(R.id.topic_create_date)
     TextView topicCreateDateTv;
-
     @BindView(R.id.tag_layout)
     TagFlowLayout tagLayout;
 
-    private Topic currentTopic;
+    private MenuItem collectionMenuItem;
 
     private TopicInfoViewPresenter presenter;
 
@@ -73,54 +70,61 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
         ButterKnife.bind(this);
         presenter = new TopicInfoViewPresenterImpl(this);
 
-        // 初始化布局
-        initView();
+        //获取唯一的错题id
+        int topicId = getIntent().getIntExtra(Constants.TOPIC_ID, -1);
 
-        presenter.initTopicInfo(currentTopic);
+        presenter.initTopicInfo(topicId);
     }
 
-    /**
-     * 界面布局初始化，并设置初始参数
-     */
-    private void initView() {
 
-        //获取唯一的错题id
-        int topicId = getIntent().getIntExtra(Constants.TOPIC_ID, 0);
-
-        currentTopic = LitePal.find(Topic.class, topicId);
-
-        topicCreateDateTv.setText(new SimpleDateFormat("yyyy/MM/dd",
-            Locale.getDefault()).format(currentTopic.getCreate_date()));
-
-        toolbar.setTitle(currentTopic.getBook().getName());
+    @Override
+    public void setToolbar(String toolbarName) {
+        toolbar.setTitle(toolbarName);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
+    }
 
-        if (TextUtils.isEmpty(currentTopic.getText())) {
-            topicTextLayout.setVisibility(View.GONE);
+    @Override
+    public void setTopicCollection(boolean collection) {
+        if (collectionMenuItem != null) {
+            collectionMenuItem.setIcon(collection?
+                    getDrawable(R.drawable.ic_collect):
+                    getDrawable(R.drawable.ic_uncollect)
+            );
+        }
+    }
+
+    @Override
+    public void setTopicText(String text) {
+        if (TextUtils.isEmpty(text)) {
+            topicTextTv.setVisibility(View.GONE);
         } else {
-            topicTextLayout.setVisibility(View.VISIBLE);
-            topicEditText.setText(currentTopic.getText());
+            topicTextTv.setVisibility(View.VISIBLE);
+            topicTextTv.setText(text);
         }
     }
 
     @Override
     public void setTopicImages(List<TopicImage> topicImages) {
+
         topicInfoAdapter = new TopicInfoAdapter(this, topicImages);
+        topicInfoAdapter.setRemoveMode(false);
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         topicsRv.setLayoutManager(mLayoutManager);
         topicsRv.setItemAnimator(new DefaultItemAnimator());
         topicsRv.setAdapter(topicInfoAdapter);
+        topicsRv.setNestedScrollingEnabled(false);
     }
 
+
     @Override
-    public void setTopicTags() {
+    public void setTopicTags(Topic topic) {
         TopicTagAdapter tagAdapter = new TopicTagAdapter(null);
-        tagAdapter.setCurTopic(currentTopic);
+        tagAdapter.setCurTopic(topic);
         tagAdapter.setItemClickable(false);
         tagAdapter.setShowUnchecked(false);
         tagAdapter.setTextColor(getColor(R.color.white));
@@ -128,19 +132,14 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
     }
 
     @Override
-    public void addTopicImageFinished(TopicImage topicImage) {
-        topicInfoAdapter.addTopicImage(topicImage);
+    public void setTopicCreateDate(String date) {
+        topicCreateDateTv.setText(date);
     }
 
-    @Override
-    public void setTopicTextFinished(String text) {
-        if (TextUtils.isEmpty(text)) {
-            topicTextLayout.setVisibility(View.GONE);
-            topicEditText.setText("");
-        } else {
-            topicTextLayout.setVisibility(View.VISIBLE);
-            topicEditText.setText(text);
-        }
+    private void showTopicTextDialog() {
+        SetTopicTextDialog setTopicTextDialog = new SetTopicTextDialog(this);
+        setTopicTextDialog.init(presenter.getCurTopic().getText());
+        setTopicTextDialog.show();
     }
 
     @Override
@@ -156,15 +155,20 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
     @OnClick(R.id.set_tag)
     public void onClickSetTagBtn() {
         Intent intent = new Intent(TopicInfoActivity.this, TagActivity.class);
-        intent.putExtra(Constants.TOPIC_ID, currentTopic.getId());
+        intent.putExtra(Constants.TOPIC_ID, presenter.getCurTopic().getId());
         startActivity(intent);
     }
 
-    @OnClick({R.id.topic_text, R.id.add_topic_text})
+    @OnClick(R.id.topic_text)
     public void onClickTopicText() {
-
+        showTopicTextDialog();
     }
 
+    @Override
+    public void onTopicTextBtnEnsure(String text) {
+        presenter.setTopicText(text);
+        setTopicText(text);
+    }
 
     @Override
     public boolean onMenuOpened(int featureId, Menu menu) {
@@ -184,12 +188,11 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
         return super.onMenuOpened(featureId, menu);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu_topic, menu);
-
-        MenuItem item = findViewById(R.id.topic_menu_like);
-        item.setChecked(currentTopic.isCollection());
+        collectionMenuItem = menu.findItem(R.id.topic_menu_like);
         return true;
     }
 
@@ -200,19 +203,31 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
 
         switch (item.getItemId()) {
             case R.id.topic_menu_like:
-                item.setChecked(!item.isChecked());
+                boolean collection = !presenter.getCurTopic().isCollection();
+                presenter.setTopicCollection(!collection);
+                setTopicCollection(!collection);
                 break;
 
             case R.id.topic_menu_add_text:
-                presenter.showTopicTextDialog();
+                showTopicTextDialog();
                 break;
 
             case R.id.topic_menu_add_camera:
+                MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
+                MySharedPreferences.getInstance().putInt(Constants.CURRENT_BOOK_ID, presenter.getCurTopic().getBook_id());
+                MySharedPreferences.getInstance().putInt(Constants.CURRENT_TOPIC_ID, presenter.getCurTopic().getId());
+                DestroyActivityUtil.addDestroyActivityToMap(this, TAG);
 
+                startActivity(CropImageActivity.getCropImageActivityIntent(this, false, true));
                 break;
 
             case R.id.topic_menu_add_album:
+                MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
+                MySharedPreferences.getInstance().putInt(Constants.CURRENT_BOOK_ID, presenter.getCurTopic().getBook_id());
+                MySharedPreferences.getInstance().putInt(Constants.CURRENT_TOPIC_ID, presenter.getCurTopic().getId());
+                DestroyActivityUtil.addDestroyActivityToMap(this, TAG);
 
+                startActivity(CropImageActivity.getCropImageActivityIntent(this, true, true));
                 break;
 
             case R.id.topic_menu_show_original:
@@ -225,14 +240,13 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
         return true;
     }
 
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == Constants.REQUEST_CODE) {
-
-            }
+    public void onBackPressed() {
+        if (topicInfoAdapter.isRemoveMode()) {
+            topicInfoAdapter.setRemoveMode(false);
+            topicInfoAdapter.notifyDataSetChanged();
+        } else {
+            super.onBackPressed();
         }
     }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/item_book_info"
+        android:title="@string/change_notebook_info"/>
+
+    <item android:id="@+id/item_delete_book"
+        android:title="@string/delete"/>
+
+</menu>

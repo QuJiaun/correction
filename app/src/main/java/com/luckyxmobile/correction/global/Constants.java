@@ -12,10 +12,15 @@ import androidx.annotation.IntDef;
 public class Constants {
 
     //SharedPreferences
-    public static final String TABLE_SHARED_CORRECTION = "correction_sharePer_table";
-    public static final String TABLE_SHARED_IS_NEWEST_ORDER = "is_newest_order";
+    public static final String TABLE_CORRECTION = "correction_sharePer_table";
+    public static final String IS_NEWEST_ORDER = "is_newest_order";
     public static final String TABLE_SHARED_IS_FIRST_START = "is_first_start";
-    public static final String TABLE_FROM_BOOK_ID = "from_book_id";
+
+    public static final String FROM_ACTIVITY = "from_activity";
+    public static final String CURRENT_BOOK_ID = "current_book_id";
+    public static final String CURRENT_TOPIC_ID = "current_topic_id";
+    public static final String CURRENT_TOPIC_IMAGE_ID = "current_topic_image_id";
+
     public static final String TABLE_PRINT_PAGE = "print_page";
     public static final String TABLE_SHOW_SMEAR = "show_smear";
 //    public static final String TABLE_FULL_SCREEN = "is_full_screen";
@@ -28,38 +33,49 @@ public class Constants {
     public static final int MIN_CLICK_DELAY_TIME = 1000;
     public static final int MIN_CLICK_TOW_TIME = 500;
 
-    public static final int REQUEST_PERMISSION = 100;
-    public static final int REQUEST_CODE_TAKE_PHOTO = 200;
-    public static final int REQUEST_CODE_SELECT_ALBUM = 300;
-    public static final int REQUEST_CODE = 400;
+    public static final int REQUEST_PERMISSION = 0x100;
+    public static final int REQUEST_CODE_TAKE_PHOTO = 0x101;
+    public static final int REQUEST_CODE_SELECT_ALBUM = 0x102;
+    public static final int REQUEST_CODE = 0x103;
+    public static final int REQUEST_CODE_BOOK_COVER_IMAGE = 0x104;
+
+    public static final int FROM_TOPIC_INFO_ACTIVITY = 0x110;
+    public static final int FROM_MAIN_ACTIVITY = 0x111;
 
     //intent参数
-    public static final String WHETHER_FROM_ALBUM = "whether_from_album";
-    public static final String WHICH_IMAGE = "which_image";
+    public static final String IS_FROM_ALBUM = "whether_from_album";
+    public static final String IMAGE_TYPE = "image_type";
     public static final String WHICH_ACTIVITY = "which_activity";
     public static final String TOPIC_ID = "topic_id";
     public static final String TOPIC_POSITION = "topic_position";
     public static final String IMAGE_POSITION = "image_position";
     public static final String BOOK_ID = "book_id";
-    public static final String WHETHER_EDIT_PHOTO = "whether_edit_photo";
+    public static final String IS_EDIT_PHOTO = "whether_edit_photo";
     public static final String TOOLBAR_NAME = "toolbar_name";
     public static final String IMAGE_PATH = "image_path";
     public static final String IS_TOPIC = "is_topic";
 
     //book
-    public static final  int IMAGE_BOOK_COVER = 0x101;
+    public static final  int BOOK_COVER = 0x200;
 
     //topic_image
-    public static final int TOPIC_STEM = R.string.stem;
-    public static final int TOPIC_CORRECT = R.string.correct;
-    public static final int TOPIC_INCORRECT = R.string.incorrect;
-    public static final int TOPIC_KEY = R.string.key;
-    public static final int TOPIC_CAUSE = R.string.cause;
+    public static final int TOPIC_STEM = 0x201;
+    public static final int TOPIC_CORRECT = 0x202;
+    public static final int TOPIC_INCORRECT = 0x203;
+    public static final int TOPIC_KEY = 0x204;
+    public static final int TOPIC_CAUSE = 0x205;
 
     @IntDef({TOPIC_STEM, TOPIC_CORRECT, TOPIC_INCORRECT, TOPIC_KEY, TOPIC_CAUSE})
     @Target({ElementType.PARAMETER, ElementType.FIELD})
     @Retention(RetentionPolicy.SOURCE)
     public @interface TopicImageType {
+
+    }
+
+    @IntDef({BOOK_COVER, TOPIC_STEM, TOPIC_CORRECT, TOPIC_INCORRECT, TOPIC_KEY, TOPIC_CAUSE})
+    @Target({ElementType.PARAMETER, ElementType.FIELD})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ImageType {
 
     }
 

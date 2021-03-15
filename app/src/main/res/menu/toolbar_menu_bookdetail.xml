@@ -5,22 +5,19 @@
     <item
         android:id="@+id/add_topic_toolbar"
         android:icon="@drawable/ic_add_white_24dp"
-        android:title="Add"
-        app:showAsAction="always"/>
+        app:showAsAction="always"
+        android:title="@string/add_topic"/>
 
     <item
         android:id="@+id/book_topic_delete"
-        android:icon="@drawable/ic_delete_white_24dp"
-        android:title="delete"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete"
         android:visible="false"
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/sort_newest_first"
-        android:title="@string/newest_order"/>
-
-    <item
-        android:id="@+id/sort_oldest_first"
-        android:title="@string/oldest_order"/>
+        android:id="@+id/sort_time"
+        android:icon="@drawable/ic_arrow_downward"
+        android:title="@string/time"/>
 
 </menu>

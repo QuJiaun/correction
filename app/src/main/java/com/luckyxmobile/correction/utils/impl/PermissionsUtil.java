@@ -40,8 +40,7 @@ public class PermissionsUtil {
         }
 
         if (!deniedPer.isEmpty()){
-            activity.requestPermissions(
-                    (String[]) deniedPer.toArray(), Constants.REQUEST_PERMISSION);
+            activity.requestPermissions( deniedPer.toArray(new String[]{}), Constants.REQUEST_PERMISSION);
         }
     }
 }

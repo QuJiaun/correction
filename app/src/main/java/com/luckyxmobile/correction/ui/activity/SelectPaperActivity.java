@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,7 +28,6 @@ import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.dmoral.toasty.Toasty;
 
 /**
  * 选择错题本的界面
@@ -41,7 +39,7 @@ public class SelectPaperActivity extends AppCompatActivity {
     private RecyclerView recyclerview;
     private SelectPaperAdapter adapter;
     private List<Paper> AllDatas;
-    private PaperTopicDao paper_topic_dao = new PaperTopicDaoImpl();
+//    private PaperTopicDao paper_topic_dao = new PaperTopicDaoImpl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +80,7 @@ public class SelectPaperActivity extends AppCompatActivity {
                 Intent topicIdIntent = getIntent();
                 ArrayList<Integer> topic_ids = topicIdIntent.getIntegerArrayListExtra("topic_ids");
                 //存入Paper_Topic表
-                paper_topic_dao.save(AllDatas.get(position).getId(),topic_ids);
+//                paper_topic_dao.save(AllDatas.get(position).getId(),topic_ids);
                 Intent intent = new Intent(SelectPaperActivity.this, PaperDetailActivity.class);
                 intent.putExtra("reviewPaperId", AllDatas.get(position).getId() + "");
                 startActivity(intent);
@@ -128,7 +126,7 @@ public class SelectPaperActivity extends AppCompatActivity {
 
         //获得控件
         final EditText ReviewPageNameET = (EditText) editReviewPageDialog.
-                findViewById(R.id.add_topic_text);
+                findViewById(R.id.topic_text_et);
         final TextView ReviewPageETNum = (TextView) editReviewPageDialog.
                 findViewById(R.id.add_page_text_hint);
         ReviewPageNameET.setHint(R.string.test_page);
@@ -160,15 +158,15 @@ public class SelectPaperActivity extends AppCompatActivity {
                 //判断名字是否为空
                 if (!"".equals(pageName.trim())) {
                     //把用户输入的数据传入对象
-                    CorrectionLab.addPaper(pageName);
-                    Toasty.success(SelectPaperActivity.this, R.string.add_successful, Toast.LENGTH_SHORT).show();
+//                    CorrectionLab.addPaper(pageName);
+//                    Toasty.success(SelectPaperActivity.this, R.string.add_successful, Toast.LENGTH_SHORT).show();
                     //更新列表
                     initData();
                     adapter.setDatas(AllDatas);
                     adapter.notifyDataSetChanged();
 
                 } else {
-                    Toasty.warning(SelectPaperActivity.this, R.string.empty_input, Toast.LENGTH_SHORT).show();
+//                    Toasty.warning(SelectPaperActivity.this, R.string.empty_input, Toast.LENGTH_SHORT).show();
                 }
             }
 

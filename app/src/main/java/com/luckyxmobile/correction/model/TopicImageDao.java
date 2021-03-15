@@ -1,11 +1,14 @@
 package com.luckyxmobile.correction.model;
 
-import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
+
+import java.util.List;
 
 public interface TopicImageDao {
 
-    void addImage2Topic(TopicImage topicImage, Topic topic);
+    void saveTopicImage(int topicId, TopicImage topicImage);
 
-    void removeImageByTopic(TopicImage topicImage, Topic topic);
+    List<TopicImage> getTopicImageByTopicId(int topicId);
+
+    void removeImageByTopic(TopicImage topicImage);
 }

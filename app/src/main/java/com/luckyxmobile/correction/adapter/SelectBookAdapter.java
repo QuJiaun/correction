@@ -35,7 +35,7 @@ public class SelectBookAdapter extends RecyclerView.Adapter<SelectBookAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Book book = bookList.get(position);
-        holder.bookName.setText(book.getBook_name());
+//        holder.bookName.setText(book.getBook_name());
         holder.bookImage.setImageResource(R.drawable.correction_book);
         if (position == selectItem) {
             holder.bookSelect.setVisibility(View.VISIBLE);

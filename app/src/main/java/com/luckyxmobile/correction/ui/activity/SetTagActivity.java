@@ -29,7 +29,6 @@ import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.dmoral.toasty.Toasty;
 
 public class SetTagActivity extends AppCompatActivity {
 
@@ -159,18 +158,18 @@ public class SetTagActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.ensure, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (TagDaoImpl.findAllTag().size() == 31){
-                            Toasty.warning(SetTagActivity.this,getString(R.string.tag_num_warn), Toast.LENGTH_SHORT, true).show();
-                            return ;
-                        }
-                        newTag = TagDaoImpl.newTag(tagEdit.getText().toString());
-                        //assert newTag != null;
-                        if (newTag == null){
-                            Toasty.warning(SetTagActivity.this,R.string.hint_repeated_tag, Toast.LENGTH_SHORT, true).show();
-                            return;
-                        }
-                        allTagList.add(0,newTag);
-                        tagLayoutAll.onChanged();
+//                        if (TagDaoImpl.findAllTag().size() == 31){
+//                            Toasty.warning(SetTagActivity.this,getString(R.string.tag_num_warn), Toast.LENGTH_SHORT, true).show();
+//                            return ;
+//                        }
+//                        newTag = TagDaoImpl.newTag(tagEdit.getText().toString());
+//                        //assert newTag != null;
+//                        if (newTag == null){
+//                            Toasty.warning(SetTagActivity.this,R.string.hint_repeated_tag, Toast.LENGTH_SHORT, true).show();
+//                            return;
+//                        }
+//                        allTagList.add(0,newTag);
+//                        tagLayoutAll.onChanged();
                     }
                 });
 
@@ -186,7 +185,7 @@ public class SetTagActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.ensure, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                TagDaoImpl.deleteTag(allTagList.get(position).getId());
+//                TagDaoImpl.deleteTag(allTagList.get(position).getId());
                 allTagList.remove(position);
                 isDelete = false;
                 tagLayoutAll.onChanged();

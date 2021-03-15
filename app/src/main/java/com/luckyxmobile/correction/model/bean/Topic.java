@@ -1,9 +1,7 @@
 package com.luckyxmobile.correction.model.bean;
 
-import org.litepal.crud.LitePalSupport;
 
-import java.util.Date;
-import java.util.Objects;
+import org.litepal.crud.LitePalSupport;
 
 /**
  * 数据库表 Topic 题目信息
@@ -13,27 +11,28 @@ public class Topic extends LitePalSupport {
 
     private int id;
 
-    /**
-     * 绑定的book，唯一
-     */
-    private Book book;
-
+    private int book_id;
     /**
      * 是否收藏
      */
-    private boolean collection;
+    private boolean collection = false;
 
     /**
      * 重要程度 1~5
      */
-    private int importance;
+    private int importance = 0;
 
     /**
      * 文字备注
      */
     private String text;
 
-    private Date create_date;
+    private long create_date;
+
+    public Topic(int book_id) {
+        setBook_id(book_id);
+        setCreate_date(System.currentTimeMillis());
+    }
 
 
     public int getId() {
@@ -68,19 +67,19 @@ public class Topic extends LitePalSupport {
         this.text = text;
     }
 
-    public Book getBook() {
-        return book;
+    public int getBook_id() {
+        return book_id;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
+    public void setBook_id(int book_id) {
+        this.book_id = book_id;
     }
 
-    public Date getCreate_date() {
+    public long getCreate_date() {
         return create_date;
     }
 
-    public void setCreate_date(Date create_date) {
+    public void setCreate_date(long create_date) {
         this.create_date = create_date;
     }
 
@@ -88,10 +87,10 @@ public class Topic extends LitePalSupport {
     public String toString() {
         return "Topic{" +
             "id=" + id +
-            ", book=" + book +
+            ", book_id=" + book_id +
             ", collection=" + collection +
             ", importance=" + importance +
-            ", text='" + text + '\'' +
+            ", text=" + text +
             ", create_date=" + create_date +
             '}';
     }
@@ -105,11 +104,7 @@ public class Topic extends LitePalSupport {
             return false;
         }
         Topic topic = (Topic) o;
-        return id == topic.id;
+        return id == topic.id && create_date == topic.getCreate_date();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

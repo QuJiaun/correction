@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/gray_f2"
+    android:orientation="vertical"
+    tools:context="com.luckyxmobile.correction.ui.activity.EditTopicImageActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/shape_box_fillet_shadow_view">
+
+        <Button
+            android:id="@+id/drawing_view_return"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_arrow_back_24dp"
+            android:text="@string/last_step"
+            android:textColor="@color/orange_f7"
+            android:background="@color/transparent" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_undo"
+            app:checked_img="@drawable/ic_paint_undo_yes"
+            app:unchecked_img="@drawable/ic_paint_undo_no"
+            style="@style/normal_icon_button"/>
+
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_redo"
+            app:checked_img="@drawable/ic_paint_redo_yes"
+            app:unchecked_img="@drawable/ic_paint_redo_no"
+            style="@style/normal_icon_button"/>
+
+        <ImageButton
+            android:id="@+id/drawing_view_ok"
+            android:src="@drawable/ic_done"
+            style="@style/normal_icon_button"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/drawing_view_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-8dp"
+        android:padding="8dp"
+        android:gravity="center|bottom"
+        android:background="@drawable/shape_box_fillet_shadow_view"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/shape_box_fillet_shadow_view">
+
+        <com.luckyxmobile.correction.ui.views.DrawingView
+            android:id="@+id/drawing_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"/>
+    </FrameLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_box_fillet_shadow_view">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <include
+                layout="@layout/drawing_view_tools"/>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+</LinearLayout>

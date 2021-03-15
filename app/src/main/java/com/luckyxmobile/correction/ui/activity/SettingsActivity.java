@@ -14,9 +14,8 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
+
 import java.util.Objects;
-import es.dmoral.toasty.Toasty;
 
 public class SettingsActivity extends AppCompatActivity{
 
@@ -75,7 +74,7 @@ public class SettingsActivity extends AppCompatActivity{
             printSmearPre = findPreference("print_page_show_smear");
             versionPre =  findPreference("version_pre");
 
-            preferences = getActivity().getSharedPreferences(Constants.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
+            preferences = getActivity().getSharedPreferences(Constants.TABLE_CORRECTION,MODE_PRIVATE);
 
             setPrintPage();
 
@@ -87,9 +86,9 @@ public class SettingsActivity extends AppCompatActivity{
 
             showTagViewPagePre.setChecked(preferences.getBoolean(Constants.TABLE_SHOW_TAG_IN_TOPIC_VIEW_PAGE,true));
 
-            fullScreenViewPagePre.setChecked(preferences.getBoolean(Constants.TABLE_FULL_SCREEN,false));
-
-            versionPre.setSummary(FilesUtils.packageName(getContext()));
+//            fullScreenViewPagePre.setChecked(preferences.getBoolean(Constants.TABLE_FULL_SCREEN,false));
+//
+//            versionPre.setSummary(FilesUtils.appVersionName(getContext()));
 
         }
 
@@ -104,7 +103,7 @@ public class SettingsActivity extends AppCompatActivity{
                 editor.putBoolean(Constants.TABLE_SHOW_TAG_IN_TOPIC_VIEW_PAGE,showTagViewPagePre.isChecked());
                 editor.apply();
             }else if (preference==fullScreenViewPagePre){
-                editor.putBoolean(Constants.TABLE_FULL_SCREEN,fullScreenViewPagePre.isChecked());
+//                editor.putBoolean(Constants.TABLE_FULL_SCREEN,fullScreenViewPagePre.isChecked());
                 editor.apply();
             }else if (preference==printSmearPre){
                 editor.putBoolean(Constants.TABLE_SHOW_SMEAR_MARK,printSmearPre.isChecked());
@@ -116,9 +115,9 @@ public class SettingsActivity extends AppCompatActivity{
 
         private void setViewSmearBy() {
 
-            String[] p = Objects.requireNonNull(preferences.getString(Constants.TABLE_VIEW_SMEAR_BY, "0,1")).split(",");
+//            String[] p = Objects.requireNonNull(preferences.getString(Constants.TABLE_VIEW_SMEAR_BY, "0,1")).split(",");
 
-            viewSmearByPre.setSummary(intToString(ViewSmearContentMethod, p));
+//            viewSmearByPre.setSummary(intToString(ViewSmearContentMethod, p));
 
             viewSmearByPre.setOnPreferenceChangeListener((preference, newValue) -> {
 
@@ -126,10 +125,10 @@ public class SettingsActivity extends AppCompatActivity{
                 String selectViewSmearBy = newValue.toString().replace("[","").replace("]","").replace(" ","");
 
                 if (TextUtils.isEmpty(selectViewSmearBy)){
-                    Toasty.error(getContext(), R.string.select_at_least_one,Toasty.LENGTH_SHORT,true).show();
+//                    Toasty.error(getContext(), R.string.select_at_least_one,Toasty.LENGTH_SHORT,true).show();
                     return false;
                 }else{
-                    editor.putString(Constants.TABLE_VIEW_SMEAR_BY,selectViewSmearBy);
+//                    editor.putString(Constants.TABLE_VIEW_SMEAR_BY,selectViewSmearBy);
                     editor.apply();
                     preference.setSummary(intToString(ViewSmearContentMethod, selectViewSmearBy.split(",")));
                     return true;
@@ -175,10 +174,10 @@ public class SettingsActivity extends AppCompatActivity{
                 String selectPrint = newValue.toString().replace("[","").replace("]","").replace(" ","");
 
                 if (TextUtils.isEmpty(selectPrint)){
-                    Toasty.error(getContext(), R.string.select_at_least_one,Toasty.LENGTH_SHORT,true).show();
+//                    Toasty.error(getContext(), R.string.select_at_least_one,Toasty.LENGTH_SHORT,true).show();
                     return false;
                 }else if(!selectPrint.contains("0")){
-                    Toasty.error(getContext(),R.string.have_to_select_stem, Toasty.LENGTH_SHORT, true).show();
+//                    Toasty.error(getContext(),R.string.have_to_select_stem, Toasty.LENGTH_SHORT, true).show();
                     return  false;
                 }else{
                     editor.putString(Constants.TABLE_PRINT_PAGE,selectPrint);

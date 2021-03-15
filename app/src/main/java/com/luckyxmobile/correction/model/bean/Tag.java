@@ -31,16 +31,17 @@ public class Tag extends LitePalSupport {
     /**
      * 标签与错题的关联
      */
-    private Set<Topic> topicSet = new HashSet<>();
+    private Set<Integer> topicSet = new HashSet<>();
 
     /**
      * 标签的创建时间
      * tag_creation_time
      */
-    private Date tag_create_time;
+    private long tag_create_time;
 
     public Tag(@NonNull String tag_name) {
         this.tag_name = tag_name;
+        setTag_create_time(System.currentTimeMillis());
     }
 
 
@@ -60,19 +61,19 @@ public class Tag extends LitePalSupport {
         this.tag_name = tag_name;
     }
 
-    public Date getTag_create_time() {
+    public long getTag_create_time() {
         return tag_create_time;
     }
 
-    public void setTag_create_time(Date tag_create_time) {
+    public void setTag_create_time(long tag_create_time) {
         this.tag_create_time = tag_create_time;
     }
 
-    public Set<Topic> getTopicSet() {
+    public Set<Integer> getTopicSet() {
         return topicSet;
     }
 
-    public void setTopicSet(Set<Topic> topicSet) {
+    public void setTopicSet(Set<Integer> topicSet) {
         this.topicSet = topicSet;
     }
 
@@ -81,7 +82,6 @@ public class Tag extends LitePalSupport {
         return "Tag{" +
             "id=" + id +
             ", tag_name='" + tag_name + '\'' +
-            ", topicSet=" + topicSet +
             ", tag_create_time=" + tag_create_time +
             '}';
     }

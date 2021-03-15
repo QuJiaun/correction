@@ -1,6 +1,7 @@
 package com.luckyxmobile.correction.utils;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,12 +14,19 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.Topic;
+import com.luckyxmobile.correction.model.bean.TopicImage;
+import com.luckyxmobile.correction.ui.activity.CropImageActivity;
 import com.luckyxmobile.correction.utils.impl.FilesUtils;
 
 import android.graphics.Point;
@@ -26,11 +34,13 @@ import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import org.litepal.LitePal;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -40,22 +50,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class ImageUtil implements IImage{
+public class ImageUtil{
     public static final String TAG = "PhotoUtil";
     //判断是否具有拍照权限
     public static boolean hasPermission = false;
     //图片的最终路径
     public static String resultPath = "default";
-
-    private IFiles filesUtil;
-
-
-    private Context context;
-
-    public ImageUtil(Context context){
-        this.context = context;
-        filesUtil = new FilesUtils(context);
-    }
 
     /**
      * 每次使用完resultPath需要重置
@@ -130,6 +130,29 @@ public class ImageUtil implements IImage{
         }
 
         return retBmp;
+    }
+
+    public static Bitmap getImage(Uri uri, ContentResolver resolver) {
+
+        if (uri == null || resolver == null) {
+            return null;
+        }
+
+        Bitmap bitmap = null;
+
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(resolver.openInputStream(uri), new Rect(), options);
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = 1;
+            bitmap = BitmapFactory.decodeStream(resolver.openInputStream(uri), new Rect(), options);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
     }
 
     /**
@@ -283,128 +306,64 @@ public class ImageUtil implements IImage{
         return bitmap;
     }
 
-    public static Bitmap convertTopicImageByWhichs(Context context, int topicId, List<String> whichs, int position, boolean fromPrint, boolean hideHighlightAreas){
-        Topic topic = LitePal.find(Topic.class,topicId);
-        TopicImagesHighlighter topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_original_picture(), TopicImagesHighlighter.class);
-        if (topicImagesHighlighter == null){
-            Log.d(TAG, "convertTopicImageByWhichs: "+"未找到该题目图片相关信息");
-            return null;
-        }
-        String contrastRadio = topicImagesHighlighter.getImageContrastRadioList().get(position);
-        String imagePath = topicImagesHighlighter.getPrimitiveImagePathList().get(position);
-        if (whichs == null){
-            whichs = new ArrayList<>();
-            whichs.add("no_path");
-        }
+//    public static Bitmap convertTopicImageByWhichs(Context context, int topicId, List<String> whichs, int position, boolean fromPrint, boolean hideHighlightAreas){
+//        Topic topic = LitePal.find(Topic.class,topicId);
+//        TopicImagesHighlighter topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_original_picture(), TopicImagesHighlighter.class);
+//        if (topicImagesHighlighter == null){
+//            Log.d(TAG, "convertTopicImageByWhichs: "+"未找到该题目图片相关信息");
+//            return null;
+//        }
+//        String contrastRadio = topicImagesHighlighter.getImageContrastRadioList().get(position);
+//        String imagePath = topicImagesHighlighter.getPrimitiveImagePathList().get(position);
+//        if (whichs == null){
+//            whichs = new ArrayList<>();
+//            whichs.add("no_path");
+//        }
+//
+//        Bitmap bgBitmap = OpenCVUtil.setImageContrastRadioByPath(contrastRadio,imagePath);
+//        Bitmap fgBitmap = Bitmap.createBitmap(bgBitmap.getWidth(),bgBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(fgBitmap);
+//        canvas.drawBitmap(bgBitmap,0,0,null);
+//        canvas.drawBitmap(fgBitmap,0,0,null);
+//
+//        if (!fromPrint || hideHighlightAreas){
+//            for (TopicImagesHighlighter.ImageSmear imagePaints : topicImagesHighlighter.getImageSmearsList().get(position)){
+//                canvas.save();
+//                String which = imagePaints.getWhichSmear();
+//                int paintWidth = imagePaints.getBrushWidth();
+//                Paint paint = createBrush(context,which,paintWidth,whichs.contains(which), hideHighlightAreas);
+//                Path path = pointsToPath(imagePaints.getSmearPoints());
+//                canvas.drawPath(path, paint);
+//                canvas.restore();
+//            }
+//        }
+//
+//
+//
+//        Bitmap newBitmap = Bitmap.createBitmap(bgBitmap.getWidth(),bgBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+//        canvas = new Canvas(newBitmap);
+//        canvas.drawBitmap(bgBitmap,0,0,null);
+//        canvas.drawBitmap(fgBitmap,0,0,null);
+//        canvas.save();
+//        canvas.restore();
+//
+//        return newBitmap;
+//    }
 
-        Bitmap bgBitmap = OpenCVUtil.setImageContrastRadioByPath(contrastRadio,imagePath);
-        Bitmap fgBitmap = Bitmap.createBitmap(bgBitmap.getWidth(),bgBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(fgBitmap);
-        canvas.drawBitmap(bgBitmap,0,0,null);
-        canvas.drawBitmap(fgBitmap,0,0,null);
+    public static void GlideRadius(Context context, TopicImage topicImage, ImageView imageView, int radius) {
 
-        if (!fromPrint || hideHighlightAreas){
-            for (TopicImagesHighlighter.ImageSmear imagePaints : topicImagesHighlighter.getImageSmearsList().get(position)){
-                canvas.save();
-                String which = imagePaints.getWhichSmear();
-                int paintWidth = imagePaints.getBrushWidth();
-                Paint paint = createBrush(context,which,paintWidth,whichs.contains(which), hideHighlightAreas);
-                Path path = pointsToPath(imagePaints.getSmearPoints());
-                canvas.drawPath(path, paint);
-                canvas.restore();
-            }
-        }
+        Bitmap bitmap = OpenCVUtil.setImageContrastRadioByPath(topicImage.getContrast_radio(), topicImage.getPath());
 
-
-
-        Bitmap newBitmap = Bitmap.createBitmap(bgBitmap.getWidth(),bgBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(newBitmap);
-        canvas.drawBitmap(bgBitmap,0,0,null);
-        canvas.drawBitmap(fgBitmap,0,0,null);
-        canvas.save();
-        canvas.restore();
-
-        return newBitmap;
-    }
-
-    public static Path pointsToPath(List<Point> points){
-        Path path = new Path();
-
-        if (points.isEmpty()){
-            return path;
-        }
-
-        float x = (float) points.get(0).x, y = (float) points.get(0).y;
-        float mLastX, mLastY;
-
-        path.moveTo(x,y);
-        mLastX = x; mLastY = y;
-
-        for (int i = 1; i < points.size(); i++) {
-
-            x = (float) points.get(i).x; y = (float) points.get(i).y;
-
-            path.quadTo(mLastX,mLastY,(mLastX+x)/2,(mLastY+y)/2);
-
-            mLastX = x; mLastY = y;
+        if (radius > 0) {
+            //设置图片圆角角度
+            radius = dip2px(context, radius);
+            RoundedCorners roundedCorners = new RoundedCorners(radius);
+            RequestOptions options = RequestOptions.bitmapTransform(roundedCorners).override(0, 0);
+            Glide.with(context).load(bitmap).apply(options).into(imageView);
+        } else {
+            Glide.with(context).load(bitmap).into(imageView);
         }
 
-        return path;
-
-    }
-
-    public static Paint createBrush(Context context, String whichPaint, int paintWidth, boolean isShow, boolean hideHighlightAreas){
-
-        Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        paint.setDither(true);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeCap(Paint.Cap.SQUARE);
-        paint.setStrokeJoin(Paint.Join.BEVEL);
-
-        int color = R.color.highlighter_blue;
-        switch (whichPaint) {
-            case Constants.PAINT_BLUE:
-                color = R.color.highlighter_blue;
-                break;
-            case Constants.PAINT_RED:
-                color = R.color.highlighter_red;
-                break;
-            case Constants.PAINT_GREEN:
-                color = R.color.highlighter_green;
-                break;
-            case Constants.PAINT_YELLOW:
-                color = R.color.highlighter_yellow;
-                break;
-            case Constants.PAINT_WHITE_OUT:
-                paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-                color = R.color.colorWhite;
-                break;
-            case Constants.PAINT_ERASE:
-                paint.setXfermode(new  PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-                color = R.color.colorWhite;
-                break;
-            default:
-                break;
-        }
-        paint.setStrokeWidth(paintWidth);
-        paint.setColor(context.getResources().getColor(color,null));
-
-        if (hideHighlightAreas){
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-            paint.setColor(context.getResources().getColor(R.color.colorWhite,null));
-            isShow = false;
-        }
-
-        if (isShow){
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
-            paint.setAlpha(150);
-        }else{
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-            paint.setAlpha(255);
-        }
-
-        return paint;
     }
 
     /**
@@ -453,50 +412,17 @@ public class ImageUtil implements IImage{
     }
 
 
-    public static List<String> transformListOnSmear(Context context, String smears){
-        if (smears == null){
-            return new ArrayList<>();
-        }
 
-        List<String> which = new ArrayList<>();
 
-        String[] s = smears.split(",");
-
-        for (String s1:s){
-            s1 = s1.replace(" ","");
-            if (s1.equals("0")){
-                which.add(Constants.PAINT_BLUE);
-
-            }else if (s1.equals("1")){
-                which.add(Constants.PAINT_RED);
-
-            }else if (s1.equals("2")){
-                which.add(Constants.PAINT_GREEN);
-
-            }else if (s1.equals("3")){
-                which.add(Constants.PAINT_YELLOW);
-
-            }else if (s1.equals("-1")){
-                return new ArrayList<>();
-
-            }
-        }
-
-        return which;
-    }
-
-    @Override
-    public void openAlbum() {
+    public static void openAlbum(Activity activity) {
         Intent selectIntent = new Intent(Intent.ACTION_GET_CONTENT);
         selectIntent.setType("image/*");
-        ((Activity)context).startActivityForResult(selectIntent, Constants.REQUEST_CODE_SELECT_ALBUM);
+        activity.startActivityForResult(selectIntent, Constants.REQUEST_CODE_SELECT_ALBUM);
     }
 
-    @Override
-    public void openCamera() {
+    public static void openCamera(Activity activity) {
         Intent startCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Uri uri = filesUtil.getTmpFileUri();
-        startCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        ((Activity)context).startActivityForResult(startCameraIntent, Constants.REQUEST_CODE_TAKE_PHOTO);
+        startCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, FilesUtils.getInstance().getCacheFileUri());
+        activity.startActivityForResult(startCameraIntent, Constants.REQUEST_CODE_TAKE_PHOTO);
     }
 }

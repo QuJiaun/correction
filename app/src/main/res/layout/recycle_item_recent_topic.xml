@@ -1,28 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view_collection"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:layout_marginBottom="8dp"
-    android:background="@color/colorWhite">
+    android:padding="8dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:background="@drawable/shape_box_view">
 
-    <ImageView
-        android:id="@+id/iv_recent_topic_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
-        android:minHeight="100dp"
-        android:maxHeight="250dp"/>
+<!--    <com.youth.banner.Banner-->
+<!--        android:id="@+id/recent_topic_banner"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:minHeight="100dp"-->
+<!--        android:maxHeight="250dp"-->
+<!--        app:banner_auto_loop="true"/>-->
 
     <TextView
         android:id="@+id/recent_topic_book_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/iv_recent_topic_image"
-        android:gravity="center|end"
-        android:padding="8dp"
-        android:text="@string/my_notebooks"/>
+        android:padding="4dp"
+        android:text="@string/my_notebooks"
+        android:textColor="@color/black"/>
 
-</RelativeLayout>
+    <ImageView
+        android:id="@+id/recent_topic_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="120dp"
+        android:maxHeight="160dp"
+        android:scaleType="centerInside"
+        android:background="@drawable/shape_box_fillet_shadow_view"/>
+
+</LinearLayout>
 

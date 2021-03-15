@@ -1,20 +1,26 @@
 package com.luckyxmobile.correction.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
+import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
+import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
 import com.luckyxmobile.correction.utils.OpenCVUtil;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,24 +35,67 @@ import butterknife.ButterKnife;
 public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private final Context context;
-    private boolean isShowOriginalImage = false;
+    private boolean isShowOriginalImage = true;
     private final TopicInfoListener listener;
-    private final List<Integer> typeList = new ArrayList<>();
-    private final Map<Integer, List<TopicImage>> topicMap = new LinkedHashMap<>();
 
-    private boolean isEdit = false;
+    private final List<Object> typeList = new ArrayList<>();
+    private int topicImageSize = 0;
+    private boolean removeMode = false;
 
     public TopicInfoAdapter(Context context, List<TopicImage> imageList) {
         this.context = context;
         this.listener = (TopicInfoListener) context;
+        this.topicImageSize = imageList.size();
+        size(imageList);
+    }
+
+    public void setRemoveMode(boolean removeMode) {
+        this.removeMode = removeMode;
+    }
+
+    public boolean isRemoveMode() {
+        return removeMode;
+    }
+
+    public void size(List<TopicImage> imageList) {
+
+        Map<Integer, List<TopicImage>> tmpMap = new LinkedHashMap<>();
 
         for (TopicImage topicImage : imageList) {
             int type = topicImage.getType();
 
-            if (!topicMap.containsKey(type)) {
-                topicMap.put(type, new ArrayList<>());
+            if (!tmpMap.containsKey(type)) {
+                tmpMap.put(type, new ArrayList<>());
             }
-            topicMap.get(type).add(topicImage);
+            tmpMap.get(type).add(topicImage);
+        }
+
+        for (int type : tmpMap.keySet()) {
+            typeList.add(type);
+            List<TopicImage> topicImageList = tmpMap.get(type);
+            typeList.addAll(topicImageList);
+        }
+    }
+
+    private int getTextByType(int type){
+        switch (type) {
+            case Constants.TOPIC_STEM:
+               return R.string.stem;
+
+            case Constants.TOPIC_CORRECT:
+                return R.string.correct;
+
+            case Constants.TOPIC_INCORRECT:
+                return R.string.incorrect;
+
+            case Constants.TOPIC_KEY:
+                return R.string.key;
+
+            case Constants.TOPIC_CAUSE:
+                return R.string.cause;
+
+            default:
+                return -1;
         }
     }
 
@@ -59,7 +108,7 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-        if (viewType > 0) {
+        if (viewType == 0) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycle_item_topic_images, parent, false);
             return new TopicInfoHolder(view);
         } else {
@@ -68,18 +117,22 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    int currentType;
+
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        int type = typeList.get(position);
 
-        if (type > 0) {
-            currentType = type;
+        if (typeList.get(position) instanceof Integer) {
+            int currentType = (int) typeList.get(position);
+            currentType = getTextByType(currentType);
             TopicLabelHolder viewHolder = (TopicLabelHolder) holder;
-            viewHolder.topicLabelTv.setText(context.getString(type));
+            if (currentType != -1) {
+                viewHolder.topicLabelTv.setText(context.getText(currentType));
+            }
+
         } else {
-            TopicImage topicImage = topicMap.get(currentType).get(-type);
+
+            TopicImage topicImage = (TopicImage) typeList.get(position);
 
             TopicInfoHolder viewHolder = (TopicInfoHolder) holder;
             if (isShowOriginalImage) {
@@ -92,72 +145,67 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 ).into(viewHolder.topicIv);
             }
 
-
-            viewHolder.removeTopicBtn.setVisibility(isEdit?View.VISIBLE:View.GONE);
+            viewHolder.removeTopicBtn.setVisibility(removeMode?View.VISIBLE:View.INVISIBLE);
 
             viewHolder.removeTopicBtn.setOnClickListener(view -> {
-                notifyItemRemoved(position);
-                listener.removeTopicImage(topicImage);
+                if (topicImageSize > 1) {
+                    topicImageSize--;
+                    typeList.remove(position);
+                    notifyItemRemoved(position);
+                    listener.removeTopicImage(topicImage);
+                } else {
+                    Toast.makeText(context, R.string.warning_picture, Toast.LENGTH_SHORT).show();
+                }
             });
 
-            viewHolder.itemView.setOnClickListener(view -> listener.onClickTopicImage(topicImage));
+            viewHolder.itemView.setOnClickListener(view ->{
+                if (!removeMode) {
+                    listener.onClickTopicImage(topicImage);
+                }
+            } );
+
+            viewHolder.itemView.setOnLongClickListener(v -> {
+                removeMode = !removeMode;
+                notifyDataSetChanged();
+                return true;
+            });
         }
-    }
-
-    public void addTopicImage(TopicImage topicImage) {
-        int type = topicImage.getType();
-
-        if (!topicMap.containsKey(type)) {
-            topicMap.put(type, new ArrayList<>());
-        }
-
-        topicMap.get(type).add(topicImage);
-        notifyDataSetChanged();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return typeList.get(position);
+        if (typeList.get(position) instanceof Integer) {
+            return (int) typeList.get(position);
+        } else {
+            return 0;
+        }
     }
 
     @Override
     public int getItemCount() {
-        int count = topicMap.size();
-
-        typeList.clear();
-
-        for (int key : topicMap.keySet()) {
-            typeList.add(key);
-
-
-            int size = topicMap.get(key).size();
-            count += size;
-
-            for (int i = 0; i < size; i++) {
-                typeList.add(-i);
-            }
-        }
-        return count;
+        return typeList.size();
     }
 
     public static class TopicLabelHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_topic_label) TextView topicLabelTv;
+        TextView topicLabelTv;
 
         TopicLabelHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            topicLabelTv = itemView.findViewById(R.id.item_topic_label);
         }
     }
 
     public static class TopicInfoHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_topic_image) ImageView topicIv;
-        @BindView(R.id.item_remove_topic_image) ImageView removeTopicBtn;
+        ImageView topicIv;
+        ImageView removeTopicBtn;
 
         TopicInfoHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            topicIv = itemView.findViewById(R.id.item_topic_image);
+            removeTopicBtn = itemView.findViewById(R.id.item_remove_topic_image);
         }
     }
 

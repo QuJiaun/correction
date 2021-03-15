@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 
 import cn.forward.androids.ScaleGestureDetectorApi27;
-import es.dmoral.toasty.Toasty;
 
 /**
  * 编辑图片页面
@@ -66,12 +65,11 @@ public class DrawingView extends View implements
         this.topicImage = topicImage;
         this.imagePath = topicImage.getPath();
 
+        curPaint = HighlighterUtil.defaultHighlighter(getContext());
+        highlighterList = topicImage.getHighlighterList();
+
         setContrastRadio(topicImage.getContrast_radio());
         setCurPaintWidth(topicImage.getWord_size());
-
-        curPaint = HighlighterUtil.defaultHighlighter(getContext());
-
-        highlighterList = topicImage.getHighlighterList();
     }
 
     public Bitmap getImageBitmap(){
@@ -150,7 +148,7 @@ public class DrawingView extends View implements
 
         if (rectWidth * rectHeight < 2000) {
             Log.d(TAG,"涂抹区域太小，删除以上涂抹点");
-            Toasty.warning(context, R.string.smear_waring, Toasty.LENGTH_SHORT, true).show();
+//            Toasty.warning(context, R.string.smear_waring, Toasty.LENGTH_SHORT, true).show();
             highlighterList.remove(highlighterList.size()-1);
         }else{
            redoHighlighterList.clear();
@@ -191,30 +189,39 @@ public class DrawingView extends View implements
         return true;
     }
 
+    public boolean redoAble() {
+        return !redoHighlighterList.isEmpty();
+    }
+
     public boolean redo(){
 
-        if (!redoHighlighterList.isEmpty()){
+        if (redoAble()){
+
             TopicImage.Highlighter tmp = redoHighlighterList.get(redoHighlighterList.size()-1);
             highlighterList.add(tmp);
             redoHighlighterList.remove(tmp);
             invalidate();
 
-            return true;
+            return !redoHighlighterList.isEmpty();
         }
 
         return false;
     }
 
+    public boolean undoAble() {
+        return !highlighterList.isEmpty();
+    }
+
     public boolean undo(){
 
-        if (!highlighterList.isEmpty()){
+        if (undoAble()){
 
             TopicImage.Highlighter tmp = highlighterList.get(highlighterList.size()-1);
             redoHighlighterList.add(tmp);
             highlighterList.remove(tmp);
             invalidate();
 
-            return true;
+            return !highlighterList.isEmpty();
         }
 
         return false;
@@ -226,6 +233,11 @@ public class DrawingView extends View implements
     }
 
     public void setCurPaintWidth(int width) {
+        if (width == -1) {
+            width = OpenCVUtil.calculateImageWordSize(mBgBitmap);
+            Log.d(TAG, "setCurPaintWidth: " + width);
+            topicImage.setWord_size(width);
+        }
         curWidth = width;
         curPaint.setStrokeWidth(width);
     }

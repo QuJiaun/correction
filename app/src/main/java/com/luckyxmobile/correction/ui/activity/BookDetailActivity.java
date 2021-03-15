@@ -1,20 +1,14 @@
 package com.luckyxmobile.correction.ui.activity;
 
-import android.annotation.SuppressLint;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -22,59 +16,46 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.BookDetailAdapter;
-import com.luckyxmobile.correction.model.bean.Book;
-import com.luckyxmobile.correction.model.bean.Tag;
+import com.luckyxmobile.correction.adapter.ViewHolderTopicItem;
+import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.model.bean.Topic;
-import com.luckyxmobile.correction.model.impl.TagDaoImpl;
 import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.presenter.BookDetailViewPresenter;
+import com.luckyxmobile.correction.presenter.impl.BookDetailViewPresenterImpl;
+import com.luckyxmobile.correction.ui.dialog.AddTopicImageDialog;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
-import com.luckyxmobile.correction.utils.ImageUtil;
-import com.zhy.view.flowlayout.FlowLayout;
-import com.zhy.view.flowlayout.TagAdapter;
+import com.luckyxmobile.correction.view.IBookDetailView;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
-import org.litepal.LitePal;
-
-import java.util.ArrayList;
-import java.util.Collections;
+import java.lang.reflect.Method;
 import java.util.List;
 
-import es.dmoral.toasty.Toasty;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
-/**
- *
- * @author LiuGen
- * @date 2019/7/23
- *
- * @date 2019/08/03
- * @author lg
- * 修缮该页面item布局
- *
- * @date 2019/10/12
- * @author lg
- * 为错题本详情界面添加标签索引
- * */
-
-public class BookDetailActivity extends AppCompatActivity {
+public class BookDetailActivity extends AppCompatActivity implements IBookDetailView
+        , ViewHolderTopicItem.OnItemListener
+        , AddTopicImageDialog.OnClickListener {
 
     public static final String TAG = "BookDetailActivity";
 
-    private RecyclerView recyclerView;
-    private BookDetailAdapter adapter;
-    private Toolbar toolbar;
-    private TagFlowLayout tagNavigationLayout;
-    private ImageView topicNothingImage;
-    private SharedPreferences preferences;
-    private SharedPreferences.Editor editor;
-    private Book book;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.book_detail_tag_layout)
+    TagFlowLayout tagFlowLayout;
+    @BindView(R.id.recycler_correction)
+    RecyclerView recyclerView;
+    @BindView(R.id.book_topic_nothing)
+    ImageView topicNothingImage;
+    @BindView(R.id.loadBar)
+    ProgressBar loadBar;
+
     private int book_id;
-    private List<Topic> topics;
-    private List<Tag> tags = new ArrayList<>();
-    private boolean isNewest = true;
-    /**添加错题按钮、删除按钮、从旧到新、从新到旧*/
-    private MenuItem addTopic = null,deleteTopic = null,oldestFirst,newestFirst;
-    private ProgressBar loadBar;
+    private BookDetailAdapter adapter;
+    private BookDetailViewPresenter presenter;
+
+    private MenuItem topicSortMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,228 +63,73 @@ public class BookDetailActivity extends AppCompatActivity {
         // 去除顶部标题栏
         this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_book_detail);
-
-        initViewData();
-
-        initToolBar();
-
-        initTag();
-
-        initRecyclerView();
-
-    }
-
-    private void initViewData() {
-
-        toolbar = findViewById(R.id.toolbar);
-        recyclerView = findViewById(R.id.recycler_correction);
-        tagNavigationLayout = findViewById(R.id.tags_navigation);
-        topicNothingImage = findViewById(R.id.book_topic_nothing);
-        loadBar = findViewById(R.id.loadBar);
+        ButterKnife.bind(this);
 
         // 获取Intent传过来的数据集
-        book_id = getIntent().getIntExtra(Constants.BOOK_ID, 0);
-        book = LitePal.find(Book.class, book_id);
-        // 由错题本获取其中所有存储的错题
-        if (book.getBook_cover().equals("R.mipmap.favorite")){
-            //收藏
-            topics = LitePal.where("topic_collection=?", "1").find(Topic.class);
-        }else{
-            topics = LitePal.where("book_id=?", String.valueOf(book_id)).find(Topic.class);
-        }
-
-        preferences = getSharedPreferences(Constants.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
-
-        if (preferences.getBoolean(Constants.TABLE_SHARED_IS_NEWEST_ORDER,true)){
-            Collections.reverse(topics);
-            isNewest = true;
-        }else{
-            isNewest = false;
-        }
-
-        // 获取到当前所有的Tags
-        tags = TagDaoImpl.findTagsByTopics(topics);
+        book_id = getIntent().getIntExtra(Constants.BOOK_ID, -1);
+        presenter = new BookDetailViewPresenterImpl(this);
+        presenter.init(book_id);
     }
-
-    private void initToolBar() {
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-            actionBar.setDisplayHomeAsUpEnabled(true);// 显示返回键
-            actionBar.setDisplayShowTitleEnabled(false);// 不显示默认标题
-        }
-        toolbar.setTitle(book.getBook_name());
-        //toolbar的返回按钮
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-    }
-
-    private void initTag() {
-
-        // 加载标签导航布局的Adapter
-        tagNavigationLayout.setAdapter(new TagAdapter<Tag>(tags) {
-            @Override
-            public View getView(FlowLayout parent, int position, Tag tag) {
-                CheckBox checkBox = (CheckBox) LayoutInflater.from(BookDetailActivity.this).inflate
-                        (R.layout.flow_item_tag_on_navigation, parent, false);
-                checkBox.setText(tag.getTag_name());
-                return checkBox;
-            }
-        });
-
-        // 通过调用Adapter中的搜索过滤方法，达到点击标签进行分类显示的目的
-        tagNavigationLayout.setOnSelectListener(selectPosSet -> {
-
-            List<Integer> SelectedPositions = new ArrayList<>(selectPosSet);
-
-            StringBuilder tagsum = new StringBuilder();
-            for (int i = 0; i < SelectedPositions.size(); i++) {
-                Tag tag = tags.get(SelectedPositions.get(i));
-                if (i != SelectedPositions.size()-1){
-                    tagsum.append(tag.getTag_name()).append(",");
-                }else{
-                    tagsum.append(tag.getTag_name());
-                }
-            }
-            adapter.getFilter().filter(tagsum.toString());
-        });
-    }
-
-    private void initRecyclerView() {
-
-        LinearLayoutManager manager = new LinearLayoutManager(BookDetailActivity.this);
-        adapter = new BookDetailAdapter(BookDetailActivity.this, topics, book_id);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
-
-        adapter.setOnItemListener(new BookDetailAdapter.onItemListener() {
-            @Override
-            public void onItemLongClickListener(int position) {
-                //删除图标显示，添加图标隐藏
-                deleteTopic.setVisible(true);
-                addTopic.setVisible(false);
-            }
-
-            @Override
-            public void finishDeleteTopic(boolean b) {
-                if (b){
-                    Toasty.info(BookDetailActivity.this, R.string.delete_successful,Toasty.LENGTH_SHORT).show();
-                    topics = LitePal.where("book_id=?", String.valueOf(book_id)).find(Topic.class);
-                    if (isNewest){
-                        Collections.reverse(topics);
-                    }
-                    adapter.upTopics(topics);
-                    tags = TagDaoImpl.findTagsByTopics(topics);
-                    tagNavigationLayout.onChanged();
-                }else{
-                    Toasty.info(BookDetailActivity.this, R.string.delete_error,Toasty.LENGTH_SHORT).show();
-                }
-                adapter.setTopicsDelete(new ArrayList<>());
-                loadBar.setVisibility(View.GONE);
-            }
-        });
-    }
-
 
     @Override
     protected void onResume() {
         super.onResume();
+        setTopicsSort(presenter.isNewest());
+    }
 
-        // 切换其他应用回到当前活动后 解决删除图标消失问题
-        if (deleteTopic != null){
-            if (deleteTopic.isVisible()) {
-                deleteTopic.setVisible(true);
-                addTopic.setVisible(false);
-                BookDetailAdapter.mShowDelete = true;
-            }else{
-                deleteTopic.setVisible(false);
-                //删除图标隐藏，添加图标显示
-                addTopic.setVisible(true);
-                BookDetailAdapter.mShowDelete = false;
+    @Override
+    public void setToolBar(String barName) {
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(barName);
+    }
+
+    @Override
+    public void setTagLayout() {
+
+    }
+
+    @Override
+    public void setTopicListRv(List<Topic> topicList) {
+
+        if (topicList == null || topicList.isEmpty()) {
+            topicNothingImage.setVisibility(View.VISIBLE);
+        } else {
+            topicNothingImage.setVisibility(View.GONE);
+        }
+
+        adapter = new BookDetailAdapter(this, topicList);
+        LinearLayoutManager manager = new LinearLayoutManager(BookDetailActivity.this);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        if (menu != null) {
+            //显示menu icon与txt
+            if (menu.getClass().getSimpleName().equalsIgnoreCase("MenuBuilder")) {
+                try {
+                    Method method = menu.getClass()
+                            .getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                    method.setAccessible(true);
+                    method.invoke(menu, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
-
-
-        if (topics.isEmpty()){
-            topicNothingImage.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        }
-
+        return super.onMenuOpened(featureId, menu);
     }
 
-    @Override
-    public void onBackPressed() {
-
-        // back键取消删除图标
-        if (BookDetailAdapter.mShowDelete) {
-            BookDetailAdapter.mShowDelete = false;
-            // 更新adapter，取消删除图标的同时取消选中的item
-            adapter.setTopicsDelete(new ArrayList<>());
-            adapter.notifyDataSetChanged();
-            deleteTopic.setVisible(false);
-            addTopic.setVisible(true);
-            //此活动返回时 将错题是否是从收藏夹添加的 标记为false
-            editor = preferences.edit();
-            editor.putBoolean(Constants.TABLE_FROM_FAVORITE, false);
-            editor.apply();
-            return;
-        }
-        super.onBackPressed();
-    }
-
-
-    /**
-     * @author lg
-     * @date 2019/08/23
-     * 当活动不可见的时候，要将删除图标也设置为不可见；
-     * 修复 之前活动不可见之后再次进入，删除图标仍显示 的问题
-     * */
-    @Override
-    protected void onStop() {
-        super.onStop();
-        // 当活动不可见的时候，要将删除图标也设置为不可见
-        BookDetailAdapter.mShowDelete = false;
-        if(deleteTopic !=null){
-            deleteTopic.setVisible(false);
-            addTopic.setVisible(true);
-        }
-
-        adapter.notifyDataSetChanged();
-    }
-
-    /**
-     * @author LiuGen
-     * @function 为Toolbar加载子项样式
-     * */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu_bookdetail, menu);
 
-        deleteTopic = menu.findItem(R.id.book_topic_delete);
-        addTopic = menu.findItem(R.id.add_topic_toolbar);
-        oldestFirst = menu.findItem(R.id.sort_oldest_first);
-        newestFirst = menu.findItem(R.id.sort_newest_first);
-
-        if (preferences.getBoolean(Constants.TABLE_SHARED_IS_NEWEST_ORDER,true)){
-            newestFirst.setTitle(getString(R.string.newest_order) + "   √");
-            oldestFirst.setTitle(getString(R.string.oldest_order));
-        }else{
-            newestFirst.setTitle(getString(R.string.newest_order));
-            oldestFirst.setTitle(getString(R.string.oldest_order) + "   √");
-        }
-
-
+        topicSortMenuItem = menu.findItem(R.id.sort_time);
+        adapter.setDeleteMenuItem(menu.findItem(R.id.book_topic_delete));
         return true;
     }
 
-    /**
-     * @author lg
-     * @function 为Toolbar子项设置点击事件
-     * */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -311,17 +137,18 @@ public class BookDetailActivity extends AppCompatActivity {
             case R.id.book_topic_delete:
                 deleteSelectedTopic();
                 break;
-            // 从新到旧
-            case R.id.sort_newest_first:
-                setTopicsSort(true);
-                break;
-            // 从旧到新
-            case R.id.sort_oldest_first:
-                setTopicsSort(false);
+            // 排序
+            case R.id.sort_time:
+                boolean isNewest = presenter.isNewest();
+                presenter.setIsNewest(!isNewest);
+                setTopicsSort(!isNewest);
                 break;
             //在错题本内添加错题
             case R.id.add_topic_toolbar:
-                createAddTopicDialog();
+                if (adapter.isDeleteMode()) {
+                    adapter.setDeleteMode(false);
+                }
+                AddTopicImageDialog.show(this);
                 break;
             default:
                 break;
@@ -329,108 +156,62 @@ public class BookDetailActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        if (adapter != null && adapter.isDeleteMode()) {
+            adapter.setDeleteMode(false);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void deleteSelectedTopic() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(BookDetailActivity.this)
+        new AlertDialog.Builder(this)
                 .setTitle(R.string.confirm_delete)
                 .setIcon(R.drawable.ic_delete_red_24dp)
                 .setMessage(R.string.confirm_delete_topic)
-                .setPositiveButton(R.string.ensure, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        loadBar.setVisibility(View.VISIBLE);
-                        adapter.deleteTopics();
-                        BookDetailAdapter.mShowDelete = false;
-                        deleteTopic.setVisible(false);
-                        addTopic.setVisible(true);
-                    }
-                }).setNegativeButton(R.string.cancel, null);
+                .setPositiveButton(R.string.ensure, (dialog, which) -> {
+                    loadBar.setVisibility(View.VISIBLE);
+                    presenter.removeTopicList(adapter.getTopicsByDelete());
+                }).setNegativeButton(R.string.cancel, null).show();
+    }
 
-        if (!adapter.getTopicsDelete().isEmpty()){
-            builder.show();
-        }else{
-            adapter.setTopicsDelete(new ArrayList<>());
-            BookDetailAdapter.mShowDelete = false;
-            deleteTopic.setVisible(false);
-            addTopic.setVisible(true);
-            adapter.notifyDataSetChanged();
-        }
-
-
-
-        if (topics.isEmpty()){
-            topicNothingImage.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
+    private void setTopicsSort(boolean isNewest){
+        if (topicSortMenuItem != null) {
+            topicSortMenuItem.setIcon(isNewest?
+                    getDrawable(R.drawable.ic_arrow_downward)
+                    : getDrawable(R.drawable.ic_arrow_upward));
         }
     }
 
-    private void setTopicsSort(boolean sortNewestFirst){
 
-        if (isNewest != sortNewestFirst){
-            //对题目排序
-            Collections.reverse(topics);
-            adapter.upTopics(topics);
-            isNewest = sortNewestFirst;
-        }
-
-        //从旧到新
-        if (!sortNewestFirst){
-            newestFirst.setTitle(getString(R.string.newest_order));
-            oldestFirst.setTitle(getString(R.string.oldest_order) + "   √");
-        }else{
-            newestFirst.setTitle(getString(R.string.newest_order) + "   √");
-            oldestFirst.setTitle(getString(R.string.oldest_order));
-        }
-
-        editor = preferences.edit();
-        editor.putBoolean(Constants.TABLE_SHARED_IS_NEWEST_ORDER,sortNewestFirst);
-        editor.apply();
+    @Override
+    public void removeTopicListFinish(boolean isEmpty) {
+        adapter.removeTopicList();
+        loadBar.setVisibility(View.GONE);
+        topicNothingImage.setVisibility(isEmpty?View.VISIBLE:View.GONE);
     }
 
-    private void createAddTopicDialog() {
-
-        editor = preferences.edit();
-        editor.putInt(Constants.TABLE_FROM_BOOK_ID, book_id);
-        editor.apply();
-
-        @SuppressLint("InflateParams")
-        View view = LayoutInflater.from(BookDetailActivity.this).inflate(R.layout.upload_topic_dialog,null);
-        new AlertDialog.Builder(BookDetailActivity.this).setView(view).show();
-
-        Button uploadCamera = view.findViewById(R.id.upload_topic_dialog_camera);
-        Button uploadAlbum = view.findViewById(R.id.upload_topic_dialog_album);
-        uploadCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addTopicInBook(false);
-            }
-        });
-
-        uploadAlbum.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               addTopicInBook(true);
-            }
-        });
-    }
-
-    private void addTopicInBook(boolean fromAlbum){
-
-        if (!ImageUtil.hasPermission) {
-            //监测权限是否分配
-            ImageUtil.checkPermissions(BookDetailActivity.this);
-        }
-        //在此处判断是否是从收藏夹里添加的错题 记录到SharedPreferences 中
-        preferences = getSharedPreferences(Constants.TABLE_SHARED_CORRECTION, MODE_PRIVATE);
-        editor = preferences.edit();
-        if(book.getId()==1){
-            editor.putBoolean(Constants.TABLE_FROM_FAVORITE,true);
-            editor.apply();
-        }
-        startActivityForResult(CropImageActivity.getJumpIntent(BookDetailActivity.this, MainActivity.TAG,
-                fromAlbum, Constants.TOPIC_STEM,true,true,-1), Constants.REQUEST_CODE);
-
-        DestroyActivityUtil.addDestroyActivityToMap(BookDetailActivity.this,MainActivity.TAG);
+    @Override
+    public void onClickItem(Topic topic) {
 
     }
 
+    @Override
+    public void addTopicFromCamera() {
+        DestroyActivityUtil.addDestroyActivityToMap(this, TAG);
+        MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
+        MySharedPreferences.getInstance().putInt(Constants.CURRENT_BOOK_ID, book_id == 1? -1: book_id);
+        Intent intent = CropImageActivity.getCropImageActivityIntent(this, false, true);
+        startActivity(intent);
+    }
+
+    @Override
+    public void addTopicFromAlbum() {
+        DestroyActivityUtil.addDestroyActivityToMap(this, TAG);
+        MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
+        MySharedPreferences.getInstance().putInt(Constants.CURRENT_BOOK_ID, book_id == 1? -1: book_id);
+        Intent intent = CropImageActivity.getCropImageActivityIntent(this, true, true);
+        startActivity(intent);
+    }
 }

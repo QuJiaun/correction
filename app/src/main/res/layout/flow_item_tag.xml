@@ -8,10 +8,8 @@
     android:button="@null"
     android:text="@string/tag"
     android:textSize="@dimen/menu_text_size"
-    android:textColor="@color/gray_7d"
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Button"
     android:background="@drawable/topic_radio_button"/>

@@ -11,12 +11,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.viewpager.widget.ViewPager;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.TopicTagAdapter;
 import com.luckyxmobile.correction.adapter.TopicViewPageAdapter;
+import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.presenter.TopicViewPagePresenter;
@@ -63,7 +63,7 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
     private boolean isFullScreen = false;
     private boolean isShowTag = true;
 
-    private SharedPreferences preferences;
+    private MySharedPreferences preferences = MySharedPreferences.getInstance();
 //    public static boolean IS_CLICK_SMEAR_BY = true;
 
     @Override
@@ -76,12 +76,12 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
     }
 
     @Override
-    public void setTopicViewPage(List<Topic> topicList) {
+    public void setTopicViewPage(List<Topic> topicList, int curPosition) {
 
         topicViewPageBar.setMax(topicList.size());
         topicViewPageAdapter = new TopicViewPageAdapter(this,topicList);
         topicViewPager.setAdapter(topicViewPageAdapter);
-        topicViewPager.setCurrentItem(presenter.getCurTopicPosition());
+        topicViewPager.setCurrentItem(curPosition);
         //滚动监听事件 刷新
         topicViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -141,9 +141,6 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
     private void initView() {
         int book_id = getIntent().getIntExtra(Constants.BOOK_ID,0);
         int curTopicPosition = getIntent().getIntExtra(Constants.TOPIC_POSITION,0);
-
-
-        preferences = getSharedPreferences(Constants.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
 
         isShowTag = preferences.getBoolean(Constants.TABLE_SHOW_TAG_IN_TOPIC_VIEW_PAGE, true);
 

@@ -1,10 +1,8 @@
 package com.luckyxmobile.correction.ui.activity;
 
-import android.content.Context;
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,52 +11,61 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.HeadBookAdapter;
 import com.luckyxmobile.correction.adapter.RecentTopicAdapter;
+import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.presenter.MainViewPresenter;
 import com.luckyxmobile.correction.presenter.impl.MainViewPresenterImpl;
 import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.ui.dialog.AddTopicImageDialog;
 import com.luckyxmobile.correction.ui.dialog.BookInfoDialog;
 import com.luckyxmobile.correction.utils.impl.PermissionsUtil;
 import com.luckyxmobile.correction.view.MainView;
 
-import org.litepal.LitePal;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 
 import java.util.List;
 
-
 import androidx.recyclerview.widget.RecyclerView;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.pqpo.smartcropperlib.SmartCropper;
 
 
 /**
  * @author qjj
  */
-public class MainActivity extends AppCompatActivity implements  View.OnClickListener, MainView,
-        HeadBookAdapter.OnHeadBookAdapterListener {
+@SuppressLint("NonConstantResourceId")
+public class MainActivity extends AppCompatActivity implements MainView,
+        HeadBookAdapter.OnHeadBookAdapterListener,
+        BookInfoDialog.OnBtnClickListener,
+        AddTopicImageDialog.OnClickListener {
 
-    public static final String TAG = "MainActivity";
+    public static final String TAG = MainActivity.class.getSimpleName();
     private long lastClickTime = 0L;
 
-    private TextView recentTopicTv;
+    @BindView(R.id.tv_recent_topic)
+    TextView recentTopicTv;
+    @BindView(R.id.main_recycler_recent_topic)
+    RecyclerView recentTopicRv;
+    @BindView(R.id.rv_head_book)
+    RecyclerView headBookRv;
 
     private HeadBookAdapter headBookAdapter;
-
-    private RecentTopicAdapter recentTopicAdapter;
 
     private BookInfoDialog bookInfoDialog;
 
@@ -82,6 +89,10 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
+        setSupportActionBar(findViewById(R.id.toolbar));
+
+        ButterKnife.bind(this);
+
         //申请权限
         PermissionsUtil.initRequestPermission(this);
 
@@ -90,19 +101,16 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         //初始化openCV
         initOpenCV();
 
-        initView();
+        //初始化裁剪框
+        SmartCropper.buildImageDetector(this);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        //删去没有在错题本内的错题
-        LitePal.deleteAll(Topic.class, "book_id = ?", "0");
-
+        mainViewPresenter.init();
     }
-
 
     private void initOpenCV() {
         Log.i(TAG, "Trying to load OpenCV library");
@@ -116,20 +124,6 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         }
     }
 
-    private void initView() {
-
-        setSupportActionBar(findViewById(R.id.toolbar));
-
-        findViewById(R.id.add_book_main).setOnClickListener(this);
-
-        recentTopicTv = findViewById(R.id.tv_recent_topic);
-
-        bookInfoDialog = new BookInfoDialog(this);
-        bookInfoDialog.setAlterCoverButton(this);
-
-        //初始化裁剪框
-        SmartCropper.buildImageDetector(this);
-    }
 
     @Override
     public void setHeadBookRv(List<Book> headBookList) {
@@ -137,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         GridLayoutManager mLayoutManager = new GridLayoutManager(this,4);
         headBookAdapter = new HeadBookAdapter(this, headBookList);
 
-        RecyclerView headBookRv = findViewById(R.id.rv_head_book);
         headBookRv.setLayoutManager(mLayoutManager);
         headBookRv.setItemAnimator(new DefaultItemAnimator());
         headBookRv.setNestedScrollingEnabled(false);//解决卡顿
@@ -147,14 +140,10 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
     @Override
     public void setRecentTopicRv(List<Topic> topicList) {
 
-        if (topicList.isEmpty()) {
-            recentTopicTv.setVisibility(View.GONE);
-        }
+        recentTopicTv.setVisibility(topicList.isEmpty()?View.GONE:View.VISIBLE);
 
-        recentTopicAdapter = new RecentTopicAdapter(this, topicList);
+        RecentTopicAdapter recentTopicAdapter = new RecentTopicAdapter(this, topicList);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-
-        RecyclerView recentTopicRv = findViewById(R.id.main_recycler_recent_topic);
         recentTopicRv.setLayoutManager(mLayoutManager);
         recentTopicRv.setItemAnimator(new DefaultItemAnimator());
         recentTopicRv.setNestedScrollingEnabled(false);//解决卡顿
@@ -164,44 +153,39 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == RESULT_OK) {
 
-            String imageType = data.getStringExtra(Constants.WHICH_IMAGE);
+            if (requestCode == Constants.REQUEST_CODE_BOOK_COVER_IMAGE) {
 
+                String imagePath = data.getStringExtra(Constants.IMAGE_PATH);
 
-            if (Constants.IMAGE_BOOK_COVER.equals(data.getStringExtra(Constants.WHICH_IMAGE))){
-                ((MainViewPresenterImpl) mainViewPresenter)
-                        .alterBookCoverPath(data.getStringExtra(Constants.IMAGE_PATH));
+                if (bookInfoDialog == null) {
+                    showBookInfoDialog(null);
+                }
+                bookInfoDialog.alterBookCover(imagePath);
             }
 
-            if(Constants.REQUEST_CODE_SELECT_ALBUM == requestCode){
-
-            }
-
-            if (Constants.REQUEST_CODE_TAKE_PHOTO == requestCode){
-
-            }
         }
     }
 
-    //点击事件
-    @Override
-    public void onClick(View view) {
-        switch(view.getId()){
-            case R.id.add_book_main:
-                mainViewPresenter.addBook();
-                break;
+    @OnClick(R.id.add_book_main)
+    public void onClickAddBook(){
+        showBookInfoDialog(null);
+    }
 
-            case R.id.floating_button_add_topic:
-                //TODO:打开相机
-                break;
+    private void showBookInfoDialog(Book book) {
+        bookInfoDialog = new BookInfoDialog(this);
+        bookInfoDialog.setBook(book);
+        bookInfoDialog.create().show();
+    }
 
-            case R.id.alter_cover_image:
-                //TODO：dialog 修改bookCover
-                break;
-
-            default:
-                break;
+    @OnClick(R.id.floating_button_add_topic)
+    public void onClickAddTopic(){
+        if (headBookAdapter.getBookList().size() > 1) {
+            AddTopicImageDialog.show(this);
+        } else {
+            onToast("请先添加错题本");
         }
     }
 
@@ -231,31 +215,18 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
     }
 
     @Override
-    public void addBookFinished(Book book) {
+    public void saveBookFinished(Book book) {
         headBookAdapter.addBook(book);
     }
 
     @Override
-    public void alterBookFinished(Book book) {
-        headBookAdapter.alterBook(book);
+    public void updateBookFinished(Book book) {
+        headBookAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void deleteBookFinished(Book book) {
-
-        recentTopicAdapter.deleteTopic(book.getId());
-        recentTopicAdapter.notifyDataSetChanged();
-
-    }
-
-    @Override
-    public void OnToastFinished(String showLog) {
-        Toast.makeText(this, showLog, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public Context getMainViewContext() {
-        return this;
+    public void deleteBookFinished() {
+        mainViewPresenter.init();
     }
 
     @Override
@@ -266,31 +237,75 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
         }
 
         lastClickTime = System.currentTimeMillis();
-        Intent intent = new Intent(MainActivity.this, BookDetailActivity.class);
-        intent.putExtra(Constants.BOOK_ID,book.getId());
+        Intent intent = new Intent(this, BookDetailActivity.class);
+        intent.putExtra(Constants.BOOK_ID, book.getId());
         startActivity(intent);
     }
 
     @Override
-    public void onBookMenuRemove(Book book) {
-        //删除错题本
-        new AlertDialog.Builder(MainActivity.this)
-            .setTitle(R.string.confirm_delete)
-            .setIcon(R.drawable.ic_delete_red_24dp)
-            .setMessage(R.string.confirm_delete_notebook_hint)
-            .setPositiveButton(R.string.ensure, (dialog, which) -> mainViewPresenter.deleteBook(book))
-            .setNegativeButton(R.string.cancel,null).show();
+    public void onBookLongClickListener(View view, Book book) {
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        getMenuInflater().inflate(R.menu.menu_long_click_book ,popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(item -> {
+
+            if (item.getItemId() == R.id.item_book_info) {
+                showBookInfoDialog(book);
+            } else if (item.getItemId() == R.id.item_delete_book) {
+
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(R.string.confirm_delete)
+                        .setIcon(R.drawable.ic_delete_red_24dp)
+                        .setMessage(R.string.confirm_delete_notebook_hint)
+                        .setPositiveButton(R.string.ensure, (dialog, which) ->{
+                            mainViewPresenter.removeBook(book);
+                        } )
+                        .setNegativeButton(R.string.cancel,null).show();
+            }
+
+            popupMenu.dismiss();
+            return true;
+        });
+
+        popupMenu.show();
     }
 
     @Override
-    public void onBookMenuAlter(Book book) {
-        bookInfoDialog.build(book)
-            .setPositiveButton(R.string.ensure, (dialogInterface, i) -> {
-                if(TextUtils.isEmpty(bookInfoDialog.getBookName())){
+    public void onBookInfoDialogEnsure(Book book) {
+        if (book.getName().length() > 15) {
+            showBookInfoDialog(book);
+            return;
+        }
 
-                }else{//调用model层，在数据库修改错题本
+        if (book.getName() == null || book.getName().isEmpty()) {
+            showBookInfoDialog(book);
+            onToast(getString(R.string.empty_input));
+            return;
+        }
 
-                }
-            }).show();
+        if (book.getId() == 0) {
+            mainViewPresenter.saveBook(book);
+        }else {
+            mainViewPresenter.alterBookInfo(book);
+        }
+    }
+
+    @Override
+    public void addTopicFromCamera() {
+        MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
+        Intent intent = CropImageActivity.getCropImageActivityIntent(this, false, true);
+        startActivity(intent);
+    }
+
+    @Override
+    public void addTopicFromAlbum() {
+        MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
+        Intent intent = CropImageActivity.getCropImageActivityIntent(this, true, true);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onToast(String showLog) {
+        Toast.makeText(this, showLog, Toast.LENGTH_SHORT).show();
     }
 }

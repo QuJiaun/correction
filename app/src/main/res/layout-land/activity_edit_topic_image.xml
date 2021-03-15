@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical"
+    android:padding="4dp"
+    android:gravity="center"
+    tools:context="com.luckyxmobile.correction.ui.activity.EditTopicImageActivity">
+
+    <LinearLayout
+        android:id="@+id/edit_photo_top_tool"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:paddingEnd="4dp"
+        android:paddingStart="16dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/shape_box_fillet_shadow_view"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/drawing_view_return"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_arrow_back_24dp"
+            android:text="@string/last_step"
+            android:textColor="@color/orange_f7"
+            android:background="@color/transparent" />
+
+        <TextView
+            android:id="@+id/drawing_view_hint"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:scrollHorizontally="true"
+            android:marqueeRepeatLimit="marquee_forever"/>
+
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_undo"
+            app:checked_img="@drawable/ic_paint_undo_yes"
+            app:unchecked_img="@drawable/ic_paint_undo_no"
+            style="@style/normal_icon_button"/>
+
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_redo"
+            app:checked_img="@drawable/ic_paint_redo_yes"
+            app:unchecked_img="@drawable/ic_paint_redo_no"
+            style="@style/normal_icon_button"/>
+
+        <ImageButton
+            android:id="@+id/drawing_view_ok"
+            android:src="@drawable/ic_done"
+            style="@style/normal_icon_button"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/drawing_view_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:background="@drawable/shape_box_fillet_shadow_view"
+        app:layout_constraintTop_toBottomOf="@id/edit_photo_top_tool"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/edit_photo_end_tool"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.luckyxmobile.correction.ui.views.DrawingView
+            android:id="@+id/drawing_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"/>
+
+    </FrameLayout>
+
+
+    <ScrollView
+        android:id="@+id/edit_photo_end_tool"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:maxWidth="64dp"
+        android:padding="4dp"
+        android:scrollbarStyle="outsideOverlay"
+        android:background="@drawable/shape_box_fillet_shadow_view"
+        app:layout_constraintTop_toTopOf="@id/drawing_view_layout"
+        app:layout_constraintBottom_toBottomOf="@id/drawing_view_layout"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <include
+                layout="@layout/drawing_view_tools"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

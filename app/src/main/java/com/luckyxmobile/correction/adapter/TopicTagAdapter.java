@@ -14,7 +14,7 @@ import org.litepal.LitePal;
 
 public class TopicTagAdapter extends com.zhy.view.flowlayout.TagAdapter<Tag> {
 
-    private OnTagClickListener listener;
+    private final OnTagClickListener listener;
     private boolean isItemClickable = false;
     private boolean isShowUnchecked = false;
     private int textColor = 0;
@@ -45,9 +45,9 @@ public class TopicTagAdapter extends com.zhy.view.flowlayout.TagAdapter<Tag> {
     public View getView(FlowLayout parent, int position, Tag tag) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_item_tag, parent, false);
 
-        if (curTopic == null) {
-            return null;
-        }
+//        if (curTopic == null) {
+//            return null;
+//        }
 
         CheckBox checkBox = (CheckBox) view;
         checkBox.setClickable(isItemClickable);
@@ -55,7 +55,7 @@ public class TopicTagAdapter extends com.zhy.view.flowlayout.TagAdapter<Tag> {
             checkBox.setOnClickListener(view1 -> listener.onTagClick(curTopic, tag));
         }
         if (textColor != 0) {
-            checkBox.setText(textColor);
+            checkBox.setTextColor(textColor);
         }
         checkBox.setText(tag.getTag_name());
         checkBox.setChecked(tag.getTopicSet().contains(curTopic));

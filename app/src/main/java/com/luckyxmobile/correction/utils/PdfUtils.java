@@ -41,7 +41,6 @@ import java.util.Date;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.luckyxmobile.correction.utils.impl.FilesUtils.getDiskCachePath;
 
 /**
  * @author ChangHao
@@ -228,176 +227,172 @@ public class PdfUtils {
         return this;
     }
 
-    /**
-     * @param title          创建pdf的标题
-     * @return 生成的pdf的存储路径
-     */
-    public static String CreatePaperPdf(Context context, String title, String pattern, String CacheDir, List<Topic> topicList, List<Book> booksList) {
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-
-        SharedPreferences preferences = context.getSharedPreferences(Constants.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
-
-        boolean hideHighlightAreas = preferences.getBoolean(Constants.TABLE_SHOW_SMEAR_MARK,false);
-
-        String printPage = preferences.getString(Constants.TABLE_PRINT_PAGE,"0");
-
-        PdfUtils pu = null;
-        //生成的pdf名称
-//        String filepath = this.getCacheDir().getAbsolutePath() + "/";
-        String filepath = CacheDir + "/";
-        String filename = null;
-
-        //复习卷不能为空
-        if(topicList.size() == 0){
-            throw new IllegalArgumentException("topicList can not be empty");
-        }
-        try {
-            int count = 0;
-            String txt = "";
-            Bitmap bitmap = null;
-            pu = new PdfUtils(filepath);
-            pu.addTitleToPdf(title);
-            pu.addRightTextToPdf(context.getString(R.string.print_time)+":\t\t" +format.format(new Date())+"\n");
-            pu.addCenterTextToPdf(context.getString(R.string.name)+" : ________\t\t\t\t\t\t\t\t"+
-                            context.getString(R.string.score)+ " : ________\n\n");
-
-            TopicImagesHighlighter topicImagesHighlighter;
-
-            for(Topic topic : topicList){
-                //给每一道题添加标题
-                pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
-                topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_original_picture(), TopicImagesHighlighter.class);
-                assert topicImagesHighlighter != null;
-                for (int i = 0; i < topicImagesHighlighter.getPrimitiveImagesPathSize(); i++) {
-                    bitmap = ImageUtil.convertTopicImageByWhichs(context, topic.getId(), null,i, true, !hideHighlightAreas);
-                    if (bitmap == null) continue;
-                    bitmap = ImageUtil.resizeBitmapByImageWordSize(bitmap, topicImagesHighlighter.getImageWordSizeList().get(i));
-                    //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
-                    pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
-                }
-                //添加手敲的补充的原题题干
-                txt = topic.getTopic_original_text();
-                pu.addTextToPdf(txt+"\n\n");
-                count++;
-            }
-
-            if (printPage != null && !printPage.isEmpty()){
-
-                if (printPage.contains("1")){
-                    pu.addTitleToPdf("\n"+title+"--"+context.getString(R.string.correct));
-                    count = 0;
-                    int j = 0;
-                    bitmap = null;
-                    for (Topic topic: topicList){
-                        pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
-                        topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_right_solution_picture(), TopicImagesHighlighter.class);
-                        if (topicImagesHighlighter != null){
-                            for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
-                                bitmap = OpenCVUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
-                                if (bitmap != null){
-                                    bitmap = ImageUtil.resizeBitmapByImageWordSize(bitmap, topicImagesHighlighter.getImageWordSizeList().get(j));
-                                    //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
-                                    pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
-                                }
-
-                            }
-                        }
-
-                        //添加手敲的补充的原题题干
-                        txt = topic.getTopic_right_solution_text();
-
-                        if(bitmap == null && (txt == null || txt.isEmpty())){
-                            txt = "null";
-                        }
-
-                        pu.addTextToPdf(txt+"\n\n");
-
-                        count++;
-                    }
-                }
-
-                if (printPage.contains("2")){
-                    pu.addTitleToPdf("\n"+title+"--"+context.getString(R.string.incorrect));
-                    count = 0;
-                    bitmap = null;
-                    for (Topic topic: topicList){
-                        pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
-                        topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_error_solution_picture(), TopicImagesHighlighter.class);
-                        if (topicImagesHighlighter != null){
-                            for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
-                                bitmap = OpenCVUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
-                                //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
-                                pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
-                            }
-                        }
-
-                        txt = topic.getTopic_error_solution_text();
-                        if(bitmap == null && (txt == null || txt.isEmpty())){
-                            txt = "null";
-                        }
-                        pu.addTextToPdf(txt+"\n\n");
-                        count++;
-                    }
-                }
-
-                if(printPage.contains("3")){
-                    pu.addTitleToPdf("\n"+title+"--"+context.getString(R.string.key));
-                    count = 0;
-                    bitmap = null;
-                    for (Topic topic: topicList){
-                        pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
-                        topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_knowledge_point_picture(), TopicImagesHighlighter.class);
-                        if (topicImagesHighlighter != null){
-                            for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
-                                bitmap = OpenCVUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
-                                //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
-                                pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
-                            }
-                        }
-                        txt = topic.getTopic_knowledge_point_text();
-                        if(bitmap == null && (txt == null || txt.isEmpty())){
-                            txt = "null";
-                        }
-                        pu.addTextToPdf(txt+"\n\n");
-                        count++;
-                    }
-                }
-
-                if(printPage.contains("4")){
-                    pu.addTitleToPdf("\n"+title+"--"+context.getString(R.string.cause));
-                    count = 0;
-                    bitmap = null;
-                    for (Topic topic: topicList){
-                        pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
-                        topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_error_cause_picture(), TopicImagesHighlighter.class);
-                        if (topicImagesHighlighter != null){
-                            for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
-                                bitmap = OpenCVUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
-                                //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
-                                pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
-                            }
-                        }
-
-                        txt = topic.getTopic_error_cause_text();
-                        if(bitmap == null && (txt == null || txt.isEmpty())){
-                            txt = "null";
-                        }
-                        pu.addTextToPdf(txt+"\n\n");
-                        count++;
-                    }
-                }
-            }
-
-
-        } catch (IOException | DocumentException e) {
-            e.printStackTrace();
-        } finally {
-            if (pu != null) {
-                filename = pu.close();
-            }
-        }
-        return filename;
-    }
+//    public static String CreatePaperPdf(Context context, String title, String pattern, String CacheDir, List<Topic> topicList, List<Book> booksList) {
+//        SimpleDateFormat format = new SimpleDateFormat(pattern);
+//
+//        SharedPreferences preferences = context.getSharedPreferences(Constants.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
+//
+//        boolean hideHighlightAreas = preferences.getBoolean(Constants.TABLE_SHOW_SMEAR_MARK,false);
+//
+//        String printPage = preferences.getString(Constants.TABLE_PRINT_PAGE,"0");
+//
+//        PdfUtils pu = null;
+//        //生成的pdf名称
+////        String filepath = this.getCacheDir().getAbsolutePath() + "/";
+//        String filepath = CacheDir + "/";
+//        String filename = null;
+//
+//        //复习卷不能为空
+//        if(topicList.size() == 0){
+//            throw new IllegalArgumentException("topicList can not be empty");
+//        }
+//        try {
+//            int count = 0;
+//            String txt = "";
+//            Bitmap bitmap = null;
+//            pu = new PdfUtils(filepath);
+//            pu.addTitleToPdf(title);
+//            pu.addRightTextToPdf(context.getString(R.string.print_time)+":\t\t" +format.format(new Date())+"\n");
+//            pu.addCenterTextToPdf(context.getString(R.string.name)+" : ________\t\t\t\t\t\t\t\t"+
+//                            context.getString(R.string.score)+ " : ________\n\n");
+//
+//            TopicImagesHighlighter topicImagesHighlighter;
+//
+//            for(Topic topic : topicList){
+//                //给每一道题添加标题
+//                pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
+//                topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_original_picture(), TopicImagesHighlighter.class);
+//                assert topicImagesHighlighter != null;
+//                for (int i = 0; i < topicImagesHighlighter.getPrimitiveImagesPathSize(); i++) {
+//                    bitmap = ImageUtil.convertTopicImageByWhichs(context, topic.getId(), null,i, true, !hideHighlightAreas);
+//                    if (bitmap == null) continue;
+//                    bitmap = ImageUtil.resizeBitmapByImageWordSize(bitmap, topicImagesHighlighter.getImageWordSizeList().get(i));
+//                    //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
+//                    pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
+//                }
+//                //添加手敲的补充的原题题干
+//                txt = topic.getTopic_original_text();
+//                pu.addTextToPdf(txt+"\n\n");
+//                count++;
+//            }
+//
+//            if (printPage != null && !printPage.isEmpty()){
+//
+//                if (printPage.contains("1")){
+//                    pu.addTitleToPdf("\n"+title+"--"+context.getString(R.string.correct));
+//                    count = 0;
+//                    int j = 0;
+//                    bitmap = null;
+//                    for (Topic topic: topicList){
+//                        pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
+//                        topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_right_solution_picture(), TopicImagesHighlighter.class);
+//                        if (topicImagesHighlighter != null){
+//                            for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
+//                                bitmap = OpenCVUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
+//                                if (bitmap != null){
+//                                    bitmap = ImageUtil.resizeBitmapByImageWordSize(bitmap, topicImagesHighlighter.getImageWordSizeList().get(j));
+//                                    //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
+//                                    pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
+//                                }
+//
+//                            }
+//                        }
+//
+//                        //添加手敲的补充的原题题干
+//                        txt = topic.getTopic_right_solution_text();
+//
+//                        if(bitmap == null && (txt == null || txt.isEmpty())){
+//                            txt = "null";
+//                        }
+//
+//                        pu.addTextToPdf(txt+"\n\n");
+//
+//                        count++;
+//                    }
+//                }
+//
+//                if (printPage.contains("2")){
+//                    pu.addTitleToPdf("\n"+title+"--"+context.getString(R.string.incorrect));
+//                    count = 0;
+//                    bitmap = null;
+//                    for (Topic topic: topicList){
+//                        pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
+//                        topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_error_solution_picture(), TopicImagesHighlighter.class);
+//                        if (topicImagesHighlighter != null){
+//                            for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
+//                                bitmap = OpenCVUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
+//                                //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
+//                                pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
+//                            }
+//                        }
+//
+//                        txt = topic.getTopic_error_solution_text();
+//                        if(bitmap == null && (txt == null || txt.isEmpty())){
+//                            txt = "null";
+//                        }
+//                        pu.addTextToPdf(txt+"\n\n");
+//                        count++;
+//                    }
+//                }
+//
+//                if(printPage.contains("3")){
+//                    pu.addTitleToPdf("\n"+title+"--"+context.getString(R.string.key));
+//                    count = 0;
+//                    bitmap = null;
+//                    for (Topic topic: topicList){
+//                        pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
+//                        topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_knowledge_point_picture(), TopicImagesHighlighter.class);
+//                        if (topicImagesHighlighter != null){
+//                            for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
+//                                bitmap = OpenCVUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
+//                                //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
+//                                pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
+//                            }
+//                        }
+//                        txt = topic.getTopic_knowledge_point_text();
+//                        if(bitmap == null && (txt == null || txt.isEmpty())){
+//                            txt = "null";
+//                        }
+//                        pu.addTextToPdf(txt+"\n\n");
+//                        count++;
+//                    }
+//                }
+//
+//                if(printPage.contains("4")){
+//                    pu.addTitleToPdf("\n"+title+"--"+context.getString(R.string.cause));
+//                    count = 0;
+//                    bitmap = null;
+//                    for (Topic topic: topicList){
+//                        pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
+//                        topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_error_cause_picture(), TopicImagesHighlighter.class);
+//                        if (topicImagesHighlighter != null){
+//                            for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
+//                                bitmap = OpenCVUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
+//                                //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
+//                                pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
+//                            }
+//                        }
+//
+//                        txt = topic.getTopic_error_cause_text();
+//                        if(bitmap == null && (txt == null || txt.isEmpty())){
+//                            txt = "null";
+//                        }
+//                        pu.addTextToPdf(txt+"\n\n");
+//                        count++;
+//                    }
+//                }
+//            }
+//
+//
+//        } catch (IOException | DocumentException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (pu != null) {
+//                filename = pu.close();
+//            }
+//        }
+//        return filename;
+//    }
 
     public static void printPreviewWindow(final Context context,
                                           final List<Topic> topicList,
@@ -409,23 +404,23 @@ public class PdfUtils {
         //设置色彩模式，黑白或者彩色
         builder.setColorMode(PrintAttributes.COLOR_MODE_COLOR);
 
-        printManager.print(String.valueOf(R.string.app_name), new PrintPreviewAdapter(context,
-                CreatePaperPdf(context,paper.getPaper_name(),
-                        context.getString(R.string.date_pattern),
-                        context.getCacheDir().getAbsolutePath(),
-                        topicList,
-                        booksList)), builder.build());
+//        printManager.print(String.valueOf(R.string.app_name), new PrintPreviewAdapter(context,
+//                CreatePaperPdf(context,paper.getPaper_name(),
+//                        context.getString(R.string.date_pattern),
+//                        context.getCacheDir().getAbsolutePath(),
+//                        topicList,
+//                        booksList)), builder.build());
 
     }
 
     public static void printPreviewWindow(final Context context,
                                           final Paper paper) {
 
-        PaperTopicDao paper_topic = new PaperTopicDaoImpl();
-        List<Topic> topicList = paper_topic.selectPaper(paper.getId());
+//        PaperTopicDao paper_topic = new PaperTopicDaoImpl();
+//        List<Topic> topicList = paper_topic.selectPaper(paper.getId());
         List<Book> booksList = LitePal.findAll(Book.class);
 
-        printPreviewWindow(context, topicList, booksList, paper);
+//        printPreviewWindow(context, topicList, booksList, paper);
     }
 
     public float getCharacterSpace() {
@@ -482,18 +477,18 @@ public class PdfUtils {
      * @param context 上下文
      */
     public static void sharePdfUris(Context context, Paper paper) {
-        PaperTopicDao paperTopic = new PaperTopicDaoImpl();
-        List<Topic> topicList = paperTopic.selectPaper(paper.getId());
-        List<Book> booksList = LitePal.findAll(Book.class);
-        ArrayList<String> imageList = new ArrayList<>();
-
-        String cachePath = getDiskCachePath(context);
-        String pdfPath = CreatePaperPdf(context,paper.getPaper_name(), context.getString(R.string.date_pattern),
-                    cachePath, topicList, booksList);
-        Uri pdfUri = FilesUtils.getUri(context, new File(pdfPath));
+//        PaperTopicDao paperTopic = new PaperTopicDaoImpl();
+//        List<Topic> topicList = paperTopic.selectPaper(paper.getId());
+//        List<Book> booksList = LitePal.findAll(Book.class);
+//        ArrayList<String> imageList = new ArrayList<>();
+//
+//        String cachePath = getDiskCachePath(context);
+//        String pdfPath = CreatePaperPdf(context,paper.getPaper_name(), context.getString(R.string.date_pattern),
+//                    cachePath, topicList, booksList);
+//        Uri pdfUri = FilesUtils.getUri(context, new File(pdfPath));
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, pdfUri);
+//        shareIntent.putExtra(Intent.EXTRA_STREAM, pdfUri);
         shareIntent.setType("application/pdf");
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         context.startActivity(Intent.createChooser(shareIntent, "分享到"));

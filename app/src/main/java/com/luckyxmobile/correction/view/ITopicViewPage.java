@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ITopicViewPage {
 
-    void setTopicViewPage(List<Topic> topicList);
+    void setTopicViewPage(List<Topic> topicList, int curPosition);
 
     void setTopicCollectBtn(boolean isCollect);
 

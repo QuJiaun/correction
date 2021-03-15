@@ -11,15 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide;
+
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.ui.activity.PaperDetailActivity;
 import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
 import com.luckyxmobile.correction.global.Constants;
-import com.luckyxmobile.correction.utils.ImageUtil;
-import com.like.LikeButton;
+
 import org.litepal.LitePal;
 import java.util.Collections;
 import java.util.List;
@@ -78,9 +77,9 @@ public class PaperDetailAdapter extends RecyclerView.Adapter<PaperDetailAdapter.
             holder.cardView.setLayoutParams(layoutParams);
         }
         // 加载原题图片
-        Glide.with(mContext).load(ImageUtil.convertTopicImageByWhichs(mContext,topic.getId(),null,0, false, false))
-                .thumbnail(0.1f)
-                .into(holder.image_correction);
+//        Glide.with(mContext).load(ImageUtil.convertTopicImageByWhichs(mContext,topic.getId(),null,0, false, false))
+//                .thumbnail(0.1f)
+//                .into(holder.image_correction);
 
         holder.order_correction.setText(position + 1 + "");
         holder.setTopicInfo(IndexPlusBookName(position + 1 + "", getBookName(holder.getAdapterPosition(), books, topics)));
@@ -112,14 +111,14 @@ public class PaperDetailAdapter extends RecyclerView.Adapter<PaperDetailAdapter.
 
         /**@solved 解决在BookDetailActivity页面点击GridView也会触发CheckBox的选中事件*/
         // 设置CheckBox不可点击，同时修改selector_correction_collection中的样式
-        holder.likeButton_collection.setEnabled(false);
-        holder.likeButton_collection.setClickable(false);
-
-        if (topic.isTopic_collection() == 1) {
-            holder.likeButton_collection.setLiked(true);
-        } else {
-            holder.likeButton_collection.setLiked(false);
-        }
+//        holder.likeButton_collection.setEnabled(false);
+//        holder.likeButton_collection.setClickable(false);
+//
+//        if (topic.isTopic_collection() == 1) {
+//            holder.likeButton_collection.setLiked(true);
+//        } else {
+//            holder.likeButton_collection.setLiked(false);
+//        }
 
 
     }
@@ -139,9 +138,9 @@ public class PaperDetailAdapter extends RecyclerView.Adapter<PaperDetailAdapter.
     public static String getBookName(int AdapterPosition, List<Book> books, List<Topic> topics) {
         Topic topic = topics.get(AdapterPosition);
         for (Book book1 : books) {
-            if (book1.getId() == topic.getBook_id()) {
-                return book1.getBook_name();
-            }
+//            if (book1.getId() == topic.getBook_id()) {
+//                return book1.getBook_name();
+//            }
         }
         return null;
     }
@@ -170,14 +169,14 @@ public class PaperDetailAdapter extends RecyclerView.Adapter<PaperDetailAdapter.
     class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
         private CardView cardView;
         private TextView order_correction;
-        private LikeButton likeButton_collection;
+//        private LikeButton likeButton_collection;
         private ImageView image_correction;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             cardView = (CardView) itemView.findViewById(R.id.card_view_collection);
-            likeButton_collection = (LikeButton) itemView.findViewById(R.id.likebutton_correction);
-            image_correction = (ImageView) itemView.findViewById(R.id.image_correction);
+//            likeButton_collection = (LikeButton) itemView.findViewById(R.id.likebutton_correction);
+            image_correction = (ImageView) itemView.findViewById(R.id.topic_image);
             order_correction = itemView.findViewById(R.id.paper_detail_topic_index);
             //item 点击事件，进入错题详情页面
             cardView.setOnClickListener(new View.OnClickListener() {

@@ -1,12 +1,10 @@
 package com.luckyxmobile.correction.model.bean;
 
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.litepal.crud.LitePalSupport;
-
-import java.util.Date;
-import java.util.Objects;
 
 /**
  * 数据库表 NoteBook 笔记本信息
@@ -19,21 +17,23 @@ public class Book extends LitePalSupport {
 
     private String name;
 
-    private String cover = "default";
+    private String cover;
 
-    private Date create_date;
+    private long create_date;
 
-    public Book() {}
+    public Book() {
+        setCreate_date(System.currentTimeMillis());
+    }
 
     public Book(@NonNull String name) {
         setName(name);
-        setCreate_date(new Date(System.currentTimeMillis()));
+        setCreate_date(System.currentTimeMillis());
     }
 
     public Book(@NonNull String name, @Nullable String cover) {
         setName(name);
         setCover(cover);
-        setCreate_date(new Date(System.currentTimeMillis()));
+        setCreate_date(System.currentTimeMillis());
     }
 
     public int getId() {
@@ -60,11 +60,11 @@ public class Book extends LitePalSupport {
         this.cover = cover;
     }
 
-    public Date getCreate_date() {
+    public long getCreate_date() {
         return create_date;
     }
 
-    private void setCreate_date(Date create_date) {
+    public void setCreate_date(long create_date) {
         this.create_date = create_date;
     }
 
@@ -72,26 +72,17 @@ public class Book extends LitePalSupport {
     public String toString() {
         return "NoteBook{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", cover='" + cover + '\'' +
+                ", name=" + name +
+                ", cover=" + cover +
                 ", create_date=" + create_date +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return id == book.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+        return id == book.getId() && create_date == book.create_date;
     }
 }

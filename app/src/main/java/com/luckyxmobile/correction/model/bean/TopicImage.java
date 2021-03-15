@@ -16,9 +16,6 @@ public class TopicImage extends LitePalSupport {
 
     private int id;
 
-    /**
-     * 绑定唯一的topic
-     */
     private int topic_id;
 
     /**
@@ -46,8 +43,15 @@ public class TopicImage extends LitePalSupport {
      */
     private List<Highlighter> highlighterList = new ArrayList<>();
 
+    private long create_time;
+
+    public TopicImage() {
+        setCreate_time(System.currentTimeMillis());
+    }
+
     public TopicImage(@Constants.TopicImageType int type) {
         this.type = type;
+        setCreate_time(System.currentTimeMillis());
     }
 
     public int getId() {
@@ -106,17 +110,35 @@ public class TopicImage extends LitePalSupport {
         this.topic_id = topic_id;
     }
 
+    public long getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(long create_time) {
+        this.create_time = create_time;
+    }
+
     @Override
     public String toString() {
         return "TopicImage{" +
                 "id=" + id +
                 ", topic_id=" + topic_id +
                 ", type=" + type +
-                ", path='" + path + '\'' +
+                ", path=" + path +
                 ", word_size=" + word_size +
                 ", contrast_radio=" + contrast_radio +
                 ", highlighterList=" + highlighterList +
+                ", create_time=" + create_time +
                 '}';
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TopicImage that = (TopicImage) o;
+        return id == that.id && path.equals(that.getPath());
     }
 
     public static class Highlighter {

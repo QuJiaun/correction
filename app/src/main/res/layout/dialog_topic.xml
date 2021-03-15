@@ -8,8 +8,6 @@
     <com.youth.banner.Banner
         android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:indicator_margin="8dp"
-        app:image_scale_type="center_inside"/>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

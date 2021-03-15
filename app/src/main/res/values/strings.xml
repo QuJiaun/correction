@@ -14,6 +14,7 @@
     <string name="confirm_delete_paper">Are you sure to delete this paper?
         \n Delete paper will only delete the paper itself, and it will not remove the content of the notebook!</string>
 
+    <string name="topic_image_type">Type</string>
     <string name="stem">Stem</string>
     <string name="correct">Correct</string>
     <string name="incorrect">Incorrect</string>
@@ -21,6 +22,7 @@
     <string name="cause">Cause</string>
     <string name="topic_details">Topic details</string>
     <string name="add_image">ADD</string>
+    <string name="add_topic">ADD</string>
     <string name="add_picture_camera"> + From camera</string>
     <string name="add_picture_album"> + From photos</string>
     <string name="add_text"> + Text</string>
@@ -44,6 +46,7 @@
     <string name="share">Share</string>
     <string name="print_preview">Print preview</string>
     <string name="print_time">Print Time</string>
+    <string name="time">Time</string>
     <string name="select_print_content">Select print content</string>
 
     <string name="tag">Tag</string>

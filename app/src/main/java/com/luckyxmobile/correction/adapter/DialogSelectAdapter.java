@@ -51,7 +51,7 @@ public class DialogSelectAdapter extends BaseAdapter {
 
         ImageView bookCover = view.findViewById(R.id.book_cover);
         TextView bookTitle = view.findViewById(R.id.book_title);
-        bookTitle.setText(book.getBook_name());
+//        bookTitle.setText(book.getBook_name());
         return view;
     }
 }

@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.luckyxmobile.correction.R;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.impl.TagDaoImpl;
@@ -25,8 +26,6 @@ import com.zhy.view.flowlayout.TagFlowLayout;
 import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.List;
-
-import es.dmoral.toasty.Toasty;
 
 /**
  * 处理标签页面（新建、添加、删除）
@@ -49,7 +48,7 @@ public class TagActivity extends AppCompatActivity {
     /**全部标签集合*/
     private List<Tag> allTagList = new ArrayList<>();
     /**标签对象*/
-    private Tag newTag = new Tag();
+//    private Tag newTag = new Tag();
 
     /**
      *isDelete
@@ -121,7 +120,7 @@ public class TagActivity extends AppCompatActivity {
                     }
                     addNewTag();
                 }else{
-                    Toasty.error(this,R.string.tags_num_limit,Toasty.LENGTH_SHORT,true).show();
+//                    Toasty.error(this,R.string.tags_num_limit,Toasty.LENGTH_SHORT,true).show();
                 }
 
                 break;
@@ -137,7 +136,7 @@ public class TagActivity extends AppCompatActivity {
      */
     private void initView() {
 
-        topicId = getIntent().getIntExtra("topic_id",0);
+        topicId = getIntent().getIntExtra(Constants.TOPIC_ID,0);
         tagLayoutChoose = findViewById(R.id.tag_layout_choose);
         tagLayoutAll = findViewById(R.id.tag_layout_all);
 
@@ -151,7 +150,7 @@ public class TagActivity extends AppCompatActivity {
      */
     private void initDate() {
 
-        chooseTagList = TagDaoImpl.findTagByTopic(LitePal.find(Topic.class, topicId).getTopic_tag());
+//        chooseTagList = TagDaoImpl.findTagByTopic(LitePal.find(Topic.class, topicId).getTopic_tag());
 
         allTagList = LitePal.findAll(Tag.class);
 
@@ -195,7 +194,7 @@ public class TagActivity extends AppCompatActivity {
                     isDelete = false;
                     tagLayoutAll.onChanged();
                 }
-                TagDaoImpl.topicDeleteTag(topicId,chooseTagListStandby.get(position).getId());
+//                TagDaoImpl.topicDeleteTag(topicId,chooseTagListStandby.get(position).getId());
                 chooseTagListStandby.remove(chooseTagListStandby.get(position));
 
                 tagLayoutChoose.onChanged();
@@ -243,10 +242,10 @@ public class TagActivity extends AppCompatActivity {
                 if (!isDelete){
                     if (!chooseTagListStandby.contains(allTagList.get(position))){
                         chooseTagListStandby.add(0,allTagList.get(position));
-                        TagDaoImpl.topicAddTag(topicId,allTagList.get(position).getId());
+//                        TagDaoImpl.topicAddTag(topicId,allTagList.get(position).getId());
                     }else{
                         chooseTagListStandby.remove(allTagList.get(position));
-                        TagDaoImpl.topicDeleteTag(topicId,allTagList.get(position).getId());
+//                        TagDaoImpl.topicDeleteTag(topicId,allTagList.get(position).getId());
                     }
                 }else{
                     deleteTag(position);
@@ -269,23 +268,23 @@ public class TagActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.ensure, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (TagDaoImpl.findAllTag().size() == 31){
-                            Toasty.warning(TagActivity.this,getString(R.string.tag_num_warn), Toast.LENGTH_SHORT, true).show();
-                            return ;
-                        }
-                        newTag = TagDaoImpl.newTag(tagEdit.getText().toString());
-                        //assert newTag != null;
-                        if (newTag == null){
-                            Toasty.warning(TagActivity.this,R.string.hint_repeated_tag, Toast.LENGTH_SHORT, true).show();
-                            return ;
-                        }
-                        TagDaoImpl.topicAddTag(topicId,newTag.getId());
-
-                        chooseTagListStandby.add(0,newTag);
-                        allTagList.add(0,newTag);
-
-                        tagLayoutChoose.onChanged();
-                        tagLayoutAll.onChanged();
+//                        if (TagDaoImpl.findAllTag().size() == 31){
+//                            Toasty.warning(TagActivity.this,getString(R.string.tag_num_warn), Toast.LENGTH_SHORT, true).show();
+//                            return ;
+//                        }
+//                        newTag = TagDaoImpl.newTag(tagEdit.getText().toString());
+//                        //assert newTag != null;
+//                        if (newTag == null){
+//                            Toasty.warning(TagActivity.this,R.string.hint_repeated_tag, Toast.LENGTH_SHORT, true).show();
+//                            return ;
+//                        }
+//                        TagDaoImpl.topicAddTag(topicId,newTag.getId());
+//
+//                        chooseTagListStandby.add(0,newTag);
+//                        allTagList.add(0,newTag);
+//
+//                        tagLayoutChoose.onChanged();
+//                        tagLayoutAll.onChanged();
                     }
                 }).show();
 
@@ -299,7 +298,7 @@ public class TagActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.ensure, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                TagDaoImpl.deleteTag(allTagList.get(position).getId());
+//                TagDaoImpl.deleteTag(allTagList.get(position).getId());
                 chooseTagListStandby.remove(allTagList.get(position));
                 allTagList.remove(position);
                 isDelete = false;

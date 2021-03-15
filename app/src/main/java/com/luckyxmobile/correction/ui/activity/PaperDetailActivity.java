@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,8 +30,6 @@ import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.dmoral.toasty.Toasty;
-
 /**
  * @author ChangHao
  */
@@ -46,7 +43,7 @@ public class PaperDetailActivity extends AppCompatActivity {
     private Toolbar reviewPaperDetailToolBar;
     private PaperDetailAdapter paperDetailAdapter;
 
-    private PaperTopicDao paper_topic = new PaperTopicDaoImpl();
+//    private PaperTopicDao paper_topic = new PaperTopicDaoImpl();
     private List<Topic> topicList = new ArrayList<>();
     private List<Book> booksList = new ArrayList<>();
     private Paper paper;
@@ -81,7 +78,7 @@ public class PaperDetailActivity extends AppCompatActivity {
         // 使用PaperDetailAdapter的时候把这个list传了过去, 所以list不可以new一个新的, 只能在原本的list上修改
         topicList.clear();
         // 从数据库中获取数据
-        List<Topic> topicList = paper_topic.selectPaper(Integer.valueOf(reviewPaperId));
+//        List<Topic> topicList = paper_topic.selectPaper(Integer.valueOf(reviewPaperId));
         paper = LitePal.find(Paper.class, Integer.valueOf(reviewPaperId));
         // 获取到当前错题卷的名称
         paperName = paper.getPaper_name();
@@ -178,7 +175,7 @@ public class PaperDetailActivity extends AppCompatActivity {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toasty.warning(PaperDetailActivity.this, R.string.paper_empty_cant_print, Toast.LENGTH_SHORT).show();
+//                                    Toasty.warning(PaperDetailActivity.this, R.string.paper_empty_cant_print, Toast.LENGTH_SHORT).show();
                                     ProgressDialogUtil.dismiss();
                                     canPrint = true;
                                 }

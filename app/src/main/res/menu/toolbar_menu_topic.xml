@@ -5,9 +5,7 @@
     <item
         android:id="@+id/topic_menu_like"
         android:title="@string/collect"
-        android:icon="@drawable/like_button_status"
-        android:checked="false"
-        android:checkable="true"
+        android:icon="@drawable/ic_collect"
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/topic_menu_add_text"
@@ -29,7 +27,7 @@
 
     <item android:id="@+id/topic_menu_show_original"
         android:title="@string/show_original_images"
-        android:checked="false"
+        android:checked="true"
         android:checkable="true"
         app:showAsAction="never"/>
 

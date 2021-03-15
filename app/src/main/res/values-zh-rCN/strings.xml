@@ -14,6 +14,8 @@
     <string name="save_changes_when_quit">是否保存您的修改</string>
     <string name="confirm_delete_paper">确认删除该测试卷\n删除测试卷只会删除试卷本身，并不会删除错题本中的内容！</string>
 
+
+    <string name="topic_image_type">类型</string>
     <string name="stem">题干</string>
     <string name="correct">正解</string>
     <string name="incorrect">错解</string>
@@ -21,6 +23,7 @@
     <string name="cause">错误原因</string>
     <string name="topic_details">题目详情</string>
     <string name="add_image">添加图片</string>
+    <string name="add_topic">添加题目</string>
     <string name="add_picture_camera">添加图片(拍照)</string>
     <string name="add_picture_album">添加图片(相册)</string>
     <string name="add_text">添加文字</string>
@@ -44,6 +47,7 @@
     <string name="share">分享</string>
     <string name="print_preview">打印预览</string>
     <string name="print_time">打印时间</string>
+    <string name="time">时间</string>
     <string name="select_print_content">选择打印内容</string>
 
     <string name="more_tag">更多标签</string>

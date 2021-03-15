@@ -5,11 +5,13 @@ import com.luckyxmobile.correction.model.bean.TopicImage;
 
 public interface TopicInfoViewPresenter {
 
-    void initTopicInfo(Topic currentTopic);
+    void initTopicInfo(int topicId);
 
-    void addTopicImage(TopicImage topicImage);
+    Topic getCurTopic();
+
+    void setTopicText(String text);
+
+    void setTopicCollection(boolean collection);
 
     void removeTopicImage(TopicImage topicImage);
-
-    void showTopicTextDialog();
 }

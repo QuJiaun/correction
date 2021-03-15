@@ -3,12 +3,16 @@ package com.luckyxmobile.correction.ui.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.global.Constants;
@@ -26,7 +30,7 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
     private float mBitmapTransX;
     private float mBitmapTransY;
     private float mBitmapScale = 1;
-    private List<HighlighterArea> highlighterAreaArrayList = new ArrayList<>();
+    private final List<HighlighterArea> highlighterAreaArrayList = new ArrayList<>();
     private TouchGesture touchGesture;
 
     public ShowHighlighterView(Context context){
@@ -56,9 +60,7 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
                 highlighterAreaArrayList.add(area);
             }
 
-            if (!highlighterAreaArrayList.isEmpty()) {
-                invalidate();
-            }
+            invalidate();
         }
     }
 
@@ -70,7 +72,8 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
     private void setImageBitmap(int contrastRadio, String imagePath){
         this.mBgBitmap = OpenCVUtil.setImageContrastRadioByPath(contrastRadio,imagePath);
         this.mFgBitmap = Bitmap.createBitmap(mBgBitmap.getWidth(),mBgBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        mFgBitmap.eraseColor(getContext().getColor(R.color.black));
+//        mFgBitmap.eraseColor(getContext().getColor(R.color.black));
+
         invalidate();
     }
 
@@ -114,6 +117,8 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
 
         canvas.drawBitmap(mFgBitmap, 0, 0, null);
         canvas.drawBitmap(mBgBitmap, 0, 0, null);
+
+        Log.d("123456", "onDraw: ");
 
         for (HighlighterArea area: highlighterAreaArrayList){
             canvas.save();

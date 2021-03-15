@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Paper;
+import com.luckyxmobile.correction.utils.impl.FilesUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -78,9 +79,8 @@ public class PaperAdapter extends RecyclerView.Adapter<PaperAdapter.MyReviewHold
 
     @Override
     public void onBindViewHolder(final MyReviewHolder myReviewHolder, final int position) {
-        Date date = rDatas.get(position).getPaper_create_time();
-        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd HH:mm");
-        myReviewHolder.review_recyclerview_tv.setText(rDatas.get(position).getPaper_name()+"\n"+format.format(date));
+        myReviewHolder.review_recyclerview_tv.setText(rDatas.get(position).getPaper_name()+"\n"+
+                FilesUtils.getTimeByDate(rDatas.get(position).getPaper_create_time()));
         myReviewHolder.itemView.setTag(position);
 
     }

@@ -4,9 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="1dp"
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="1dp"
+    android:padding="8dp"
     android:id="@+id/item_topic_image_layout"
-    android:background="@color/colorWhite">
+    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+    android:background="@drawable/shape_box_view">
 
 
     <ImageView
@@ -14,8 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:scaleType="fitCenter"
-        android:background="@color/colorWhite"
+        android:scaleType="fitStart"
+        android:background="@drawable/shape_box_fillet_shadow_view"
         tools:ignore="ContentDescription" />
 
     <ImageView

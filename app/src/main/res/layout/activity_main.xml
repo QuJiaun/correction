@@ -5,7 +5,7 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_f2"
+    android:background="@color/layout_view_bg"
     tools:context="com.luckyxmobile.correction.ui.activity.MainActivity">
 
 
@@ -36,20 +36,21 @@
 
            <TextView
                android:layout_width="match_parent"
-               android:layout_height="?actionBarSize"
+               android:layout_height="48dp"
                android:layout_alignParentTop="true"
                android:layout_alignParentStart="true"
                android:gravity="center|start"
                android:paddingStart="16dp"
                android:paddingEnd="16dp"
                android:text="@string/my_notebooks"
+               android:textColor="@color/colorPrimary"
                android:background="@color/colorWhite"/>
 
 
            <Button
                android:id="@+id/add_book_main"
                android:layout_width="wrap_content"
-               android:layout_height="?actionBarSize"
+               android:layout_height="48dp"
                android:layout_alignParentTop="true"
                android:layout_alignParentEnd="true"
                android:gravity="center|end"
@@ -57,7 +58,7 @@
                android:paddingEnd="16dp"
                android:text="@string/new_notebook"
                android:textColor="@color/colorAccent"
-               android:background="@color/colorWhite"/>
+               android:background="@color/transparent"/>
 
 
            <androidx.recyclerview.widget.RecyclerView
@@ -71,20 +72,23 @@
            <TextView
                android:id="@+id/tv_recent_topic"
                android:layout_width="match_parent"
-               android:layout_height="?actionBarSize"
+               android:layout_height="32dp"
+               android:layout_marginTop="4dp"
+               android:layout_marginBottom="2dp"
                android:layout_below="@+id/rv_head_book"
-               android:gravity="center|start"
+               android:gravity="center_vertical"
                android:paddingStart="16dp"
                android:paddingEnd="16dp"
-               android:text="@string/recent_topic"/>
+               android:text="@string/recent_topic"
+               android:textColor="@color/colorPrimary"
+               android:background="@color/colorWhite"/>
 
            <androidx.recyclerview.widget.RecyclerView
                android:id="@+id/main_recycler_recent_topic"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_below="@id/rv_head_book"
-               android:layout_marginTop="?actionBarSize"
-               android:padding="8dp"/>
+               android:layout_below="@id/tv_recent_topic"
+               android:paddingBottom="64dp"/>
 
        </RelativeLayout>
 
@@ -92,11 +96,11 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floating_button_add_topic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="32dp"
+        android:layout_margin="16dp"
         android:padding="8dp"
         android:src="@drawable/ic_add_white_24dp"/>
 

@@ -48,7 +48,7 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
-    <style name="menu_pop_window" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="menu_pop_window" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
          <!--分割线-->
         <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
         <!-- 是否覆盖锚点，默认为true，即盖住Toolbar -->
@@ -59,7 +59,7 @@
         <item name="android:dropDownHorizontalOffset">0dp</item>
 
         <item name="android:listPreferredItemHeightSmall">48dp</item>
-        <item name="android:textSize">15dp</item>
+        <item name="android:textSize">@dimen/menu_text_size</item>
     </style>
 
     <!-- 分隔线 -->
@@ -81,6 +81,7 @@
         <item name="android:layout_height">48dp</item>
         <item name="android:padding">12dp</item>
         <item name="android:gravity">center</item>
+        <item name="android:scaleType">fitCenter</item>
         <item name="android:background">@color/transparent</item>
         <item name="android:checkable">true</item>
     </style>
@@ -88,8 +89,8 @@
     <declare-styleable name="CheckMenuItemView" >
         <attr name="checked_img" format="reference" />
         <attr name="unchecked_img" format="reference"/>
-        <attr name="checked_color" format="color" />
-        <attr name="unchecked_color" format="color"/>
+        <attr name="checked_text_color" format="color" />
+        <attr name="unchecked_text_color" format="color"/>
         <attr name="menu_text" format="string"/>
         <attr name="default_checked" format="boolean" />
     </declare-styleable>

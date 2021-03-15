@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
-import es.dmoral.toasty.Toasty;
 import static java.util.regex.Pattern.*;
 
 /**
@@ -141,9 +140,9 @@ public class SelectTopicActivity extends AppCompatActivity {
 
         }
     });
-    private PaperTopicDao paper_topic_dao = new PaperTopicDaoImpl();
-    private TopicDao topicDao = new TopicDaoImpl();
-    private BookDao bookDao = new BookDaoImpl();
+//    private PaperTopicDao paper_topic_dao = new PaperTopicDaoImpl();
+//    private TopicDao topicDao = new TopicDaoImpl();
+//    private BookDao bookDao = new BookDaoImpl();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -171,7 +170,7 @@ public class SelectTopicActivity extends AppCompatActivity {
      * 初始化Button
      */
     private void initButton() {
-        btn = findViewById(R.id.btn);
+//        btn = findViewById(R.id.btn);
         // 从PaperDetailActivity过来，按钮为完成
         if (SelectTopicActivity.this.getIntent().getStringExtra("reviewPaperId") != null) {
             btn.setText(R.string.finish);
@@ -205,7 +204,7 @@ public class SelectTopicActivity extends AppCompatActivity {
         }
         // 完成按钮
         if (SelectTopicActivity.this.getIntent().getStringExtra("reviewPaperId") != null) {
-            paper_topic_dao.update(Integer.valueOf(paper_id), topic_ids);
+//            paper_topic_dao.update(Integer.valueOf(paper_id), topic_ids);
             setResult(RESULT_OK);
             finish();
         } else {
@@ -246,7 +245,7 @@ public class SelectTopicActivity extends AppCompatActivity {
         if (books != null && books.size() != 0) {
             wrong_books = new String[books.size()];
             for (int i = 0; i < books.size(); i++) {
-                wrong_books[i] = books.get(i).getBook_name();
+//                wrong_books[i] = books.get(i).getBook_name();
             }
         }
 
@@ -419,7 +418,7 @@ public class SelectTopicActivity extends AppCompatActivity {
             if (split1[0].equals(this.getString(R.string.notebook))) {
                 select_filter_book.add(String.valueOf(books.get(Integer.parseInt(split1[1])).getId()));
             } else if (split1[0].equals(this.getString(R.string.tag))) {
-                select_label.add(String.valueOf(labels.get(Integer.parseInt(split1[1])).getTag_topic()));
+//                select_label.add(String.valueOf(labels.get(Integer.parseInt(split1[1])).getTag_topic()));
             }
         }
         // 刷新错题列表
@@ -442,13 +441,13 @@ public class SelectTopicActivity extends AppCompatActivity {
                 // 清空筛选后的错题列表
                 selectTopicList.clear();
                 // 添加在筛选前选中的错题列表
-                selectTopicList.addAll(topicDao.selectTopicById(selectedTopicList));
+//                selectTopicList.addAll(topicDao.selectTopicById(selectedTopicList));
                 // 获取筛选的错题列表
-                List<Topic> selectTopic = topicDao.selectTopic(select_filter_book, select_label);
+//                List<Topic> selectTopic = topicDao.selectTopic(select_filter_book, select_label);
                 // 去除筛选后的错题列表和筛选前选中的错题列表的重复错题
-                selectTopic.removeAll(selectTopicList);
+//                selectTopic.removeAll(selectTopicList);
                 // 将筛选好的错题列表添加到筛选错题列表
-                selectTopicList.addAll(selectTopic);
+//                selectTopicList.addAll(selectTopic);
                 // 清空错题列表
                 selectTopicListDatas.clear();
                 // 把查出来的错题列表添加到错题列表
@@ -475,20 +474,20 @@ public class SelectTopicActivity extends AppCompatActivity {
         // 存错题在哪个错题本，错题图片的uri，是否选中此错题
         Map<String, Object> map;
         for (int i = 0; i < List.size(); i++) {
-            paper_id_list = paper_topic_dao.selectByTopicId(List.get(i).getId());
+//            paper_id_list = paper_topic_dao.selectByTopicId(List.get(i).getId());
             map = new HashMap<>();
             map.put("topic_id", List.get(i).getId());
-            map.put("topic_imgUri", ImageUtil.convertTopicImageByWhichs(this,List.get(i).getId(),null,0, false, false));
-            map.put("book_name", this.getString(R.string.notebook) + ":" + bookDao.selectBookNameByTopic(List.get(i)));
+//            map.put("topic_imgUri", ImageUtil.convertTopicImageByWhichs(this,List.get(i).getId(),null,0, false, false));
+//            map.put("book_name", this.getString(R.string.notebook) + ":" + bookDao.selectBookNameByTopic(List.get(i)));
             if (paper_id != null) {
-                if (paper_id_list.contains(paper_id)) {
+//                if (paper_id_list.contains(paper_id)) {
                     map.put("topic_selected", true);
                 } else {
                     map.put("topic_selected", false);
                 }
-            } else {
-                map.put("topic_selected", false);
-            }
+//            } else {
+//                map.put("topic_selected", false);
+//            }
             selectTopicListDatas.add(map);
         }
 
@@ -513,7 +512,7 @@ public class SelectTopicActivity extends AppCompatActivity {
                         } else {
                             int num2 = selectTopicListDatas.size(); // 当前页面的错题数
                             if (num > num2) {
-                                Toasty.warning(SelectTopicActivity.this, R.string.wrong_input, Toast.LENGTH_LONG).show();
+//                                Toasty.warning(SelectTopicActivity.this, R.string.wrong_input, Toast.LENGTH_LONG).show();
                             } else {
                                 Random r = new Random();
                                 ArrayList list = new ArrayList(); //生成数据集，用来保存随即生成数，并用于判断
@@ -531,10 +530,10 @@ public class SelectTopicActivity extends AppCompatActivity {
                             }
                         }
                     } else {
-                        Toasty.warning(SelectTopicActivity.this, R.string.wrong_input, Toast.LENGTH_LONG).show();
+//                        Toasty.warning(SelectTopicActivity.this, R.string.wrong_input, Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Toasty.warning(SelectTopicActivity.this, R.string.wrong_input, Toast.LENGTH_LONG).show();
+//                    Toasty.warning(SelectTopicActivity.this, R.string.wrong_input, Toast.LENGTH_LONG).show();
                 }
             }
         });

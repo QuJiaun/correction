@@ -55,14 +55,14 @@ public class ImageTask extends AsyncTask<Void, Integer, Boolean> {
         try {
             int i = 1;
             for (int id: topicIds) {
-                Bitmap bitmap = ImageUtil.convertTopicImageByWhichs(context, id, whichShowPrint, 0, false, false);
-                if (bitmap != null){
-                    imageCache.put(id, bitmap);
-                    if (i%4 == 0){
-                        publishProgress(topicIds.indexOf(id));
-                    }
-                    i++;
-                }
+//                Bitmap bitmap = ImageUtil.convertTopicImageByWhichs(context, id, whichShowPrint, 0, false, false);
+//                if (bitmap != null){
+//                    imageCache.put(id, bitmap);
+//                    if (i%4 == 0){
+//                        publishProgress(topicIds.indexOf(id));
+//                    }
+//                    i++;
+//                }
 
             }
             return true;

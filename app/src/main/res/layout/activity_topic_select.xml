@@ -24,19 +24,19 @@
         android:layout_height="match_parent"
         android:background="@color/transparent"/>
 
-    <com.deadline.statebutton.StateButton
-        android:id="@+id/btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_margin="16dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:textColor="@color/colorWhite"
-        app:radius="8dp"
-        app:round="true"
-        app:normalBackgroundColor="@color/colorAccent"
-        app:pressedBackgroundColor="@color/colorAccent" />
+<!--    <com.deadline.statebutton.StateButton-->
+<!--        android:id="@+id/btn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:paddingStart="8dp"-->
+<!--        android:paddingEnd="8dp"-->
+<!--        android:textColor="@color/colorWhite"-->
+<!--        app:radius="8dp"-->
+<!--        app:round="true"-->
+<!--        app:normalBackgroundColor="@color/colorAccent"-->
+<!--        app:pressedBackgroundColor="@color/colorAccent" />-->
 
 </RelativeLayout>

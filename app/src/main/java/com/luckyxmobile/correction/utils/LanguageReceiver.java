@@ -13,8 +13,8 @@ public class LanguageReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
 
-        Book book = LitePal.find(Book.class, 1);
-        book.setBook_name(context.getString(R.string.favorites));
-        book.save();
+//        Book book = LitePal.find(Book.class, 1);
+//        book.setBook_name(context.getString(R.string.favorites));
+//        book.save();
     }
 }

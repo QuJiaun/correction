@@ -11,7 +11,7 @@ public interface BookDao {
 
     void saveBook(Book book);
 
-    void removeBook(Book book);
+    void updateBook(Book book);
 
-    void alterBookCover(Book book, String coverImagePath);
+    void removeBook(Book book);
 }

@@ -1,2 +1,2 @@
-include ':app', ':MyCamera'
+include ':app'
 include ':openCVLibrary347'
