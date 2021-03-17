@@ -80,9 +80,9 @@ public class CheckMenuItemView extends LinearLayout implements View.OnClickListe
     public void setChecked(boolean checked) {
 
         isChecked = checked;
-
-        iconIv.setBackground(isChecked?checkedImg:uncheckedImg);
+        iconIv.setImageDrawable(isChecked?checkedImg:uncheckedImg);
         menuTv.setTextColor(isChecked?checkedColor:uncheckedColor);
+        invalidate();
     }
 
     @Override

@@ -8,7 +8,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:gravity="center"
-            app:checked_img="@drawable/ic_paint_right"
+            app:checked_img="@drawable/ic_highlighter_blue"
             app:unchecked_img="@drawable/ic_paint_unchecked"
             app:menu_text="荧光笔"
             app:checked_text_color="@color/orange_f7"
