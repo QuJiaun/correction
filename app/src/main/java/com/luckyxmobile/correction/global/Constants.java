@@ -50,6 +50,7 @@ public class Constants {
     public static final String TOPIC_POSITION = "topic_position";
     public static final String IMAGE_POSITION = "image_position";
     public static final String BOOK_ID = "book_id";
+    public static final String PAPER_ID = "paper_id";
     public static final String IS_EDIT_PHOTO = "whether_edit_photo";
     public static final String TOOLBAR_NAME = "toolbar_name";
     public static final String IMAGE_PATH = "image_path";
@@ -92,12 +93,12 @@ public class Constants {
     }
 
     //涂抹工具类型
-    public static final int PAINT_BLUE = R.color.highlighter_blue;
-    public static final int PAINT_RED = R.color.highlighter_red;
-    public static final int PAINT_GREEN = R.color.highlighter_green;
-    public static final int PAINT_YELLOW = R.color.highlighter_yellow;
-    public static final int PAINT_ERASE = R.color.highlighter_erase;
-    public static final int PAINT_WHITE_OUT = R.color.highlighter_white_out;
+    public static final int PAINT_BLUE = 0x220;
+    public static final int PAINT_RED = 0x221;
+    public static final int PAINT_GREEN = 0x222;
+    public static final int PAINT_YELLOW = 0x223;
+    public static final int PAINT_ERASE = 0x224;
+    public static final int PAINT_WHITE_OUT = 0x225;
 
     @IntDef({PAINT_BLUE, PAINT_RED, PAINT_GREEN, PAINT_YELLOW, PAINT_ERASE, PAINT_WHITE_OUT})
     @Target({ElementType.PARAMETER, ElementType.FIELD})
@@ -105,9 +106,6 @@ public class Constants {
     public @interface HighlighterType{
 
     }
-
-    //橡皮擦宽度
-    public static final int ERASE_THIN = 60, ERASE_MEDIUM = 80, ERASE_THICK = 100;
 
     //画笔宽度
     public static final int PAINT_THIN = 40, PAINT_MEDIUM = 60, PAINT_THICK = 80;

@@ -1,131 +1,104 @@
 package com.luckyxmobile.correction.adapter;
 
-import android.content.Context;
-import android.icu.text.SimpleDateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Paper;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
 
-import java.util.Date;
 import java.util.List;
 
-public class PaperAdapter extends RecyclerView.Adapter<PaperAdapter.MyReviewHolder>
-        implements View.OnClickListener, View.OnLongClickListener {
-    private int index;
-    private Context rContext;
-    private List<Paper> rDatas;
-    private OnRecyclerViewItemClickListener mOnItemClickListener;
-    private OnRecyclerViewItemLongClickListener mOnItemLongClickListener;
-    private OnPaperMenuClickListener mPaperMenuClickListener;
+public class PaperAdapter extends RecyclerView.Adapter<PaperAdapter.ViewHolder> {
 
+    private final List<Paper> paperList;
+    private final OnItemListener listener;
 
-    public void setDatas(List<Paper> rDatas) {
-        this.rDatas = rDatas;
+    public PaperAdapter(OnItemListener listener, List<Paper> paperList) {
+        this.listener = listener;
+        this.paperList = paperList;
     }
 
-    public void setmOnItemClickListener(OnRecyclerViewItemClickListener listener) {
-        this.mOnItemClickListener = listener;
+    public boolean isEmpty() {
+        return paperList.isEmpty();
     }
 
-    public void setmOnItemLongClickListener(OnRecyclerViewItemLongClickListener listener) {
-        this.mOnItemLongClickListener = listener;
+    public void remove(Paper paper) {
+        int index = paperList.indexOf(paper);
+        paperList.remove(index);
+        notifyItemRemoved(index);
     }
 
-    public interface OnPaperMenuClickListener {
-        void paperMenuClick(View v,int position);
+    public void refresh(Paper paper) {
+        int index = paperList.indexOf(paper);
+        notifyItemChanged(index);
     }
 
-    public void setPaperMenuClickListener(OnPaperMenuClickListener onPaperMenuClickListener) {
-        this.mPaperMenuClickListener = onPaperMenuClickListener;
+    public void addPaper(Paper paper) {
+        paperList.add(paper);
+        notifyItemInserted(paperList.size()-1);
     }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    ;
-
-    public int getIndex() {
-        return this.index;
-    }
-
 
     @Override
-    public MyReviewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        rContext = viewGroup.getContext();
-        final View view = LayoutInflater.from(rContext).inflate(R.layout.recycle_item_paper, viewGroup, false);
-        view.setOnLongClickListener(this);
-        view.setOnClickListener(this);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycle_item_paper, parent, false);
+        return new ViewHolder(view);
+    }
 
-        final MyReviewHolder viewHolder = new MyReviewHolder(view);
-        //更多按钮添加点击事件
-        viewHolder.review_recyclerview_ibt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPaperMenuClickListener.paperMenuClick(viewHolder.review_recyclerview_ibt,viewHolder.getAdapterPosition());
-            }
+    int curFocused = -1;
+
+    @Override
+    public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
+        Paper paper = paperList.get(position);
+        viewHolder.paperNameTv.setText(paper.getPaperName());
+
+        if (curFocused == position) {
+            viewHolder.itemView.setBackgroundResource(R.drawable.shape_box_check_bg);
+            curFocused = -1;
+        } else {
+            viewHolder.itemView.setBackgroundResource(R.drawable.shape_box_view);
+        }
+
+        viewHolder.menuBtn.setOnClickListener(view -> {
+            listener.showPopupMenu(viewHolder.menuBtn, paper, position);
+            curFocused = position;
+            notifyItemChanged(position);
         });
-        return viewHolder;
-    }
 
+        viewHolder.itemView.setOnLongClickListener(view -> {
+            listener.showPopupMenu(viewHolder.menuBtn, paper, position);
+            curFocused = position;
+            notifyItemChanged(position);
+            return true;
+        });
 
-
-    @Override
-    public void onBindViewHolder(final MyReviewHolder myReviewHolder, final int position) {
-        myReviewHolder.review_recyclerview_tv.setText(rDatas.get(position).getPaper_name()+"\n"+
-                FilesUtils.getTimeByDate(rDatas.get(position).getPaper_create_time()));
-        myReviewHolder.itemView.setTag(position);
-
+        viewHolder.itemView.setOnClickListener(view -> listener.onItemClick(paper));
     }
 
     @Override
     public int getItemCount() {
-        return rDatas.size();
+        return paperList.size();
     }
 
-    @Override
-    public void onClick(View view) {
-        if (mOnItemClickListener != null) {
-            mOnItemClickListener.onItemClick(view, (int) view.getTag());
-        }
-    }
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
-    @Override
-    public boolean onLongClick(View view) {
-        if (mOnItemLongClickListener != null) {
-            mOnItemLongClickListener.onItemLongClick(view, (int) view.getTag());
-        }
-        return true;
-    }
+        ImageButton menuBtn;
+        TextView paperNameTv;
 
-    public interface OnRecyclerViewItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-    public interface OnRecyclerViewItemLongClickListener {
-        void onItemLongClick(View view, int position);
-    }
-
-    class MyReviewHolder extends RecyclerView.ViewHolder {
-        TextView review_recyclerview_tv;
-        ImageButton review_recyclerview_ibt;
-
-         MyReviewHolder(View itemView) {
+         ViewHolder(View itemView) {
             super(itemView);
-            review_recyclerview_tv = itemView.findViewById(R.id.review_recyclerview_tv);
-            review_recyclerview_ibt = itemView.findViewById(R.id.paper_item_bt);
+            menuBtn = itemView.findViewById(R.id.paper_menu_btn);
+            paperNameTv = itemView.findViewById(R.id.paper_name_tv);
         }
     }
-    //添加复习卷   lyw
-    public void addPaper(Paper paper){
-        rDatas.add(paper);
-        notifyDataSetChanged();
+
+    public interface OnItemListener {
+        void onItemClick(Paper paper);
+        void showPopupMenu(View view, Paper paper, int position);
     }
 }

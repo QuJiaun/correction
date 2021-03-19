@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_f2"
+    android:background="@color/layout_view_bg"
     tools:context="com.luckyxmobile.correction.ui.activity.SelectTopicActivity">
-
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -17,26 +16,36 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
 
+    <TextView
+        android:id="@+id/hint_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="123"
+        android:visibility="gone"
+        android:background="@drawable/shape_box_fillet_shadow_view"/>
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/select_topic_list"
-        android:layout_below="@+id/toolbar"
+        android:id="@+id/select_topic_RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/transparent"/>
+        android:layout_below="@id/hint_select"
+        android:paddingBottom="72dp"/>
 
-<!--    <com.deadline.statebutton.StateButton-->
-<!--        android:id="@+id/btn"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_centerInParent="true"-->
-<!--        android:layout_margin="16dp"-->
-<!--        android:paddingStart="8dp"-->
-<!--        android:paddingEnd="8dp"-->
-<!--        android:textColor="@color/colorWhite"-->
-<!--        app:radius="8dp"-->
-<!--        app:round="true"-->
-<!--        app:normalBackgroundColor="@color/colorAccent"-->
-<!--        app:pressedBackgroundColor="@color/colorAccent" />-->
+    <Button
+        android:id="@+id/select_topic_finish_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:padding="8dp"
+        android:text="@string/finish"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/shape_new_paper_btn"/>
 
 </RelativeLayout>

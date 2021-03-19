@@ -42,7 +42,7 @@ public class SelectPaperAdapter extends RecyclerView.Adapter<SelectPaperAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.tv.setText(rDatas.get(i).getPaper_name());
+        viewHolder.tv.setText(rDatas.get(i).getPaperName());
         viewHolder.itemView.setTag(i);
     }
 
@@ -79,7 +79,7 @@ public class SelectPaperAdapter extends RecyclerView.Adapter<SelectPaperAdapter.
         TextView tv ;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tv = (TextView) itemView.findViewById(R.id.review_recyclerview_tv);
+            tv = (TextView) itemView.findViewById(R.id.paper_name_tv);
         }
     }
 }

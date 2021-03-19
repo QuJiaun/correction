@@ -7,6 +7,10 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+
+import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 
@@ -33,14 +37,15 @@ public class HighlighterUtil {
             paint.setAlpha(150);
         }
 
-        paint.setColor(context.getColor(type));
+        int color = type2Color(type);
+        paint.setColor(context.getColor(color));
     }
 
     public static Paint defaultHighlighter(Context context) {
         return getHighlighter(context, Constants.PAINT_THIN, Constants.PAINT_BLUE, true);
     }
 
-    public static Paint getHighlighter(Context context, int width, int color, boolean isShow) {
+    public static Paint getHighlighter(Context context, int width, @Constants.HighlighterType int type, boolean isShow) {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setDither(true);
@@ -49,6 +54,8 @@ public class HighlighterUtil {
         paint.setStrokeJoin(Paint.Join.BEVEL);
 
         paint.setStrokeWidth(width);
+
+        int color = type2Color(type);
 
         paint.setColor(context.getColor(color));
 
@@ -97,5 +104,24 @@ public class HighlighterUtil {
 
         return path;
 
+    }
+
+    private static int type2Color(int type) {
+        switch (type) {
+            case Constants.PAINT_BLUE:
+                return R.color.highlighter_blue;
+            case Constants.PAINT_RED:
+                return R.color.highlighter_red;
+            case Constants.PAINT_YELLOW:
+                return R.color.highlighter_yellow;
+            case Constants.PAINT_GREEN:
+                return R.color.highlighter_green;
+            case Constants.PAINT_ERASE:
+                return R.color.highlighter_erase;
+            case Constants.PAINT_WHITE_OUT:
+                return R.color.highlighter_white_out;
+            default:
+                throw new RuntimeException("getHighlighter : type is null");
+        }
     }
 }

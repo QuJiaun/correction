@@ -29,8 +29,6 @@ public class SelectBookDialog {
     private final OnClickListener listener;
     private final View view;
 
-    private ImageView topicImageIv;
-
     private List<Book> bookList;
     private Book curBook;
 
@@ -45,8 +43,6 @@ public class SelectBookDialog {
         view = LayoutInflater.from(context).inflate(R.layout.dialog_view_select_book,null);
         dialog.setContentView(view);
         dialog.getWindow().setLayout(view.getWidth(), view.getHeight());
-
-        topicImageIv = view.findViewById(R.id.select_book_dialog_image);
 
         Button ensureBtn = view.findViewById(R.id.ensure_btn);
         ensureBtn.setOnClickListener(v -> listener.onSelectBookFinished(curBook, curImageType));
@@ -115,13 +111,6 @@ public class SelectBookDialog {
             return true;
         });
 
-    }
-
-    public void setTopicImageIv(Bitmap bitmap) {
-
-        bitmap = ImageUtil.resizeBitmap(bitmap, bitmap.getWidth()/3, bitmap.getHeight()/3);
-
-        Glide.with(dialog.getContext()).load(bitmap).into(topicImageIv);
     }
 
     public BottomSheetDialog getDialog() {

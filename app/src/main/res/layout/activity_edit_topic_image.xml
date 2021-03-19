@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/gray_f2"
     android:orientation="vertical"
+    android:background="@color/colorPrimaryDark"
     tools:context="com.luckyxmobile.correction.ui.activity.EditTopicImageActivity">
 
     <LinearLayout
@@ -15,8 +15,7 @@
         android:layout_marginTop="4dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/shape_box_fillet_shadow_view">
+        android:gravity="center_vertical">
 
         <Button
             android:id="@+id/drawing_view_return"
@@ -52,20 +51,10 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/drawing_view_hint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-8dp"
-        android:padding="8dp"
-        android:gravity="center|bottom"
-        android:background="@drawable/shape_box_fillet_shadow_view"/>
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/shape_box_fillet_shadow_view">
+        android:layout_weight="1">
 
         <com.luckyxmobile.correction.ui.views.DrawingView
             android:id="@+id/drawing_view"
@@ -74,24 +63,49 @@
             android:layout_margin="4dp"/>
     </FrameLayout>
 
-    <HorizontalScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_box_fillet_shadow_view">
+        android:orientation="horizontal"
+        android:layout_marginTop="2dp"
+        android:gravity="center">
 
-        <LinearLayout
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_tool_highlighter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            app:checked_img="@drawable/ic_highlighter_blue"
+            app:unchecked_img="@drawable/ic_paint_unchecked"
+            app:menu_text="荧光笔"
+            app:checked_text_color="@color/orange_f7"
+            app:default_checked="true"/>
 
-            <include
-                layout="@layout/drawing_view_tools"/>
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_tool_erase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            app:checked_img="@drawable/ic_paint_erase_checked"
+            app:unchecked_img="@drawable/ic_paint_erase_unchecked"
+            app:checked_text_color="@color/orange_f7"
+            app:menu_text="@string/erase"/>
 
-        </LinearLayout>
 
-    </HorizontalScrollView>
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_tool_contrast_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            app:checked_img="@drawable/ic_paint_contrast_ratio_checked"
+            app:checked_text_color="@color/colorPrimaryDark"
+            app:default_checked="true"
+            app:menu_text="@string/contrast_ratio"/>
+
+    </LinearLayout>
 
 </LinearLayout>

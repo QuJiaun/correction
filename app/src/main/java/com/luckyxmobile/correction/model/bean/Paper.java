@@ -43,11 +43,11 @@ public class Paper extends LitePalSupport {
         this.id = id;
     }
 
-    public String getPaper_name() {
+    public String getPaperName() {
         return paper_name;
     }
 
-    public void setPaper_name(String paper_name) {
+    public void setPaperName(String paper_name) {
         this.paper_name = paper_name;
     }
 

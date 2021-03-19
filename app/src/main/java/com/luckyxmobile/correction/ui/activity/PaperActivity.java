@@ -1,394 +1,206 @@
 package com.luckyxmobile.correction.ui.activity;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.EditText;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.PaperAdapter;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.Paper;
-import com.luckyxmobile.correction.model.bean.Topic;
-import com.luckyxmobile.correction.utils.PdfUtils;
-import com.luckyxmobile.correction.utils.ProgressDialogUtil;
-import com.luckyxmobile.correction.utils.ThreadPool;
+import com.luckyxmobile.correction.ui.dialog.PaperInfoDialog;
 
 import org.litepal.LitePal;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
-public class PaperActivity extends AppCompatActivity{
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-    private RecyclerView review_recyclerview;
-    private PaperAdapter reviewAdapter;
-    private TextView add_paper_main;
-    private List<Paper> paperList;
-    private Toolbar toolbar;
-    private String paper_name;
-    private int paper_id;
-    private final static String TAG = "FragmentPaper";
-    private final static int PROGRESSDIALOG_DISMISS = 1;
-    private AlertDialog.Builder mChangeBookDialog = null;
-    private ImageView paperTopicNothing;
+import static android.widget.NumberPicker.OnScrollListener.SCROLL_STATE_IDLE;
+
+public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnItemListener {
+
+
+    private PaperAdapter paperAdapter;
+    @BindView(R.id.paper_recyclerview)
+    RecyclerView paperRv;
+    @BindView(R.id.paper_nothing)
+    ImageView paperNothing;
+    @BindView(R.id.new_paper_btn)
+    Button newPaperBtn;
+
+    PaperInfoDialog paperInfoDialog;
+
+    private Animation showAnim, hideAnim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paper);
+        ButterKnife.bind(this);
+        setPaperListRv(LitePal.findAll(Paper.class));
 
-        /*将Toolbar设置为标题栏*/
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-            // 显示返回键
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            // 不显示默认标题
-            actionBar.setDisplayShowTitleEnabled(true);
-        }
-       //设置返回箭头
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-
-        });
-
-        initData();
-//        add_paper_main = findViewById(R.id.add_paper_main);
-        review_recyclerview = findViewById(R.id.review_recyclerview);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        review_recyclerview.setLayoutManager(layoutManager);
-        reviewAdapter = new PaperAdapter();
-        reviewAdapter.setDatas(paperList);
-        review_recyclerview.setAdapter(reviewAdapter);
-        paperTopicNothing=findViewById(R.id.paper_topic_nothing);
-        //点击事件
-        reviewAdapter.setmOnItemClickListener(new PaperAdapter.OnRecyclerViewItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                paper_name = paperList.get(position).getPaper_name();
-                Intent reviewPaperDetailIntent = new Intent(PaperActivity.this, PaperDetailActivity.class);
-                reviewPaperDetailIntent.putExtra("reviewPaperId", paperList.get(position).getId() + "");
-
-                startActivity(reviewPaperDetailIntent);
-            }
-        });
-//        //长按点击事件
-        reviewAdapter.setmOnItemLongClickListener(new PaperAdapter.OnRecyclerViewItemLongClickListener() {
-            @Override
-            public void onItemLongClick(View view, final int position) {
-                reviewAdapter.setIndex(position);
-                deletePaper(position);
-
-            }
-        });
-
-        reviewAdapter.setPaperMenuClickListener(new PaperAdapter.OnPaperMenuClickListener() {
-            @Override
-            public void paperMenuClick(View v, int position) {
-                paperMoreClick(v,position);
-            }
-        });
-
-        //创建复习卷
-        add_paper_main.setText(R.string.new_test_page);
-        add_paper_main.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LitePal.deleteAll(Topic.class, "book_id = ?", "0");
-                Intent intent = new Intent(PaperActivity.this, SelectTopicActivity.class);
-                intent.putExtra("from", "MainActivity");
-                startActivity(intent);
-//                addPaperDialog();
-            }
-        });
-
+        hideAnim = AnimationUtils.loadAnimation(this, R.anim.layout_out_below);
+        showAnim = AnimationUtils.loadAnimation(this, R.anim.layout_in_below);
     }
 
     @Override
-    public void onResume() {
-//        toolbar.setTitle("");
+    protected void onResume() {
         super.onResume();
-        initData();
-        reviewAdapter.setDatas(paperList);
-        reviewAdapter.notifyDataSetChanged();
-        ProgressDialogUtil.dismiss();
-        //复习卷为空，背景提示图片显示
-        if (paperList.isEmpty()){
-            paperTopicNothing.setVisibility(View.VISIBLE);
-            review_recyclerview.setVisibility(View.GONE);
-        }else {
-            paperTopicNothing.setVisibility(View.GONE);
-            review_recyclerview.setVisibility(View.VISIBLE);
+        paperAdapter.notifyDataSetChanged();
+    }
+
+    public void setPaperNothing(boolean isEmpty) {
+        if (isEmpty) {
+            paperNothing.setVisibility(View.VISIBLE);
+        } else {
+            paperNothing.setVisibility(View.GONE);
         }
     }
 
-    //初始化复习卷名称
-    public List<Paper> initData(){
-        paperList = LitePal.findAll(Paper.class);
-        return paperList;
-    }
+    public void setPaperListRv(List<Paper> paperList) {
 
-    private Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case PROGRESSDIALOG_DISMISS:
-                    ProgressDialogUtil.dismiss();
-                    break;
+        setPaperNothing(paperList.isEmpty());
 
-                default:
-                    break;
-            }
-            return false;
-
-        }
-    });
-
-
-    private void paperMoreClick(View view, final int position) {
-        final Paper paper = paperList.get(position);
-        PopupMenu popupMenu = new PopupMenu(PaperActivity.this,view);
-        popupMenu.getMenuInflater().inflate(R.menu.menu_pop, popupMenu.getMenu());//2.加载Menu资源
-        //3.为弹出菜单设置点击监听
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        paperRv.setLayoutManager(layoutManager);
+        paperAdapter = new PaperAdapter(this, paperList);
+        paperRv.setAdapter(paperAdapter);
+        paperRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int mScrollThreshold;
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.share:
-                        ProgressDialogUtil.showProgressDialog(PaperActivity.this);
-                        ThreadPool.singleThreadExecutor.execute(
-                                ThreadPool.runnable = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            PdfUtils.sharePdfUris(PaperActivity.this, paperList.get(position));
-                                        } catch (IllegalArgumentException e){
-                                            handler.post(new Runnable() {
-                                                @Override
-                                                public void run() {
-//                                                    Toasty.warning(PaperActivity.this, R.string.paper_empty_cant_share, Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                        }
-                                        handler.sendEmptyMessage(PROGRESSDIALOG_DISMISS);
-                                    }
-                                }
-                        );
-                        return true;
-                    case R.id.print:
-                        ProgressDialogUtil.showProgressDialog(PaperActivity.this);
-                        ThreadPool.singleThreadExecutor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                try{
-                                    PdfUtils.printPreviewWindow(PaperActivity.this, paperList.get(position));
-                                }catch (IllegalArgumentException e){
-                                    handler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-//                                            Toasty.warning(PaperActivity.this, R.string.paper_empty_cant_print, Toast.LENGTH_SHORT).show();
-                                            ProgressDialogUtil.dismiss();
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                        return true;
-
-                    case R.id.rename:
-                        renamePaper(paper);
-                        return  true;
-
-
-                    case R.id.delete:
-                        deletePaper(position);
-
-                    default:
-                        return false;
-                }
-            }
-        });
-        popupMenu.show();//4.显示弹出菜单
-    }
-
-
-    /**
-     * 重命名复习卷
-     */
-    private void renamePaper(final Paper paper) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(PaperActivity.this);
-        View view = LayoutInflater.from(PaperActivity.this).inflate(R.layout.dialog_add_paper,null);
-        dialog.setView(view);
-        final EditText inputText = view.findViewById(R.id.topic_text_et);
-        final TextView inputTextNum = (TextView) view.findViewById(R.id.add_page_text_hint);
-        inputText.setText(paper.getPaper_name());
-        inputText.setSelection(paper.getPaper_name().length());
-        inputTextNum.setText(paper.getPaper_name().length() + "/12");
-
-        //输入框字数提示和限制
-        inputText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                inputTextNum.setText(s.length()+"/12");
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                inputTextNum.setText(s.length()+"/12");
-            }
-        });
-
-        dialog.setPositiveButton(R.string.ensure, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String newName = inputText.getText().toString();
-
-                if (newName.length() >0) {
-                    Log.d(TAG, "onClick: "+newName);
-                    paper.setPaper_name(newName);
-                    Paper newPaper = new Paper();
-                    newPaper.setPaper_name(newName);
-                    newPaper.update(paper.getId());
-                    reviewAdapter.notifyDataSetChanged();
-
-                }else {
-//                    Toasty.warning(PaperActivity.this,R.string.empty_input,Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-        });
-        dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        dialog.setTitle(R.string.rename);
-
-        dialog.create();
-        dialog.show();
-
-    }
-
-    private void deletePaper(final int position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PaperActivity.this);
-        builder.setIcon(R.drawable.ic_delete_red_24dp).setTitle(R.string.confirm_delete);
-        builder.setMessage(R.string.confirm_delete_paper);
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.ensure, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                paper_id = paperList.get(position).getId();
-                LitePal.delete(Paper.class,paper_id);
-//                PaperTopicDaoImpl paper_topic_dao = new PaperTopicDaoImpl();
-//                paper_topic_dao.deleteByPaperId(paper_id);
-                initData();
-                reviewAdapter.setDatas(paperList);
-                reviewAdapter.notifyDataSetChanged();
-                //复习卷为空，背景提示图片显示
-                if(paperList.isEmpty()){
-                    paperTopicNothing.setVisibility(View.VISIBLE);
-                    review_recyclerview.setVisibility(View.GONE);
-                }
-            }
-        });
-        builder.setNegativeButton(R.string.cancel,null);
-        builder.create().show();
-    }
-
-
-    //添加复习卷
-    private void addPaperDialog() {
-        View view =  LayoutInflater.from(PaperActivity.this).inflate(R.layout.dialog_add_paper,null);
-        final EditText paperNameEdt = view.findViewById(R.id.topic_text_et);
-        final TextView paperNameNum = (TextView) view.findViewById(R.id.add_page_text_hint);
-
-        //输入框字数提示和限制
-        paperNameEdt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                paperNameNum.setText(s.length()+"/10");
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                paperNameNum.setText(s.length()+"/10");
-            }
-        });
-
-        mChangeBookDialog = new AlertDialog.Builder(PaperActivity.this);
-
-
-        mChangeBookDialog.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String paperName = paperNameEdt.getText().toString();
-                //保存创建
-                if (paperName.length() <= 0) {
-
-//                    Toasty.warning(PaperActivity.this,R.string.empty_input, Toast.LENGTH_SHORT, true).show();
-                } else {
-                    Paper newPaper = new Paper();
-                    newPaper.setPaper_name(paperNameEdt.getText().toString());
-                    //插入到litepal数据库
-                    newPaper.save();
-//                    mBookList.add(newBook);
-//                    mBookAdapter.notifyDataSetChanged();
-                    reviewAdapter.addPaper(newPaper);
-                    reviewAdapter.notifyDataSetChanged();
-//                    Toasty.success(PaperActivity.this, R.string.add_successful, Toast.LENGTH_SHORT, true).show();
-                    //复习卷不为空，背景提示图片隐藏
-                    if (paperList.size()>0){
-                        paperTopicNothing.setVisibility(View.GONE);
-                        review_recyclerview.setVisibility(View.VISIBLE);
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                boolean isSignificantDelta = Math.abs(dy) > mScrollThreshold;
+                if (isSignificantDelta) {
+                    if (dy > 0) {
+                        newPaperBtn.startAnimation(hideAnim);
+                        newPaperBtn.setVisibility(View.GONE);
+                    } else {
+                        newPaperBtn.startAnimation(showAnim);
+                        newPaperBtn.setVisibility(View.VISIBLE);
                     }
                 }
             }
         });
-        mChangeBookDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+    }
 
+    @OnClick(R.id.new_paper_btn)
+    public void onClickAddPaperBtn() {
+        showPaperInfoDialog(null);
+    }
 
+    private void showPaperInfoDialog(Paper paper) {
+        paperInfoDialog = new PaperInfoDialog(this);
+        paperInfoDialog.setPaper(paper);
+        paperInfoDialog.setNeutralButton(R.string.select_topics, (dialogInterface, i) -> {
+            Paper tmp = paperInfoDialog.getPaper();
+            String name = tmp.getPaperName();
+            if (checkPaperName(name)) {
+                if (tmp.getId() > 0) {
+                    paperAdapter.refresh(paper);
+                } else {
+                    paperAdapter.addPaper(tmp);
+                }
+                tmp.save();
+                Intent intent = new Intent(this, SelectTopicActivity.class);
+                intent.putExtra(Constants.PAPER_ID, tmp.getId());
+                startActivity(intent);
             }
-        });
 
-        mChangeBookDialog.setView(view);
-        mChangeBookDialog.create();
-        mChangeBookDialog.show();
+            setPaperNothing(paperAdapter.isEmpty());
+        });
+        paperInfoDialog.setPositiveButton(R.string.ensure, (dialogInterface, i) -> {
+            Paper tmp = paperInfoDialog.getPaper();
+            String name = tmp.getPaperName();
+            if (checkPaperName(name)) {
+                if (tmp.getId() > 0) {
+                    paperAdapter.refresh(paper);
+                } else {
+                    paperAdapter.addPaper(tmp);
+                }
+                tmp.save();
+            }
+            setPaperNothing(paperAdapter.isEmpty());
+        });
+        paperInfoDialog.show();
+    }
+
+    private boolean checkPaperName(String name) {
+        if (name == null || name.length() <= 0) {
+            onToast(getString(R.string.empty_input));
+            return false;
+        }
+
+        if (name.length() > 15) {
+            onToast(getString(R.string.input_error));
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onItemClick(Paper paper) {
+        Intent intent = new Intent(this, PaperDetailActivity.class);
+        intent.putExtra(Constants.PAPER_ID, paper.getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void showPopupMenu(View view, Paper paper, int position) {
+
+        PopupMenu popupMenu = new PopupMenu(this,view, Gravity.END|Gravity.BOTTOM);
+        popupMenu.inflate(R.menu.menu_paper_item);
+        //3.为弹出菜单设置点击监听
+        popupMenu.setOnMenuItemClickListener(item -> {
+
+            switch (item.getItemId()) {
+                case R.id.delete:
+                    paperAdapter.remove(paper);
+                    paper.delete();
+                    setPaperNothing(paperAdapter.isEmpty());
+                    break;
+
+                case R.id.share:
+
+                    break;
+
+                case R.id.rename:
+                    showPaperInfoDialog(paper);
+                    break;
+
+                case R.id.print:
+
+                    break;
+
+                default: break;
+            }
+
+            return true;
+        });
+        paperAdapter.notifyDataSetChanged();
+        popupMenu.show();
+    }
+
+    public void onToast(String log) {
+        Toast.makeText(this, log, Toast.LENGTH_SHORT).show();
     }
 
 }

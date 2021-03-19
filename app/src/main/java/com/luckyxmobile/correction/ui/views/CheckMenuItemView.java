@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.luckyxmobile.correction.R;
 
-public class CheckMenuItemView extends LinearLayout implements View.OnClickListener {
+public class CheckMenuItemView extends LinearLayout{
 
     private boolean isChecked;
     Drawable checkedImg, uncheckedImg;
@@ -41,7 +41,6 @@ public class CheckMenuItemView extends LinearLayout implements View.OnClickListe
         String text = typedArray.getString(R.styleable.CheckMenuItemView_menu_text);
         isChecked = typedArray.getBoolean(R.styleable.CheckMenuItemView_default_checked, false);
 
-        view.setOnClickListener(this);
         iconIv = view.findViewById(R.id.check_menu_icon);
         menuTv = view.findViewById(R.id.check_menu_text);
 
@@ -83,10 +82,5 @@ public class CheckMenuItemView extends LinearLayout implements View.OnClickListe
         iconIv.setImageDrawable(isChecked?checkedImg:uncheckedImg);
         menuTv.setTextColor(isChecked?checkedColor:uncheckedColor);
         invalidate();
-    }
-
-    @Override
-    public void onClick(View view) {
-        setChecked(!isChecked);
     }
 }

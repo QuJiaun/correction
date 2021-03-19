@@ -1,26 +1,21 @@
 package com.luckyxmobile.correction.ui.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuPopupHelper;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.model.bean.Book;
-import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.presenter.EditTopicImagePresenter;
 import com.luckyxmobile.correction.presenter.impl.EditTopicImagePresenterImpl;
@@ -33,7 +28,6 @@ import com.luckyxmobile.correction.utils.FastJsonUtil;
 
 import org.litepal.LitePal;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,13 +52,6 @@ public class EditTopicImageActivity extends AppCompatActivity implements SelectB
     CheckMenuItemView undoBtn;
     @BindView(R.id.drawing_view_redo)
     CheckMenuItemView redoBtn;
-
-    @BindViews({R.id.drawing_view_tool_highlighter,
-            R.id.drawing_view_tool_white_out,
-            R.id.drawing_view_tool_erase,
-            R.id.drawing_view_tool_width,
-            R.id.drawing_view_tool_contrast_radio})
-    List<CheckMenuItemView> toolItemList;
 
     private SelectBookDialog selectBookDialog;
 
@@ -92,30 +79,6 @@ public class EditTopicImageActivity extends AppCompatActivity implements SelectB
         //初始化页面数据
         initViewDate();
 
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        if (savedInstanceState.getBoolean("dialog_show", false)) {
-            onClickOkBtn();
-        }
-
-        String result = savedInstanceState.getString("curTopicImage", null);
-        if (result != null) {
-            curTopicImage = FastJsonUtil.jsonToObject(result, TopicImage.class);
-            drawingView.init(curTopicImage);
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (selectBookDialog != null) {
-            outState.putBoolean("dialog_show", selectBookDialog.getDialog().isShowing());
-        }
-        outState.putString("curTopicImage", FastJsonUtil.objectToJson(curTopicImage));
-        super.onSaveInstanceState(outState);
     }
 
     private void initViewDate() {
@@ -148,56 +111,10 @@ public class EditTopicImageActivity extends AppCompatActivity implements SelectB
     }
 
     @OnClick({R.id.drawing_view_tool_highlighter,
-            R.id.drawing_view_tool_white_out,
             R.id.drawing_view_tool_erase,
-            R.id.drawing_view_tool_width,
             R.id.drawing_view_tool_contrast_radio})
     public void onClickTools(View view) {
-        switch (view.getId()) {
-            case R.id.drawing_view_tool_highlighter:
-                popupMenu(R.menu.menu_drawing_view_tool_highlighter, R.id.highlighter_blue, view);
-                break;
-            case R.id.drawing_view_tool_white_out:
 
-                break;
-            case R.id.drawing_view_tool_erase:
-
-                break;
-            case R.id.drawing_view_tool_width:
-
-                break;
-        }
-    }
-
-    private void popupMenu(int menuRes, int checkedMenuId, View anchor) {
-        PopupMenu popupMenu = new PopupMenu(this, anchor);
-        popupMenu.inflate(menuRes);
-        Menu menu = popupMenu.getMenu();
-        MenuItem menuItem = menu.findItem(checkedMenuId);
-        menuItem.setTitle(menuItem.getTitle() + "       √");
-        try {
-            Method method = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
-            method.setAccessible(true);
-            method.invoke(menu, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        popupMenu.setOnMenuItemClickListener(item -> {
-            CheckMenuItemView checkMenuItemView = (CheckMenuItemView) anchor;
-            checkMenuItemView.setCheckedImg(item.getIcon());
-            checkMenuItemView.setChecked(true);
-
-            
-
-            return true;
-        });
-        popupMenu.show();
-    }
-
-    private void setToolItemChecked(int viewId) {
-        for (CheckMenuItemView view : toolItemList) {
-            view.setChecked(view.getId() == viewId);
-        }
     }
 
     @OnClick(R.id.drawing_view_return)
@@ -219,7 +136,6 @@ public class EditTopicImageActivity extends AppCompatActivity implements SelectB
         selectBookDialog = new SelectBookDialog(this);
 
         selectBookDialog.initBookAll(curBookId);
-        selectBookDialog.setTopicImageIv(drawingView.getImageBitmap());
         selectBookDialog.getDialog().show();
     }
 

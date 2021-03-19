@@ -51,8 +51,10 @@
     <color name="transparent">#00000000</color>
     <color name="yellow_b3">#b39b61</color>
     <color name="colorDefault">#ffffff</color>
-    <color name="colorText">#9b9b9b</color>
+    <color name="colorText">#d8d8d8</color>
 
+    <color name="topic_checked_stroke">#00bcd4</color>
+    <color name="topic_checked_delete_stroke">#ff5454</color>
 
     <color name="tag_checked">#00bcd4</color>
     <color name="tag_unchecked">#9b9b9b</color>

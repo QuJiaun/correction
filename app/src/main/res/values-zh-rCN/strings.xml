@@ -7,7 +7,7 @@
     <string name="my_notebooks">我的错题本</string>
     <string name="new_notebook">+添加错题本</string>
     <string name="notebook_name_hint">错题本名称</string>
-    <string name="new_test_page">新建测试卷</string>
+    <string name="new_test_page">创建测试卷</string>
     <string name="select_paper">选择测试卷</string>
     <string name="regenerate_paper">重新组卷</string>
     <string name="select_topics">选择题目</string>
@@ -81,6 +81,7 @@
     <string name="notebook">错题本</string>
     <string name="tag">标签</string>
     <string name="empty_input">输入不能为空</string>
+    <string name="input_error">输入不合法</string>
     <string name="paper_empty_cant_print">此测试卷为空，无法打印</string>
     <string name="paper_empty_cant_share">此复习卷为空，无法分享</string>
     <string name="rotate">旋转</string>

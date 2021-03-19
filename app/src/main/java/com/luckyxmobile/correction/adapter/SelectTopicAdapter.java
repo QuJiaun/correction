@@ -1,197 +1,158 @@
 package com.luckyxmobile.correction.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import androidx.core.content.ContextCompat;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
-import java.util.HashMap;
+import com.luckyxmobile.correction.model.BeanUtils;
+import com.luckyxmobile.correction.model.bean.Paper;
+import com.luckyxmobile.correction.model.bean.Tag;
+import com.luckyxmobile.correction.model.bean.Topic;
+import com.luckyxmobile.correction.model.bean.TopicImage;
+import com.zj.myfilter.FiltrateBean;
+
+import org.jetbrains.annotations.NotNull;
+import org.litepal.LitePal;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
-/**
- * @author yanghao
- */
-public class SelectTopicAdapter extends RecyclerView.Adapter<SelectTopicAdapter.MyReviewHolder> implements View.OnClickListener, View.OnLongClickListener {
-    private int index;
-    private Context rContext;
-    private List<Map<String, Object>> rDatas;
-    private SelectTopicAdapter.OnRecyclerViewItemClickListener mOnItemClickListener;
-    private SelectTopicAdapter.OnRecyclerViewItemLongClickListener mOnItemLongClickListener;
-    // 存储勾选框状态的map集合
-    private Map<Integer, Boolean> map = new HashMap<>();
+public class SelectTopicAdapter extends RecyclerView.Adapter<SelectTopicAdapter.ViewHolder> {
 
-    public SelectTopicAdapter(List<Map<String, Object>> datas, Context context) {
-        rDatas = datas;
-        rContext = context;
-        initMap();
+    private final Paper paper;
+
+    private List<Topic> filterTopicList;
+    private List<Topic> topicList;
+
+    public SelectTopicAdapter(Paper paper) {
+        this.paper = paper;
+        filterTopicList = LitePal.findAll(Topic.class);
+        topicList = new ArrayList<>(filterTopicList);
     }
 
-    /**
-     * 初始化map集合,默认为不选中
-     */
-    private void initMap() {
-        for (int i = 0; i < rDatas.size(); i++) {
-            if ((Boolean) rDatas.get(i).get("topic_selected")) {
-                map.put(i, true);
+
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycle_item_topic_select, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NotNull ViewHolder viewHolder, final int position) {
+
+        Topic curTopic = filterTopicList.get(position);
+
+        boolean isChecked = paper.getTopicSet().contains(curTopic.getId());
+
+        setViewChecked(viewHolder, isChecked);
+
+        TopicImage topicImage = BeanUtils.findFirst(curTopic);
+
+        Glide.with(viewHolder.itemView.getContext())
+                .load(topicImage.getPath())
+                .into(viewHolder.imageView);
+
+        viewHolder.itemView.setOnClickListener(view -> {
+            if (paper.getTopicSet().contains(curTopic.getId())) {
+                paper.getTopicSet().remove(curTopic.getId());
+                setViewChecked(viewHolder, false);
             } else {
-                map.put(i, false);
-            }
-        }
-    }
-
-    /**
-     * 点击item选中CheckBox
-     *
-     * @param position 选中某个位置的checkbox
-     */
-    public void setSelectItem(int position) {
-        //对当前状态取反
-        if (map.get(position)) {
-            map.put(position, false);
-        } else {
-            map.put(position, true);
-        }
-        notifyItemChanged(position);
-    }
-
-    public void setmOnItemClickListener(SelectTopicAdapter.OnRecyclerViewItemClickListener listener) {
-        this.mOnItemClickListener = listener;
-    }
-
-    public void setmOnItemLongClickListener(SelectTopicAdapter.OnRecyclerViewItemLongClickListener listener) {
-        this.mOnItemLongClickListener = listener;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public int getIndex() {
-        return this.index;
-    }
-
-    @Override
-    public SelectTopicAdapter.MyReviewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        rContext = viewGroup.getContext();
-        View view = LayoutInflater.from(rContext).inflate(R.layout.recycle_item_topic_select, viewGroup, false);
-        view.setOnLongClickListener(this);
-        view.setOnClickListener(this);
-        SelectTopicAdapter.MyReviewHolder viewHolder = new SelectTopicAdapter.MyReviewHolder(view);
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(SelectTopicAdapter.MyReviewHolder myReviewHolder, final int position) {
-        myReviewHolder.itemView.setTag(position);
-        myReviewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setSelectItem(position);
+                paper.getTopicSet().add(curTopic.getId());
+                setViewChecked(viewHolder, true);
             }
         });
-        //设置checkBox改变监听
-        myReviewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //用map集合保存
-                map.put(position, isChecked);
-            }
-        });
-        // 显示图片
-        Glide.with(rContext).load(rDatas.get(position).get("topic_imgUri"))
-                .thumbnail(0.1f)
-                .into(myReviewHolder.imageView);
-        // 设置CheckBox的状态
-        if (map.get(position) == null) {
-            map.put(position, false);
-        }
-        myReviewHolder.checkBox.setChecked(map.get(position));
-        // 判断是否选中
-        if (map.get(position)) {
-            // 选中
-//            myReviewHolder.is_checked.setText("√");
-//            myReviewHolder.is_checked.setTextColor(ContextCompat.getColor(rContext, R.color.green_57));
-            myReviewHolder.item_check.setImageDrawable(ContextCompat.getDrawable(rContext, R.drawable.item_checked));
 
-            /**
-             * @author lg
-             * 更换了选词界面的错题边框
-             * */
-            myReviewHolder.relativeLayout.setBackgroundResource(R.drawable.topic_select_background);
+    }
+
+    private void setViewChecked(ViewHolder viewHolder, boolean isChecked) {
+        Context context = viewHolder.itemView.getContext();
+        if (isChecked) {
+            viewHolder.checkedIv.setImageDrawable(context.getDrawable(R.drawable.item_checked));
+            viewHolder.itemView.setBackgroundResource(R.drawable.shape_box_check_bg);
         } else {
-            // 未选中
-//            myReviewHolder.is_checked.setText("×");
-//            myReviewHolder.is_checked.setTextColor(ContextCompat.getColor(rContext, R.color.red_ee));
-            myReviewHolder.item_check.setImageDrawable(ContextCompat.getDrawable(rContext, R.drawable.item_uncheck));
-            myReviewHolder.relativeLayout.setBackgroundResource(R.drawable.grid_menu);
+            viewHolder.checkedIv.setImageDrawable(context.getDrawable(R.drawable.item_uncheck));
+            viewHolder.itemView.setBackgroundResource(R.drawable.shape_box_view);
         }
     }
 
     @Override
     public int getItemCount() {
-        return rDatas.size();
+        return filterTopicList.size();
     }
 
-    @Override
-    public void onClick(View view) {
-        if (mOnItemClickListener != null) {
-            mOnItemClickListener.onItemClick(view, (int) view.getTag());
+    public void onFilterListener(List<FiltrateBean> filtrateList) {
+
+        List<Topic> tmp = new ArrayList<>();
+        boolean isNullChecked = true;
+
+        for (int i = 0; i < filtrateList.size(); i++) {
+            FiltrateBean filtrateBean = filtrateList.get(i);
+            for (FiltrateBean.Children children: filtrateBean.getChildren()) {
+                //循环topic
+                for (Topic topic : topicList) {
+                    //已经包含了 跳出
+                    if (tmp.contains(topic)) continue;
+
+                    //选中的必须加入
+                    if (paper.getTopicSet().contains(topic.getId())) {
+                        tmp.add(topic);
+                        continue;
+                    }
+
+                    //没有选中直接跳出
+                    if (!children.isSelected()) continue;
+
+                    isNullChecked = false;
+
+                    if (i == 0) {
+                        if (children.getId() == 1 && topic.isCollection()) {
+                            tmp.add(topic);
+                        } else if (children.getId() == topic.getBook_id()) {
+                            tmp.add(topic);
+                        }
+                    } else if (i == 1) {
+                        Tag tag = LitePal.find(Tag.class, children.getId());
+                        if (tag.getTopicSet().contains(topic.getId())) {
+                            tmp.add(topic);
+                        }
+                    }
+                }
+            }
         }
-    }
 
-    @Override
-    public boolean onLongClick(View view) {
-        if (mOnItemLongClickListener != null) {
-            mOnItemLongClickListener.onItemLongClick(view, (int) view.getTag());
+        if (isNullChecked) {
+            filterTopicList = topicList;
+        } else {
+            filterTopicList = tmp;
         }
-        return true;
+
+        notifyDataSetChanged();
     }
 
-    //返回集合
-    public Map<Integer, Boolean> getMap() {
-        return map;
-    }
 
-    /**
-     * 清空选中的map
-     */
-    public void clearMap() {
-        map.clear();
-    }
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
-    public interface OnRecyclerViewItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-    public interface OnRecyclerViewItemLongClickListener {
-        void onItemLongClick(View view, int position);
-    }
-
-    class MyReviewHolder extends RecyclerView.ViewHolder {
-
-        //        TextView is_checked;
-        CheckBox checkBox;
+        ImageView checkedIv;
         ImageView imageView;
-        ImageView item_check;
-        RelativeLayout relativeLayout;
 
-        public MyReviewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            relativeLayout = itemView.findViewById(R.id.topic_select_layout);
-//            is_checked = itemView.findViewById(R.id.is_checked);
-            checkBox = itemView.findViewById(R.id.wrong_list_item_cb);
-            imageView = itemView.findViewById(R.id.wrong_img);
-            item_check = itemView.findViewById(R.id.item_Checked);
+            imageView = itemView.findViewById(R.id.topic_image);
+            checkedIv = itemView.findViewById(R.id.item_Checked);
         }
     }
 }

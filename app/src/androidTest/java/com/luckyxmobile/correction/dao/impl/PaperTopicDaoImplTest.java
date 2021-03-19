@@ -30,7 +30,7 @@ public class PaperTopicDaoImplTest extends LitePalTestCase {
     @Before
     public void insertFakeData() {
         paper = new Paper();
-        paper.setPaper_name("paper_test");
+        paper.setPaperName("paper_test");
         assertTrue(paper.save());
 
         book = new Book();

@@ -1,17 +1,11 @@
 package com.luckyxmobile.correction.ui.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -118,69 +112,69 @@ public class SelectPaperActivity extends AppCompatActivity {
 
     //新建复习卷的Dialog
     private void addReviewPageDialog(){
-        LayoutInflater layoutInflater = LayoutInflater.from(SelectPaperActivity.this);
-        View editReviewPageDialog = layoutInflater.inflate(R.layout.dialog_add_paper, null);
-        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(SelectPaperActivity.this);
-        builder.setTitle(R.string.new_test_page);
-        builder.setView(editReviewPageDialog);
-
-        //获得控件
-        final EditText ReviewPageNameET = (EditText) editReviewPageDialog.
-                findViewById(R.id.topic_text_et);
-        final TextView ReviewPageETNum = (TextView) editReviewPageDialog.
-                findViewById(R.id.add_page_text_hint);
-        ReviewPageNameET.setHint(R.string.test_page);
-
-        //输入框字数提示和限制
-        ReviewPageNameET.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                ReviewPageETNum.setText(s.length()+"/12");
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                ReviewPageETNum.setText(s.length()+"/12");
-            }
-        });
-
-        //设置对话框的确定，取消事件
-        builder.setPositiveButton(R.string.ensure, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //获得输入的字符串
-                final String pageName = ReviewPageNameET.getText().toString();
-                //判断名字是否为空
-                if (!"".equals(pageName.trim())) {
-                    //把用户输入的数据传入对象
-//                    CorrectionLab.addPaper(pageName);
-//                    Toasty.success(SelectPaperActivity.this, R.string.add_successful, Toast.LENGTH_SHORT).show();
-                    //更新列表
-                    initData();
-                    adapter.setDatas(AllDatas);
-                    adapter.notifyDataSetChanged();
-
-                } else {
-//                    Toasty.warning(SelectPaperActivity.this, R.string.empty_input, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-        });
-
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        builder.create();
-        builder.show();
+//        LayoutInflater layoutInflater = LayoutInflater.from(SelectPaperActivity.this);
+//        View editReviewPageDialog = layoutInflater.inflate(R.layout.dialog_add_paper, null);
+//        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(SelectPaperActivity.this);
+//        builder.setTitle(R.string.new_test_page);
+//        builder.setView(editReviewPageDialog);
+//
+//        //获得控件
+//        final EditText ReviewPageNameET = (EditText) editReviewPageDialog.
+//                findViewById(R.id.topic_text_et);
+//        final TextView ReviewPageETNum = (TextView) editReviewPageDialog.
+//                findViewById(R.id.add_page_text_hint);
+//        ReviewPageNameET.setHint(R.string.test_page);
+//
+//        //输入框字数提示和限制
+//        ReviewPageNameET.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                ReviewPageETNum.setText(s.length()+"/12");
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                ReviewPageETNum.setText(s.length()+"/12");
+//            }
+//        });
+//
+//        //设置对话框的确定，取消事件
+//        builder.setPositiveButton(R.string.ensure, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                //获得输入的字符串
+//                final String pageName = ReviewPageNameET.getText().toString();
+//                //判断名字是否为空
+//                if (!"".equals(pageName.trim())) {
+//                    //把用户输入的数据传入对象
+////                    CorrectionLab.addPaper(pageName);
+////                    Toasty.success(SelectPaperActivity.this, R.string.add_successful, Toast.LENGTH_SHORT).show();
+//                    //更新列表
+//                    initData();
+//                    adapter.setDatas(AllDatas);
+//                    adapter.notifyDataSetChanged();
+//
+//                } else {
+////                    Toasty.warning(SelectPaperActivity.this, R.string.empty_input, Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//        });
+//
+//        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//            }
+//        });
+//        builder.create();
+//        builder.show();
     }
 
     /**初始化复习卷名称*/

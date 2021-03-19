@@ -4,6 +4,7 @@
     <item
         android:id="@+id/select_topic_random"
         android:icon="@drawable/ic_random"
+        android:visible="false"
         android:title="@string/random_num_questions"
         app:showAsAction="always" />
     <item

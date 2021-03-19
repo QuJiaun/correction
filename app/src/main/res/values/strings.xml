@@ -78,6 +78,7 @@
     <string name="confirm_delete_topic">Please confirm to delete</string>
     <string name="notebook">Notebook</string>
     <string name="empty_input">The content can not be empty.</string>
+    <string name="input_error">The content is illegal.</string>
     <string name="paper_empty_cant_print">You can not print the paper which content is empty.</string>
     <string name="paper_empty_cant_share">You can not share the paper which content is empty.</string>
     <string name="rotate">Rotate</string>

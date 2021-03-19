@@ -16,7 +16,6 @@ import com.luckyxmobile.correction.utils.impl.FilesUtils;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -125,7 +124,7 @@ public class BookDetailAdapter extends RecyclerView.Adapter<ViewHolderTopicItem>
     private void setLayoutView(Topic topic, ViewHolderTopicItem holder) {
         if (topicsByDelete.contains(topic)) {
             holder.checkBtn.setImageDrawable(mContext.getDrawable(R.drawable.topic_delete_check));
-            holder.layout.setBackgroundResource(R.drawable.check_delete_background);
+            holder.layout.setBackgroundResource(R.drawable.shape_box_check_delete_bg);
         }else{
             holder.checkBtn.setImageDrawable(mContext.getDrawable(R.drawable.item_uncheck));
             holder.layout.setBackgroundResource(R.drawable.shape_box_view);
