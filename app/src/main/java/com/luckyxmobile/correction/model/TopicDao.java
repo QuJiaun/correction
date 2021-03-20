@@ -14,6 +14,10 @@ public interface TopicDao {
 
     List<Topic> getTopicListByCollection(boolean collection);
 
+    boolean changeCurTopicCollection(int topicId);
+
+    String getBookNameByTopic(Topic topic);
+
     void removeTopic(Topic topic);
 
     void removeTopicList(List<Topic> topicList);

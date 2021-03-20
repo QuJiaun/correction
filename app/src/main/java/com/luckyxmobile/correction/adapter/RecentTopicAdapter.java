@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
@@ -55,9 +56,9 @@ public class RecentTopicAdapter extends RecyclerView.Adapter<ViewHolderTopicItem
 
         Topic topic = topics.get(position);
 
-        TopicImage topicImage = LitePal.where("topic_id=?", String.valueOf(topic.getId())).findFirst(TopicImage.class);
+        TopicImage topicImage = BeanUtils.findFirst(topic);
 
-        ImageUtil.GlideRadius(context, topicImage, holder.topicImage,8);
+        Glide.with(context).load(topicImage.getPath()).into(holder.topicImage);
 
         holder.collectBtn.setVisibility(topic.isCollection()?View.VISIBLE:View.GONE);
 

@@ -3,6 +3,7 @@ package com.luckyxmobile.correction.adapter;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 import com.luckyxmobile.correction.R;
@@ -59,13 +60,12 @@ public class TopicViewPageAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, final int position) {
 
         View view = View.inflate(context,R.layout.layout_banner,null);
-        Banner<TopicImage, BannerImageAdapter> banner = view.findViewById(R.id.banner);
+        Banner<TopicImage, BannerTopicImageAdapter> banner = view.findViewById(R.id.banner);
         banner.setOrientation(Banner.VERTICAL);
-        banner.setPageTransformer(new DepthPageTransformer());
 
         int topic_id = topics.get(position).getId();
 
-        banner.setAdapter(new BannerImageAdapter(context, topicImageMap.get(topic_id)));
+        banner.setAdapter(new BannerTopicImageAdapter(context, topicImageMap.get(topic_id)));
 
         container.addView(view);
         return view;

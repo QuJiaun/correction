@@ -1,5 +1,6 @@
 package com.luckyxmobile.correction.model.impl;
 
+import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.TopicDao;
 import com.luckyxmobile.correction.model.DaoListener;
@@ -38,6 +39,29 @@ public class TopicDaoImpl implements TopicDao {
         filesUtils.saveTopicInfoFile(topic);
 
         return topic;
+    }
+
+    @Override
+    public boolean changeCurTopicCollection(int topicId) {
+        Topic topic = LitePal.find(Topic.class, topicId);
+        boolean collection = topic.isCollection();
+
+        if (collection) {
+            topic.setCollection(false);
+            topic.setToDefault("collection");
+        } else {
+            topic.setCollection(true);
+        }
+
+        topic.save();
+        return !collection;
+    }
+
+    @Override
+    public String getBookNameByTopic(Topic topic) {
+        Book book = LitePal.find(Book.class, topic.getBook_id());
+        if (book == null) throw new RuntimeException("this topic " + topic.getId() + " is error");
+        return book.getName();
     }
 
     @Override

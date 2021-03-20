@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity implements MainView,
 
     @BindView(R.id.tv_recent_topic)
     TextView recentTopicTv;
-    @BindView(R.id.main_recycler_recent_topic)
-    RecyclerView recentTopicRv;
     @BindView(R.id.rv_head_book)
     RecyclerView headBookRv;
 
@@ -140,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
     @Override
     public void setRecentTopicRv(List<Topic> topicList) {
 
+        RecyclerView recentTopicRv = findViewById(R.id.main_recycler_recent_topic);
         recentTopicTv.setVisibility(topicList.isEmpty()?View.GONE:View.VISIBLE);
 
         RecentTopicAdapter recentTopicAdapter = new RecentTopicAdapter(this, topicList);

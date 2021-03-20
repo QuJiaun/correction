@@ -1,5 +1,6 @@
 package com.luckyxmobile.correction.model;
 
+import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 
 import java.util.List;

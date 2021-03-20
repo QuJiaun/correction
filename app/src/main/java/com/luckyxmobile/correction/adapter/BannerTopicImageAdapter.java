@@ -1,51 +1,53 @@
 package com.luckyxmobile.correction.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
+import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.TopicImage;
-import com.luckyxmobile.correction.utils.ImageUtil;
+import com.luckyxmobile.correction.ui.views.ShowHighlighterView;
 import com.youth.banner.adapter.BannerAdapter;
 
 import java.util.List;
 
-public class BannerImageAdapter extends BannerAdapter<TopicImage, BannerImageAdapter.BannerViewHolder> {
+public class BannerTopicImageAdapter extends BannerAdapter<TopicImage, BannerTopicImageAdapter.BannerViewHolder> {
 
     private final Context context;
 
-    BannerImageAdapter(Context context, List<TopicImage> topicImages) {
+    BannerTopicImageAdapter(Context context, List<TopicImage> topicImages) {
         super(topicImages);
         this.context = context;
     }
 
     @Override
     public BannerViewHolder onCreateHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.banner_item_image, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.topic_view_page_item, parent, false);
         return new BannerViewHolder(view);
     }
 
     @Override
     public void onBindView(BannerViewHolder holder, TopicImage data, int position, int size) {
 
-        ImageUtil.GlideRadius(context, data, holder.view, 8);
+        holder.showHighlighterView.init(data);
+        int typeRes = Constants.getTypeNameRes(data.getType());
+        holder.hintTv.setText("IMAGE : "+ size + "/" + (position+1) +"    TYPE : " + context.getString(typeRes));
     }
 
     public static class BannerViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView view;
+        ShowHighlighterView showHighlighterView;
+        TextView hintTv;
 
         BannerViewHolder(View view) {
             super(view);
-            this.view = (ImageView) view;
+            this.showHighlighterView = view.findViewById(R.id.see_paints_click);
+            this.hintTv = view.findViewById(R.id.hint_topic_image);
         }
     }
 }

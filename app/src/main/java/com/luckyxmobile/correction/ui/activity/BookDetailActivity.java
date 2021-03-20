@@ -194,7 +194,9 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
 
     @Override
     public void onClickItem(Topic topic) {
-
+        Intent intent = new Intent(this, TopicViewPageActivity.class);
+        intent.putExtra(Constants.TOPIC_ID, topic.getId());
+        startActivity(intent);
     }
 
     @Override

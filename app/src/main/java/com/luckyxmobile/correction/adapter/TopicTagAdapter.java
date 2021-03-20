@@ -18,15 +18,15 @@ public class TopicTagAdapter extends com.zhy.view.flowlayout.TagAdapter<Tag> {
     private boolean isItemClickable = false;
     private boolean isShowUnchecked = false;
     private int textColor = 0;
-    private Topic curTopic;
+    private int curTopicId;
 
     public TopicTagAdapter(OnTagClickListener listener) {
         super(LitePal.findAll(Tag.class));
         this.listener = listener;
     }
 
-    public void setCurTopic(Topic curTopic) {
-        this.curTopic = curTopic;
+    public void setCurTopicId(int curTopicId) {
+        this.curTopicId = curTopicId;
     }
 
     public void setItemClickable(boolean itemClickable) {
@@ -45,20 +45,16 @@ public class TopicTagAdapter extends com.zhy.view.flowlayout.TagAdapter<Tag> {
     public View getView(FlowLayout parent, int position, Tag tag) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_item_tag, parent, false);
 
-//        if (curTopic == null) {
-//            return null;
-//        }
-
         CheckBox checkBox = (CheckBox) view;
         checkBox.setClickable(isItemClickable);
         if (isItemClickable && listener != null) {
-            checkBox.setOnClickListener(view1 -> listener.onTagClick(curTopic, tag));
+            checkBox.setOnClickListener(view1 -> listener.onTagClick(curTopicId, tag));
         }
         if (textColor != 0) {
             checkBox.setTextColor(textColor);
         }
         checkBox.setText(tag.getTag_name());
-        checkBox.setChecked(tag.getTopicSet().contains(curTopic));
+        checkBox.setChecked(tag.getTopicSet().contains(curTopicId));
         if (!isShowUnchecked && !checkBox.isChecked()) {
             checkBox.setVisibility(View.GONE);
         }
@@ -66,6 +62,6 @@ public class TopicTagAdapter extends com.zhy.view.flowlayout.TagAdapter<Tag> {
     }
 
     public interface OnTagClickListener {
-        void onTagClick(Topic curTopic, Tag tag);
+        void onTagClick(int topicId, Tag tag);
     }
 }

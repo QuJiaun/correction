@@ -85,7 +85,7 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
         
         touchGesture = new TouchGesture(getContext());
         touchGesture.setSingleTapUpListener(this);
-        touchGesture.setScaleListener(this);
+//        touchGesture.setScaleListener(this);
     }
 
     private float toX(float touchX) {
@@ -117,8 +117,6 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
 
         canvas.drawBitmap(mFgBitmap, 0, 0, null);
         canvas.drawBitmap(mBgBitmap, 0, 0, null);
-
-        Log.d("123456", "onDraw: ");
 
         for (HighlighterArea area: highlighterAreaArrayList){
             canvas.save();
@@ -184,10 +182,6 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
         mBitmapScale = mBitmapScale * detector.getScaleFactor();
         if (mBitmapScale < 0.5f) {
             mBitmapScale = 0.5f;
-        }
-
-        if (mBitmapScale >2.5f){
-            mBitmapScale = 2.5f;
         }
 
         invalidate();

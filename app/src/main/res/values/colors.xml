@@ -53,6 +53,9 @@
     <color name="colorDefault">#ffffff</color>
     <color name="colorText">#d8d8d8</color>
 
+    <color name="progress">#FF4081</color>
+    <color name="secondaryProgress">#88FF4081</color>
+
     <color name="topic_checked_stroke">#00bcd4</color>
     <color name="topic_checked_delete_stroke">#ff5454</color>
 

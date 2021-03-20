@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
+import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.utils.ImageUtil;
@@ -81,9 +83,9 @@ public class BookDetailAdapter extends RecyclerView.Adapter<ViewHolderTopicItem>
         // 获取错题对象
         Topic topic = topics.get(position);
 
-        TopicImage topicImage = LitePal.where("topic_id=?", String.valueOf(topic.getId())).findFirst(TopicImage.class);
+        TopicImage topicImage = BeanUtils.findFirst(topic);
 
-        ImageUtil.GlideRadius(mContext, topicImage, holder.topicImage, 8);
+        Glide.with(mContext).load(topicImage.getPath()).into(holder.topicImage);
 
         holder.topicDate.setText(FilesUtils.getTimeByDate(topic.getCreate_date()));
         holder.collectBtn.setVisibility(topic.isCollection()? View.VISIBLE:View.GONE);

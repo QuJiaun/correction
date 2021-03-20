@@ -73,6 +73,23 @@ public class Constants {
 
     }
 
+    public static int getTypeNameRes(@TopicImageType int type) {
+        switch (type) {
+            case TOPIC_STEM:
+                return R.string.stem;
+            case TOPIC_CAUSE:
+                return R.string.cause;
+            case TOPIC_CORRECT:
+                return R.string.correct;
+            case TOPIC_INCORRECT:
+                return R.string.incorrect;
+            case TOPIC_KEY:
+                return R.string.key;
+            default:
+                return type;
+        }
+    }
+
     @IntDef({BOOK_COVER, TOPIC_STEM, TOPIC_CORRECT, TOPIC_INCORRECT, TOPIC_KEY, TOPIC_CAUSE})
     @Target({ElementType.PARAMETER, ElementType.FIELD})
     @Retention(RetentionPolicy.SOURCE)

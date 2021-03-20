@@ -78,7 +78,6 @@ public class BookDetailViewPresenterImpl implements BookDetailViewPresenter, Dao
 
     @Override
     public void removeTopicList(List<Topic> topicList) {
-        Log.w("123456", "removeTopicList: " + Arrays.toString(topicList.toArray()));
         topicDao.removeTopicList(topicList);
     }
 

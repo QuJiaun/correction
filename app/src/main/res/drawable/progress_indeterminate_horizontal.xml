@@ -12,7 +12,16 @@
         <clip>
             <shape>
                 <!--已经加载完的进度的颜色-->
-                <solid android:color="@color/colorAccent"/>
+                <solid android:color="@color/progress"/>
+            </shape>
+        </clip>
+    </item>
+    <!--已经加载完的进度的区域-->
+    <item android:id="@android:id/secondaryProgress">
+        <clip>
+            <shape>
+                <!--已经加载完的进度的颜色-->
+                <solid android:color="@color/secondaryProgress"/>
             </shape>
         </clip>
     </item>

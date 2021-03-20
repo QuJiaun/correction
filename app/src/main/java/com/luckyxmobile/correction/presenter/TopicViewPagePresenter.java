@@ -6,9 +6,5 @@ public interface TopicViewPagePresenter {
 
     void topicCollectChange();
 
-    int getCurTopicPosition();
-
     int getCurTopicId();
-
-    String getCurTopicBookName();
 }

@@ -25,10 +25,8 @@ import com.luckyxmobile.correction.presenter.TopicInfoViewPresenter;
 import com.luckyxmobile.correction.presenter.impl.TopicInfoViewPresenterImpl;
 import com.luckyxmobile.correction.ui.dialog.SetTopicTextDialog;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
 import com.luckyxmobile.correction.view.ITopicInfoView;
 import com.zhy.view.flowlayout.TagFlowLayout;
-import org.litepal.LitePal;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -124,7 +122,7 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
     @Override
     public void setTopicTags(Topic topic) {
         TopicTagAdapter tagAdapter = new TopicTagAdapter(null);
-        tagAdapter.setCurTopic(topic);
+        tagAdapter.setCurTopicId(topic.getId());
         tagAdapter.setItemClickable(false);
         tagAdapter.setShowUnchecked(false);
         tagAdapter.setTextColor(getColor(R.color.white));

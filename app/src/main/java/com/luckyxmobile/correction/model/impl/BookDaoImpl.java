@@ -55,18 +55,18 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public void removeBook(Book book) {
-
+        //异步删除本地文件
         filesUtils.deleteBookDir(book, listener);
-
-        List<Topic> topicList = LitePal.where("book_id=?",String.valueOf(book.getId())).find(Topic.class);
-
+        //获取错题本下的错题集合
+        List<Topic> topicList = LitePal.where("book_id=?",
+                String.valueOf(book.getId())).find(Topic.class);
+        //遍历错题集合，删除错题图片
         for (Topic topic : topicList) {
-
-            LitePal.deleteAll("TopicImage","topic_id=?", String.valueOf(topic.getId()));
-
+            LitePal.deleteAll("TopicImage","topic_id=?",
+                    String.valueOf(topic.getId()));
             topic.delete();
         }
-
+        //删除错题本
         book.delete();
     }
 
