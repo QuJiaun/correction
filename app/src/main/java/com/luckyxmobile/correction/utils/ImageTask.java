@@ -1,35 +1,28 @@
 package com.luckyxmobile.correction.utils;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.util.LruCache;
-import com.luckyxmobile.correction.adapter.BookDetailAdapter;
-import com.luckyxmobile.correction.model.bean.Topic;
-import java.util.ArrayList;
-import java.util.List;
+import android.widget.ImageView;
 
-public class ImageTask extends AsyncTask<Void, Integer, Boolean> {
+import com.bumptech.glide.Glide;
+import com.luckyxmobile.correction.model.bean.TopicImage;
 
-    @SuppressLint("StaticFieldLeak")
-    private  Context context;
-    private List<String> whichShowPrint;
-    private List<Integer> topicIds = new ArrayList<>();
-    private BookDetailAdapter bookDetailAdapter;
-    public LruCache<Integer, Bitmap> imageCache;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-    public void setBookDetailAdapter(BookDetailAdapter bookDetailAdapter) {
-        this.bookDetailAdapter = bookDetailAdapter;
-    }
+public class ImageTask {
 
-    public ImageTask(Context context, List<Topic> topics, List<String> whichShowPrint){
-        this.context = context;
-        this.whichShowPrint = whichShowPrint;
+    private String TAG = ImageTask.class.getSimpleName();
+    private Handler handler;
+    private final ExecutorService service;
+    private final LruCache<Integer, Bitmap> imageCache;
 
-        for (Topic topic: topics){
-            topicIds.add(topic.getId());
-        }
+    private static final ImageTask single = new ImageTask();
+
+    private ImageTask(){
 
         int maxMemory=(int)(Runtime.getRuntime().maxMemory()/1024);
         int cacheSize=maxMemory/8;
@@ -39,57 +32,48 @@ public class ImageTask extends AsyncTask<Void, Integer, Boolean> {
                 return super.sizeOf(key, value);
             }
         };
+
+        service = Executors.newCachedThreadPool();
+        handler = new Handler(Looper.getMainLooper());
     }
 
-    public Bitmap getImageCache(int id) {
+    public static ImageTask getInstance() {
+        return single;
+    }
+
+    public void loadTopicImage(ImageView view, TopicImage topicImage) {
+        Bitmap bitmap = getImageCache(topicImage.getId());
+
+        if (bitmap != null) {
+            Glide.with(view.getContext()).load(bitmap).centerCrop().thumbnail(0.1f).into(view);
+        } else if (FilesUtils.getInstance().existsCache(topicImage)) {
+            Glide.with(view.getContext())
+                    .load(FilesUtils.getInstance().getTopicImageCachePath(topicImage))
+                    .centerCrop()
+                    .thumbnail(0.1f).into(view);
+        }else {
+            service.submit(() -> {
+                Bitmap cache1 = ImageUtil.getBitmap(topicImage);
+                if (cache1 != null) {
+                    imageCache.put(topicImage.getId(), cache1);
+                    FilesUtils.getInstance().saveCacheTopicImage(topicImage, cache1);
+                    handler.post(() ->{
+                        loadTopicImage(view, topicImage);
+                    });
+                }
+            });
+        }
+    }
+
+    public void clearTopicImage(TopicImage topicImage) {
+        imageCache.remove(topicImage.getId());
+    }
+
+    private Bitmap getImageCache(int id) {
         try {
             return imageCache.get(id);
         }catch (Exception e){
             return null;
         }
-    }
-
-    @Override
-    protected Boolean doInBackground(Void... voids) {
-
-        try {
-            int i = 1;
-            for (int id: topicIds) {
-//                Bitmap bitmap = ImageUtil.convertTopicImageByWhichs(context, id, whichShowPrint, 0, false, false);
-//                if (bitmap != null){
-//                    imageCache.put(id, bitmap);
-//                    if (i%4 == 0){
-//                        publishProgress(topicIds.indexOf(id));
-//                    }
-//                    i++;
-//                }
-
-            }
-            return true;
-        }catch (Exception e){
-            return false;
-        }
-    }
-
-    @Override
-    protected void onProgressUpdate(Integer... values) {
-        super.onProgressUpdate(values);
-        for (int i = 3; i >= 0; i--) {
-            if (bookDetailAdapter != null){
-                bookDetailAdapter.notifyItemChanged(values[0]-i);
-            }
-
-        }
-
-    }
-
-
-    @Override
-    protected void onPostExecute(Boolean aBoolean) {
-        super.onPostExecute(aBoolean);
-        if (bookDetailAdapter != null){
-            bookDetailAdapter.notifyDataSetChanged();
-        }
-
     }
 }

@@ -2,18 +2,14 @@ package com.luckyxmobile.correction.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Path;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.BeanUtils;
@@ -21,16 +17,12 @@ import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
-import com.luckyxmobile.correction.utils.ImageUtil;
-import com.luckyxmobile.correction.utils.OpenCVUtil;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
-import com.youth.banner.Banner;
+import com.luckyxmobile.correction.utils.ImageTask;
+import com.luckyxmobile.correction.utils.FilesUtils;
 
 
 import org.litepal.LitePal;
 
-import java.io.FileNotFoundException;
-import java.util.Iterator;
 import java.util.List;
 
 public class RecentTopicAdapter extends RecyclerView.Adapter<ViewHolderTopicItem> {
@@ -58,7 +50,7 @@ public class RecentTopicAdapter extends RecyclerView.Adapter<ViewHolderTopicItem
 
         TopicImage topicImage = BeanUtils.findFirst(topic);
 
-        Glide.with(context).load(topicImage.getPath()).into(holder.topicImage);
+        ImageTask.getInstance().loadTopicImage(holder.topicImage, topicImage);
 
         holder.collectBtn.setVisibility(topic.isCollection()?View.VISIBLE:View.GONE);
 

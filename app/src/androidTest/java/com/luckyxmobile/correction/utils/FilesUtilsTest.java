@@ -5,7 +5,6 @@ import android.os.Environment;
 import androidx.test.InstrumentationRegistry;
 import com.luckyxmobile.correction.LitePalTestCase;
 import com.luckyxmobile.correction.model.bean.Topic;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
 
 import org.junit.After;
 import org.junit.Before;

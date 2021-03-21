@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.utils.FilesUtils;
 import com.luckyxmobile.correction.utils.HighlighterUtil;
 import com.luckyxmobile.correction.utils.OpenCVUtil;
 
@@ -51,7 +52,11 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
             return;
         }
 
-        setImageBitmap(topicImage.getContrast_radio(), topicImage.getPath());
+        if (FilesUtils.getInstance().existsCache(topicImage)) {
+            setImageBitmap(topicImage.getContrast_radio(), FilesUtils.getInstance().getTopicImageCachePath(topicImage));
+        } else {
+            setImageBitmap(topicImage.getContrast_radio(), topicImage.getPath());
+        }
 
         if (topicImage.getHighlighterList() != null) {
             for (TopicImage.Highlighter highlighter : topicImage.getHighlighterList()) {
@@ -71,8 +76,7 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
      */
     private void setImageBitmap(int contrastRadio, String imagePath){
         this.mBgBitmap = OpenCVUtil.setImageContrastRadioByPath(contrastRadio,imagePath);
-        this.mFgBitmap = Bitmap.createBitmap(mBgBitmap.getWidth(),mBgBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-//        mFgBitmap.eraseColor(getContext().getColor(R.color.black));
+        this.mFgBitmap = Bitmap.createBitmap(mBgBitmap.getWidth(),mBgBitmap.getHeight(), Bitmap.Config.RGB_565);
 
         invalidate();
     }

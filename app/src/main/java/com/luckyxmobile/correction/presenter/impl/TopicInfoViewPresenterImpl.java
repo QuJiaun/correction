@@ -11,7 +11,7 @@ import com.luckyxmobile.correction.model.impl.TopicDaoImpl;
 import com.luckyxmobile.correction.model.impl.TopicImageDaoImpl;
 import com.luckyxmobile.correction.presenter.TopicInfoViewPresenter;
 import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
+import com.luckyxmobile.correction.utils.FilesUtils;
 import com.luckyxmobile.correction.view.ITopicInfoView;
 
 import org.litepal.LitePal;

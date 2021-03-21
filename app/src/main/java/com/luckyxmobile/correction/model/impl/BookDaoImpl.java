@@ -6,8 +6,7 @@ import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.BookDao;
 import com.luckyxmobile.correction.model.DaoListener;
 import com.luckyxmobile.correction.model.bean.Topic;
-import com.luckyxmobile.correction.model.bean.TopicImage;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
+import com.luckyxmobile.correction.utils.FilesUtils;
 
 import org.litepal.LitePal;
 

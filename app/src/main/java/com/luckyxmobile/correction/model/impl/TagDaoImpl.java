@@ -5,11 +5,7 @@ import com.luckyxmobile.correction.model.TagDao;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
 
-import org.litepal.LitePal;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**

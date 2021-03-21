@@ -4,7 +4,6 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

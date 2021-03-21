@@ -8,14 +8,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
-import com.luckyxmobile.correction.utils.ImageUtil;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
-import org.litepal.LitePal;
+import com.luckyxmobile.correction.utils.ImageTask;
+import com.luckyxmobile.correction.utils.FilesUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,10 +80,9 @@ public class BookDetailAdapter extends RecyclerView.Adapter<ViewHolderTopicItem>
     public void onBindViewHolder(@NonNull final ViewHolderTopicItem holder, final int position) {
         // 获取错题对象
         Topic topic = topics.get(position);
-
         TopicImage topicImage = BeanUtils.findFirst(topic);
 
-        Glide.with(mContext).load(topicImage.getPath()).into(holder.topicImage);
+        ImageTask.getInstance().loadTopicImage(holder.topicImage, topicImage);
 
         holder.topicDate.setText(FilesUtils.getTimeByDate(topic.getCreate_date()));
         holder.collectBtn.setVisibility(topic.isCollection()? View.VISIBLE:View.GONE);

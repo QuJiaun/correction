@@ -3,7 +3,7 @@ package com.luckyxmobile.correction.global;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Tag;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
+import com.luckyxmobile.correction.utils.FilesUtils;
 
 import org.litepal.LitePal;
 import org.litepal.LitePalApplication;

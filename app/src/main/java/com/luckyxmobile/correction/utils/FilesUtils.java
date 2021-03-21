@@ -1,4 +1,4 @@
-package com.luckyxmobile.correction.utils.impl;
+package com.luckyxmobile.correction.utils;
 
 import android.app.Application;
 import android.content.pm.PackageInfo;
@@ -97,6 +97,10 @@ public class FilesUtils{
         return CACHE_DIR + "/tmp.jpeg";
     }
 
+    public String getTopicImageCachePath(TopicImage topicImage) {
+        return CACHE_DIR + "/TopicImage_"+ topicImage.getId() +".jpeg";
+    }
+
     public Uri getCacheFileUri() {
         File file = new File(getCacheFilePath());
 
@@ -109,6 +113,35 @@ public class FilesUtils{
         }
 
         return getUri(file);
+    }
+
+    public boolean existsCache(TopicImage topicImage) {
+        File cache = new File(getTopicImageCachePath(topicImage));
+        return cache.exists();
+    }
+
+    public boolean saveCacheTopicImage(TopicImage topicImage, Bitmap bitmap) {
+
+        File cache = new File(getTopicImageCachePath(topicImage));
+
+        if (!cache.exists()) {
+            try {
+                cache.createNewFile();
+
+                FileOutputStream fos  = new FileOutputStream(cache);
+
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+
+                fos.flush();
+                fos.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public boolean saveBitmap2TmpFile(Bitmap bitmap)  {

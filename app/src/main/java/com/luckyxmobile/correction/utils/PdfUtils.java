@@ -2,16 +2,11 @@ package com.luckyxmobile.correction.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
 import android.util.Log;
-import com.luckyxmobile.correction.R;
-import com.luckyxmobile.correction.adapter.PaperDetailAdapter;
-import com.luckyxmobile.correction.adapter.PrintPreviewAdapter;
-import com.luckyxmobile.correction.global.Constants;
+
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.model.bean.Topic;
@@ -26,7 +21,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.codec.PngImage;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
 
 import org.litepal.LitePal;
 
@@ -35,12 +29,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * @author ChangHao

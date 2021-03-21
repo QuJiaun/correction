@@ -20,8 +20,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false//是否混淆
-            shrinkResources false //是否去除无效的资源文件
+            minifyEnabled true//是否混淆
+            shrinkResources true //是否去除无效的资源文件
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

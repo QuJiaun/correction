@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,7 +17,7 @@ import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
 import com.luckyxmobile.correction.utils.ImageUtil;
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
+import com.luckyxmobile.correction.utils.FilesUtils;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -91,9 +92,13 @@ public class CropImageActivity extends AppCompatActivity{
         } else {
             //内部选择
             if (isFromAlbum) {
-                ImageUtil.openAlbum(this);
+                Intent selectIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                selectIntent.setType("image/*");
+                startActivityForResult(selectIntent, Constants.REQUEST_CODE_SELECT_ALBUM);
             } else {
-                ImageUtil.openCamera(this);
+                Intent startCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, FilesUtils.getInstance().getCacheFileUri());
+                startActivityForResult(startCameraIntent, Constants.REQUEST_CODE_TAKE_PHOTO);
             }
         }
 

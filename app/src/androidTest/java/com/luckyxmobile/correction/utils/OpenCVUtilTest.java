@@ -3,8 +3,6 @@ package com.luckyxmobile.correction.utils;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.luckyxmobile.correction.utils.impl.FilesUtils;
-
 import org.junit.Test;
 import org.opencv.android.OpenCVLoader;
 
