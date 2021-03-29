@@ -39,7 +39,7 @@ public class Tag extends LitePalSupport {
      */
     private long tag_create_time;
 
-    public Tag(@NonNull String tag_name) {
+    public Tag(String tag_name) {
         this.tag_name = tag_name;
         setTag_create_time(System.currentTimeMillis());
     }

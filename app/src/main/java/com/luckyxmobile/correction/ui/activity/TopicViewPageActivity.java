@@ -2,12 +2,15 @@ package com.luckyxmobile.correction.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -36,21 +39,14 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
 
     @BindView(R.id.topic_view_pager)
     ViewPager topicViewPager;
-
     @BindView(R.id.topic_view_pager_tags)
     TagFlowLayout topicTagLayout;
-    private TopicTagAdapter topicTagAdapter;
-
     @BindView(R.id.topic_view_pager_top_bar)
     LinearLayout topBarLayout;
-
     @BindView(R.id.progress_bar_topic_view_page)
     ProgressBar topicViewPageBar;
-
     @BindView(R.id.collect_button)
     ImageButton collectBtn;
-
-    private TopicViewPageAdapter topicViewPageAdapter;
 
     @BindAnim(R.anim.layout_in_above)
     Animation aboveLayoutIn;
@@ -62,10 +58,9 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
     Animation belowLayoutOut;
 
     private TopicViewPagePresenter presenter;
-
+    private TopicViewPageAdapter topicViewPageAdapter;
+    private TopicTagAdapter topicTagAdapter;
     private boolean isFullScreen = false;
-
-    private MySharedPreferences preferences = MySharedPreferences.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +72,22 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
         ButterKnife.bind(this);
 
         int curTopicId = getIntent().getIntExtra(Constants.TOPIC_ID,-1);
-
         presenter = new TopicViewPagePresenterImpl(this, curTopicId);
+
+        if (MySharedPreferences.getInstance().getBoolean(Constants.VIEW_PAGE_FULL_SCREEN, false)) {
+            topBarLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
     public void setTopicTagLayout(boolean isShow, Topic topic) {
         topicTagLayout.setVisibility(isShow?View.VISIBLE:View.GONE);
-        topicTagAdapter = new TopicTagAdapter(null);
+        topicTagAdapter = new TopicTagAdapter();
         topicTagAdapter.setCurTopicId(topic.getId());
         topicTagAdapter.setItemClickable(false);
         topicTagAdapter.setShowUnchecked(false);
@@ -150,10 +153,6 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
         presenter.topicCollectChange();
     }
 
-    @OnClick(R.id.topic_image_edit_btn)
-    public void onClickEditBtn() {
-
-    }
 
     @Override
     public void onBackPressed() {

@@ -9,7 +9,7 @@
     android:clipToPadding="false"
     android:layout_marginBottom="8dp"
     android:foreground="?android:attr/selectableItemBackgroundBorderless"
-    android:background="@drawable/shape_box_view">
+    android:background="#88ffffff">
 
 <!--    <com.youth.banner.Banner-->
 <!--        android:id="@+id/topic_image"-->
@@ -20,7 +20,7 @@
     <ImageView
         android:id="@+id/topic_image"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:scaleType="centerInside"
         android:background="@drawable/shape_box_fillet_shadow_view"
@@ -53,7 +53,12 @@
         android:paddingEnd="4dp"
         android:gravity="start"
         android:textSize="12sp"
-        android:lines="1"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:scrollHorizontally="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
         app:layout_constraintTop_toBottomOf="@id/topic_image"
         app:layout_constraintStart_toEndOf="@id/collect_button"
         app:layout_constraintEnd_toStartOf="@id/topic_date"/>

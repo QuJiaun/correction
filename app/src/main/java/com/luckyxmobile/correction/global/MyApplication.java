@@ -1,5 +1,8 @@
 package com.luckyxmobile.correction.global;
 
+import android.util.DisplayMetrics;
+import android.util.Log;
+
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Tag;
@@ -38,6 +41,9 @@ public class MyApplication extends LitePalApplication {
             Tag tag = new Tag("重要");
             tag.save();
 
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            table.putInt(Constants.SCREEN_WIDTH, displayMetrics.widthPixels);
+            table.putInt(Constants.SCREEN_HEIGHT, displayMetrics.heightPixels);
         }
     }
 }

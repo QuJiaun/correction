@@ -62,12 +62,15 @@ public class TopicInfoViewPresenterImpl implements TopicInfoViewPresenter {
     }
 
     @Override
-    public void setTopicCollection(boolean collection) {
-        if (collection) {
+    public void setTopicCollection() {
+        if (!curTopic.isCollection()) {
             curTopic.setCollection(true);
         } else {
+            curTopic.setCollection(false);
             curTopic.setToDefault("collection");
         }
+        curTopic.save();
+        topicInfoView.setTopicCollection(curTopic.isCollection());
     }
 
     @Override

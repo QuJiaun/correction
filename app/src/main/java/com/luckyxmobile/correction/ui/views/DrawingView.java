@@ -3,7 +3,6 @@ package com.luckyxmobile.correction.ui.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -15,9 +14,15 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.luckyxmobile.correction.R;
+import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.model.BeanUtils;
+import com.luckyxmobile.correction.model.bean.Highlighter;
+import com.luckyxmobile.correction.model.bean.ImageParam;
 import com.luckyxmobile.correction.model.bean.TopicImage;
+import com.luckyxmobile.correction.utils.BitmapUtils;
+import com.luckyxmobile.correction.utils.GsonUtils;
 import com.luckyxmobile.correction.utils.HighlighterUtil;
+import com.luckyxmobile.correction.utils.ImageTask;
 import com.luckyxmobile.correction.utils.OpenCVUtil;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,17 +43,16 @@ public class DrawingView extends View implements
     private TouchGesture touchGesture;
 
     private TopicImage topicImage;
-    private List<TopicImage.Highlighter> highlighterList;
-    private List<TopicImage.Highlighter> redoHighlighterList = new ArrayList<>();
+    private List<Highlighter> highlighterList;
+    private List<Highlighter> redoHighlighterList = new ArrayList<>();
 
-    private Paint curPaint;
+    private final Paint curPaint = new Paint();
     private int curType;
     private int curWidth;
     private List<Point> curPoints;
 
     private Canvas mCanvas;
     private Bitmap mBgBitmap, mFgBitmap;
-    private String imagePath;
     private int imageWidth, imageHeight;
     private float mBitmapTransX, mBitmapTransY, mBitmapScale = 1;
 
@@ -64,17 +68,17 @@ public class DrawingView extends View implements
 
     public void init(@NonNull TopicImage topicImage) {
         this.topicImage = topicImage;
-        this.imagePath = topicImage.getPath();
+        String imagePath = topicImage.getPath();
 
-        curPaint = HighlighterUtil.defaultHighlighter(getContext());
-        highlighterList = topicImage.getHighlighterList();
+        highlighterList = BeanUtils.findAll(topicImage);
 
-        setContrastRadio(topicImage.getContrast_radio());
+        setCurPaint(Constants.PAINT_BLUE);
+        setImageParam(GsonUtils.json2Obj(topicImage.getImageParam(), ImageParam.class));
         setCurPaintWidth(topicImage.getWord_size());
     }
 
-    public Bitmap getImageBitmap(){
-        return Bitmap.createBitmap(mBgBitmap,0,0,mBgBitmap.getWidth(),mBgBitmap.getHeight());
+    public List<Highlighter> getHighlighterList() {
+        return highlighterList;
     }
 
     @Override
@@ -92,7 +96,7 @@ public class DrawingView extends View implements
 
         mCanvas.drawPaint(HighlighterUtil.clearPaint());
 
-        for (TopicImage.Highlighter highlighter : highlighterList) {
+        for (Highlighter highlighter : highlighterList) {
             Paint paint = HighlighterUtil.getHighlighter(getContext(), highlighter, true);
             Path path = HighlighterUtil.pointsToPath(highlighter.getPointList());
             mCanvas.drawPath(path, paint);
@@ -149,7 +153,6 @@ public class DrawingView extends View implements
 
         if (rectWidth * rectHeight < 2000) {
             Log.d(TAG,"涂抹区域太小，删除以上涂抹点");
-//            Toasty.warning(context, R.string.smear_waring, Toasty.LENGTH_SHORT, true).show();
             highlighterList.remove(highlighterList.size()-1);
         }else{
            redoHighlighterList.clear();
@@ -198,7 +201,7 @@ public class DrawingView extends View implements
 
         if (redoAble()){
 
-            TopicImage.Highlighter tmp = redoHighlighterList.get(redoHighlighterList.size()-1);
+            Highlighter tmp = redoHighlighterList.get(redoHighlighterList.size()-1);
             highlighterList.add(tmp);
             redoHighlighterList.remove(tmp);
             invalidate();
@@ -217,7 +220,7 @@ public class DrawingView extends View implements
 
         if (undoAble()){
 
-            TopicImage.Highlighter tmp = highlighterList.get(highlighterList.size()-1);
+            Highlighter tmp = highlighterList.get(highlighterList.size()-1);
             redoHighlighterList.add(tmp);
             highlighterList.remove(tmp);
             invalidate();
@@ -233,6 +236,10 @@ public class DrawingView extends View implements
         HighlighterUtil.setHighlighter(getContext(), curPaint, type);
     }
 
+    public int getCurType() {
+        return curType;
+    }
+
     public void setCurPaintWidth(int width) {
         if (width == -1) {
             width = OpenCVUtil.calculateImageWordSize(mBgBitmap);
@@ -243,10 +250,15 @@ public class DrawingView extends View implements
         curPaint.setStrokeWidth(width);
     }
 
-    public void setContrastRadio(int contrastRadio) {
-        topicImage.setContrast_radio(contrastRadio);
+    public int getCurWidth() {
+        return curWidth;
+    }
 
-        this.mBgBitmap = OpenCVUtil.setImageContrastRadioByPath(contrastRadio,imagePath);
+    public void setImageParam(ImageParam param) {
+        topicImage.setImageParam(GsonUtils.obj2Json(param));
+
+        ImageTask.getInstance().clearTopicImage(topicImage);
+        this.mBgBitmap = BitmapUtils.getBitmap(topicImage);
         this.mFgBitmap = Bitmap.createBitmap(mBgBitmap.getWidth(),mBgBitmap.getHeight(), Bitmap.Config.ARGB_8888);
 
         imageWidth = mBgBitmap.getWidth();
@@ -267,7 +279,7 @@ public class DrawingView extends View implements
             curPoints = new ArrayList<>();
             curPoints.add(new Point((int)x,(int)y));
 
-            TopicImage.Highlighter curHighlighter = new TopicImage.Highlighter(curType);
+            Highlighter curHighlighter = new Highlighter(curType);
             curHighlighter.setWidth(curWidth);
             curHighlighter.setPointList(curPoints);
 
@@ -286,7 +298,9 @@ public class DrawingView extends View implements
         }else{
             Log.d(TAG, "滑动中-->("+x+":"+y+")");
 
-            curPoints.add(new Point((int)x,(int)y));
+            if (curPaint != null) {
+                curPoints.add(new Point((int)x,(int)y));
+            }
             invalidate();
             return true;
         }
@@ -299,7 +313,9 @@ public class DrawingView extends View implements
 
         if (x > 0 && x < mCanvas.getWidth() && y > 0 && y < mCanvas.getHeight()){
             Log.d(TAG, "滑动结束-->("+x+":"+y+")");
-            curPoints.add(new Point((int)x,(int)y));
+            if (curPoints != null) {
+                curPoints.add(new Point((int)x,(int)y));
+            }
 
             changePoints();//计算涂抹点是否合理
 

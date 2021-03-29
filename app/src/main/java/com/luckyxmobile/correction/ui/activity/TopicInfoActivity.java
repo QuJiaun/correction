@@ -58,6 +58,7 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
 
     private MenuItem collectionMenuItem;
 
+    private int curTopicId;
     private TopicInfoViewPresenter presenter;
 
     @Override
@@ -69,11 +70,14 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
         presenter = new TopicInfoViewPresenterImpl(this);
 
         //获取唯一的错题id
-        int topicId = getIntent().getIntExtra(Constants.TOPIC_ID, -1);
-
-        presenter.initTopicInfo(topicId);
+        curTopicId = getIntent().getIntExtra(Constants.TOPIC_ID, -1);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.initTopicInfo(curTopicId);
+    }
 
     @Override
     public void setToolbar(String toolbarName) {
@@ -121,7 +125,7 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
 
     @Override
     public void setTopicTags(Topic topic) {
-        TopicTagAdapter tagAdapter = new TopicTagAdapter(null);
+        TopicTagAdapter tagAdapter = new TopicTagAdapter();
         tagAdapter.setCurTopicId(topic.getId());
         tagAdapter.setItemClickable(false);
         tagAdapter.setShowUnchecked(false);
@@ -152,7 +156,7 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
 
     @OnClick(R.id.set_tag)
     public void onClickSetTagBtn() {
-        Intent intent = new Intent(TopicInfoActivity.this, TagActivity.class);
+        Intent intent = new Intent(TopicInfoActivity.this, TagManagerActivity.class);
         intent.putExtra(Constants.TOPIC_ID, presenter.getCurTopic().getId());
         startActivity(intent);
     }
@@ -191,6 +195,9 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu_topic, menu);
         collectionMenuItem = menu.findItem(R.id.topic_menu_like);
+        menu.findItem(R.id.topic_menu_show_original).setChecked(
+                MySharedPreferences.getInstance().getBoolean(Constants.SHOW_ORIGINAL, true));
+        setTopicCollection(presenter.getCurTopic().isCollection());
         return true;
     }
 
@@ -201,9 +208,7 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
 
         switch (item.getItemId()) {
             case R.id.topic_menu_like:
-                boolean collection = !presenter.getCurTopic().isCollection();
-                presenter.setTopicCollection(!collection);
-                setTopicCollection(!collection);
+                presenter.setTopicCollection();
                 break;
 
             case R.id.topic_menu_add_text:
@@ -214,7 +219,7 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
                 MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
                 MySharedPreferences.getInstance().putInt(Constants.CURRENT_BOOK_ID, presenter.getCurTopic().getBook_id());
                 MySharedPreferences.getInstance().putInt(Constants.CURRENT_TOPIC_ID, presenter.getCurTopic().getId());
-                DestroyActivityUtil.addDestroyActivityToMap(this, TAG);
+//                DestroyActivityUtil.addDestroyActivityToMap(this, TAG);
 
                 startActivity(CropImageActivity.getCropImageActivityIntent(this, false, true));
                 break;
@@ -223,15 +228,21 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
                 MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
                 MySharedPreferences.getInstance().putInt(Constants.CURRENT_BOOK_ID, presenter.getCurTopic().getBook_id());
                 MySharedPreferences.getInstance().putInt(Constants.CURRENT_TOPIC_ID, presenter.getCurTopic().getId());
-                DestroyActivityUtil.addDestroyActivityToMap(this, TAG);
+//                DestroyActivityUtil.addDestroyActivityToMap(this, TAG);
 
                 startActivity(CropImageActivity.getCropImageActivityIntent(this, true, true));
                 break;
 
             case R.id.topic_menu_show_original:
                 item.setChecked(!item.isChecked());
+                MySharedPreferences.getInstance().putBoolean(Constants.SHOW_ORIGINAL, item.isChecked());
                 topicInfoAdapter.setShowOriginalImage(item.isChecked());
                 break;
+
+            case R.id.topic_menu_edit:
+                boolean removeMode = topicInfoAdapter.isRemoveMode();
+                topicInfoAdapter.setRemoveMode(!removeMode);
+                topicInfoAdapter.notifyDataSetChanged();
             default:
                 break;
         }

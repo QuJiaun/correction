@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.BeanUtils;
+import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.utils.ImageTask;
@@ -24,22 +25,27 @@ public class BookDetailAdapter extends RecyclerView.Adapter<ViewHolderTopicItem>
     private String TAG = "BookDetailAdapter";
     private final Context mContext;
     private List<Topic> topics;
+    private List<Topic> filterTopics;
     private List<Topic> topicsByDelete;
 
     private MenuItem deleteMenuItem;
     private boolean isDeleteMode = false;
     private ViewHolderTopicItem.OnItemListener listener;
 
-
     public BookDetailAdapter(Context context, List<Topic> topics){
         this.mContext = context;
         this.listener = (ViewHolderTopicItem.OnItemListener) context;
         this.topics = topics;
+        this.filterTopics = new ArrayList<>(topics);
         this.topicsByDelete = new ArrayList<>();
     }
 
     public List<Topic> getTopicsByDelete() {
         return topicsByDelete;
+    }
+
+    public List<Topic> getTopics() {
+        return topics;
     }
 
     public void removeTopicList() {
@@ -68,6 +74,29 @@ public class BookDetailAdapter extends RecyclerView.Adapter<ViewHolderTopicItem>
         return isDeleteMode;
     }
 
+    public void onFilterListener(List<Tag> tagList) {
+        if (tagList == null) {
+            topics = filterTopics;
+            notifyDataSetChanged();
+            return;
+        }
+
+        List<Topic> tmp = new ArrayList<>();
+        for (Topic topic : filterTopics) {
+            if (!tmp.contains(topic)) {
+                for (Tag tag :tagList) {
+                    if (tag.getTopicSet().contains(topic.getId())) {
+                        tmp.add(topic);
+                        break;
+                    }
+                }
+            }
+        }
+
+        topics = tmp;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolderTopicItem onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -80,12 +109,14 @@ public class BookDetailAdapter extends RecyclerView.Adapter<ViewHolderTopicItem>
     public void onBindViewHolder(@NonNull final ViewHolderTopicItem holder, final int position) {
         // 获取错题对象
         Topic topic = topics.get(position);
-        TopicImage topicImage = BeanUtils.findFirst(topic);
+        TopicImage topicImage = BeanUtils.findTopicImageFirst(topic);
 
         ImageTask.getInstance().loadTopicImage(holder.topicImage, topicImage);
 
         holder.topicDate.setText(FilesUtils.getTimeByDate(topic.getCreate_date()));
         holder.collectBtn.setVisibility(topic.isCollection()? View.VISIBLE:View.GONE);
+        holder.tagTv.setText(BeanUtils.tagsToString(topic.getId()));
+        holder.tagTv.setTextColor(mContext.getColor(R.color.blue_title));
 
         if (isDeleteMode) {
             holder.checkBtn.setVisibility(View.VISIBLE);

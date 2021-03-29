@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:background="@color/gray_f2"
+    android:background="@color/layout_view_bg"
     tools:context=".ui.activity.PaperActivity">
 
     <!--使用Toolbar-->

@@ -14,8 +14,11 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
+import com.luckyxmobile.correction.model.BeanUtils;
+import com.luckyxmobile.correction.model.bean.Highlighter;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.utils.BitmapUtils;
 import com.luckyxmobile.correction.utils.FilesUtils;
 import com.luckyxmobile.correction.utils.HighlighterUtil;
 import com.luckyxmobile.correction.utils.OpenCVUtil;
@@ -52,17 +55,11 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
             return;
         }
 
-        if (FilesUtils.getInstance().existsCache(topicImage)) {
-            setImageBitmap(topicImage.getContrast_radio(), FilesUtils.getInstance().getTopicImageCachePath(topicImage));
-        } else {
-            setImageBitmap(topicImage.getContrast_radio(), topicImage.getPath());
-        }
+        setImageBitmap(topicImage);
 
         if (topicImage.getHighlighterList() != null) {
-            for (TopicImage.Highlighter highlighter : topicImage.getHighlighterList()) {
-                HighlighterArea area = new HighlighterArea();
-                area.init(highlighter);
-                highlighterAreaArrayList.add(area);
+            for (Highlighter highlighter : BeanUtils.findAll(topicImage)) {
+                highlighterAreaArrayList.add(new HighlighterArea(highlighter));
             }
 
             invalidate();
@@ -71,11 +68,9 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
 
     /**
      * 初始化图片
-     * @param contrastRadio 对比度
-     * @param imagePath 图片路径
      */
-    private void setImageBitmap(int contrastRadio, String imagePath){
-        this.mBgBitmap = OpenCVUtil.setImageContrastRadioByPath(contrastRadio,imagePath);
+    private void setImageBitmap(TopicImage topicImage){
+        this.mBgBitmap = BitmapUtils.getBitmap(topicImage);
         this.mFgBitmap = Bitmap.createBitmap(mBgBitmap.getWidth(),mBgBitmap.getHeight(), Bitmap.Config.RGB_565);
 
         invalidate();
@@ -219,13 +214,12 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
     private static class HighlighterArea {
 
         boolean isShow;
-        TopicImage.Highlighter highlighter;
+        Highlighter highlighter;
 
-        void init(TopicImage.Highlighter highlighter) {
+        public HighlighterArea(Highlighter highlighter) {
             this.isShow = false;
             this.highlighter = highlighter;
         }
-
 
         boolean judgePointInPoints(Point point){
             for (Point p: highlighter.getPointList()){

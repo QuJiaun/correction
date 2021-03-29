@@ -1,7 +1,5 @@
 package com.luckyxmobile.correction.model.bean;
 
-import android.graphics.Point;
-
 import com.luckyxmobile.correction.global.Constants;
 import org.litepal.crud.LitePalSupport;
 
@@ -34,14 +32,14 @@ public class TopicImage extends LitePalSupport {
     private int word_size;
 
     /**
-     * 图片对比度设置
+     * 图片调节参数
      */
-    private int contrast_radio;
+    private String imageParam;
 
     /**
      * 荧光笔涂抹信息
      */
-    private List<Highlighter> highlighterList = new ArrayList<>();
+    private List<String> highlighterList = new ArrayList<>();
 
     private long create_time;
 
@@ -86,19 +84,19 @@ public class TopicImage extends LitePalSupport {
         this.word_size = word_size;
     }
 
-    public int getContrast_radio() {
-        return contrast_radio;
+    public String getImageParam() {
+        return imageParam;
     }
 
-    public void setContrast_radio(@Constants.ContrastRadio int contrast_radio) {
-        this.contrast_radio = contrast_radio;
+    public void setImageParam(String imageParam) {
+        this.imageParam = imageParam;
     }
 
-    public List<Highlighter> getHighlighterList() {
+    public List<String> getHighlighterList() {
         return highlighterList;
     }
 
-    public void setHighlighterList(List<Highlighter> highlighterList) {
+    public void setHighlighterList(List<String> highlighterList) {
         this.highlighterList = highlighterList;
     }
 
@@ -126,7 +124,7 @@ public class TopicImage extends LitePalSupport {
                 ", type=" + type +
                 ", path=" + path +
                 ", word_size=" + word_size +
-                ", contrast_radio=" + contrast_radio +
+                ", imageParam=" + imageParam +
                 ", highlighterList=" + highlighterList +
                 ", create_time=" + create_time +
                 '}';
@@ -141,58 +139,4 @@ public class TopicImage extends LitePalSupport {
         return id == that.id && path.equals(that.getPath());
     }
 
-    public static class Highlighter {
-
-        /**
-         * 荧光笔类型
-         */
-        private int type;
-
-        /**
-         * 荧光笔宽度
-         */
-        private int width;
-
-        /**
-         * 涂抹位置信息
-         */
-        private List<Point> pointList = new ArrayList<>();
-
-        public Highlighter(@Constants.HighlighterType int type) {
-            this.type = type;
-        }
-
-        public int getType() {
-            return type;
-        }
-
-        public void setType(@Constants.HighlighterType int type) {
-            this.type = type;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
-        public List<Point> getPointList() {
-            return pointList;
-        }
-
-        public void setPointList(List<Point> pointList) {
-            this.pointList = pointList;
-        }
-
-        @Override
-        public String toString() {
-            return "Highlighter{" +
-                "type=" + type +
-                ", width=" + width +
-                ", pointList=" + pointList +
-                '}';
-        }
-    }
 }

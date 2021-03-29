@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="16dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="8dp"
+    android:background="@drawable/shape_dialog_layout"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="选择荧光笔"
+        android:gravity="center"
+        android:textColor="@color/colorText"
+        android:textSize="@dimen/text_body_size"/>
+
+    <LinearLayout
+        android:id="@+id/scrollView"
+        android:layout_below="@id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/highlighter_blue"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            app:checked_img="@drawable/ic_highlighter_blue"
+            app:unchecked_img="@drawable/ic_paint_unchecked"
+            app:menu_text="BLUE"
+            app:checked_text_color="@color/orange_f7"
+            app:default_checked="true"/>
+
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/highlighter_red"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            app:checked_img="@drawable/ic_highlighter_red"
+            app:unchecked_img="@drawable/ic_paint_unchecked"
+            app:menu_text="RED"
+            app:checked_text_color="@color/orange_f7"/>
+
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/highlighter_yellow"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            app:checked_img="@drawable/ic_highlighter_yellow"
+            app:unchecked_img="@drawable/ic_paint_unchecked"
+            app:menu_text="YELLOW"
+            app:checked_text_color="@color/orange_f7"/>
+
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/highlighter_green"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            app:checked_img="@drawable/ic_highlighter_green"
+            app:unchecked_img="@drawable/ic_paint_unchecked"
+            app:menu_text="GREEN"
+            app:checked_text_color="@color/orange_f7"/>
+
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/highlighter_white"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            app:checked_img="@drawable/ic_highlighter_white"
+            app:unchecked_img="@drawable/ic_paint_unchecked"
+            app:menu_text="WHITE"
+            app:checked_text_color="@color/orange_f7"/>
+
+    </LinearLayout>
+
+
+    <ImageButton
+        android:id="@+id/cancel_btn"
+        style="@style/normal_icon_button"
+        android:layout_marginTop="32dp"
+        android:layout_below="@id/scrollView"
+        android:src="@drawable/ic_cancel_white_24dp"/>
+
+    <ImageButton
+        android:id="@+id/ensure_btn"
+        style="@style/normal_icon_button"
+        android:layout_marginTop="32dp"
+        android:layout_below="@id/scrollView"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_ensure"/>
+
+</RelativeLayout>

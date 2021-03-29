@@ -33,8 +33,7 @@
         android:id="@+id/select_topic_RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/hint_select"
-        android:paddingBottom="72dp"/>
+        android:layout_below="@id/hint_select"/>
 
     <Button
         android:id="@+id/select_topic_finish_btn"

@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.HeadBookAdapter;
 import com.luckyxmobile.correction.adapter.RecentTopicAdapter;
@@ -29,7 +31,7 @@ import com.luckyxmobile.correction.presenter.impl.MainViewPresenterImpl;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.ui.dialog.AddTopicImageDialog;
 import com.luckyxmobile.correction.ui.dialog.BookInfoDialog;
-import com.luckyxmobile.correction.utils.impl.PermissionsUtil;
+import com.luckyxmobile.correction.utils.PermissionsUtil;
 import com.luckyxmobile.correction.view.MainView;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -40,6 +42,7 @@ import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import butterknife.BindAnim;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -62,6 +65,12 @@ public class MainActivity extends AppCompatActivity implements MainView,
     TextView recentTopicTv;
     @BindView(R.id.rv_head_book)
     RecyclerView headBookRv;
+    @BindView(R.id.floating_button_add_topic)
+    FloatingActionButton floatingActionButton;
+    @BindAnim(R.anim.layout_in_below)
+    Animation showAnim;
+    @BindAnim(R.anim.layout_out_below)
+    Animation hideAnim;
 
     private HeadBookAdapter headBookAdapter;
 
@@ -90,18 +99,13 @@ public class MainActivity extends AppCompatActivity implements MainView,
         setSupportActionBar(findViewById(R.id.toolbar));
 
         ButterKnife.bind(this);
-
         //申请权限
         PermissionsUtil.initRequestPermission(this);
-
         mainViewPresenter = new MainViewPresenterImpl(this);
-
         //初始化openCV
         initOpenCV();
-
         //初始化裁剪框
         SmartCropper.buildImageDetector(this);
-
     }
 
     @Override

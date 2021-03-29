@@ -8,6 +8,7 @@ import com.luckyxmobile.correction.utils.FilesUtils;
 
 import org.litepal.LitePal;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class TopicDaoImpl implements TopicDao {
@@ -71,7 +72,15 @@ public class TopicDaoImpl implements TopicDao {
 
     @Override
     public List<Topic> getTopicListByCollection(boolean collection) {
-        return LitePal.where("collection=?", String.valueOf(collection)).find(Topic.class);
+        List<Topic> topicList = LitePal.findAll(Topic.class);
+        Iterator<Topic> iterator = topicList.iterator();
+        while (iterator.hasNext()) {
+            Topic topic = iterator.next();
+            if (topic.isCollection() != collection) {
+                iterator.remove();
+            }
+        }
+        return topicList;
     }
 
     @Override

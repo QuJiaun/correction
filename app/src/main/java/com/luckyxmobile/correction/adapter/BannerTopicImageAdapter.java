@@ -14,20 +14,19 @@ import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.ui.views.ShowHighlighterView;
 import com.youth.banner.adapter.BannerAdapter;
 
+import org.litepal.LitePal;
+
 import java.util.List;
 
 public class BannerTopicImageAdapter extends BannerAdapter<TopicImage, BannerTopicImageAdapter.BannerViewHolder> {
 
-    private final Context context;
-
-    BannerTopicImageAdapter(Context context, List<TopicImage> topicImages) {
+    BannerTopicImageAdapter(List<TopicImage> topicImages) {
         super(topicImages);
-        this.context = context;
     }
 
     @Override
     public BannerViewHolder onCreateHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.topic_view_page_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.topic_view_page_item, parent, false);
         return new BannerViewHolder(view);
     }
 
@@ -36,7 +35,7 @@ public class BannerTopicImageAdapter extends BannerAdapter<TopicImage, BannerTop
 
         holder.showHighlighterView.init(data);
         int typeRes = Constants.getTypeNameRes(data.getType());
-        holder.hintTv.setText("IMAGE : "+ size + "/" + (position+1) +"    TYPE : " + context.getString(typeRes));
+        holder.hintTv.setText("IMAGE : "+ size + "/" + (position+1) +"    TYPE : " + holder.itemView.getContext().getString(typeRes));
     }
 
     public static class BannerViewHolder extends RecyclerView.ViewHolder {

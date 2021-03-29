@@ -11,7 +11,7 @@ public interface TopicInfoViewPresenter {
 
     void setTopicText(String text);
 
-    void setTopicCollection(boolean collection);
+    void setTopicCollection();
 
     void removeTopicImage(TopicImage topicImage);
 }

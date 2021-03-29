@@ -48,7 +48,7 @@ public class RecentTopicAdapter extends RecyclerView.Adapter<ViewHolderTopicItem
 
         Topic topic = topics.get(position);
 
-        TopicImage topicImage = BeanUtils.findFirst(topic);
+        TopicImage topicImage = BeanUtils.findTopicImageFirst(topic);
 
         ImageTask.getInstance().loadTopicImage(holder.topicImage, topicImage);
 

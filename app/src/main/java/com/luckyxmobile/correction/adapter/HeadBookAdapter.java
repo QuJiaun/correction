@@ -1,6 +1,5 @@
 package com.luckyxmobile.correction.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -10,20 +9,15 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Book;
-import com.luckyxmobile.correction.utils.ImageUtil;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**

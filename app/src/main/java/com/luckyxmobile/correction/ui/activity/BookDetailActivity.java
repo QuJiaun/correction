@@ -16,8 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.BookDetailAdapter;
+import com.luckyxmobile.correction.adapter.TopicTagAdapter;
 import com.luckyxmobile.correction.adapter.ViewHolderTopicItem;
 import com.luckyxmobile.correction.global.MySharedPreferences;
+import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.presenter.BookDetailViewPresenter;
@@ -28,7 +30,9 @@ import com.luckyxmobile.correction.view.IBookDetailView;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +40,7 @@ import butterknife.ButterKnife;
 
 public class BookDetailActivity extends AppCompatActivity implements IBookDetailView
         , ViewHolderTopicItem.OnItemListener
-        , AddTopicImageDialog.OnClickListener {
+        , AddTopicImageDialog.OnClickListener{
 
     public static final String TAG = "BookDetailActivity";
 
@@ -54,6 +58,7 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
     private int book_id;
     private BookDetailAdapter adapter;
     private BookDetailViewPresenter presenter;
+    private TopicTagAdapter topicTagAdapter;
 
     private MenuItem topicSortMenuItem;
 
@@ -68,12 +73,12 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
         // 获取Intent传过来的数据集
         book_id = getIntent().getIntExtra(Constants.BOOK_ID, -1);
         presenter = new BookDetailViewPresenterImpl(this);
-        presenter.init(book_id);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        presenter.init(book_id);
         setTopicsSort(presenter.isNewest());
     }
 
@@ -85,7 +90,26 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
 
     @Override
     public void setTagLayout() {
-
+        topicTagAdapter = new TopicTagAdapter();
+        topicTagAdapter.setCurTopicId(-1);
+        topicTagAdapter.setTopicIdList(adapter.getTopics());
+        topicTagAdapter.setItemClickable(true);
+        topicTagAdapter.setShowUnchecked(true);
+        tagFlowLayout.setAdapter(topicTagAdapter);
+        tagFlowLayout.setOnSelectListener(selectPosSet -> {
+            if (selectPosSet.isEmpty()) {
+                adapter.onFilterListener(null);
+            } else {
+                List<Tag> tagList = new ArrayList<>();
+                for (int pos : selectPosSet) {
+                    tagList.add(topicTagAdapter.getItem(pos));
+                }
+                adapter.onFilterListener(tagList);
+            }
+            if (adapter.isDeleteMode()) {
+                adapter.setDeleteMode(false);
+            }
+        });
     }
 
     @Override
@@ -124,8 +148,8 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu_bookdetail, menu);
-
         topicSortMenuItem = menu.findItem(R.id.sort_time);
+        setTopicsSort(presenter.isNewest());
         adapter.setDeleteMenuItem(menu.findItem(R.id.book_topic_delete));
         return true;
     }

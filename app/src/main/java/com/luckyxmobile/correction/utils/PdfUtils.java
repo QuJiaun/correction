@@ -5,11 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
-import android.util.Log;
+import android.text.TextUtils;
 
-import com.luckyxmobile.correction.model.bean.Book;
-import com.luckyxmobile.correction.model.bean.Paper;
-import com.luckyxmobile.correction.model.bean.Topic;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -20,15 +17,19 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.codec.PngImage;
-
-import org.litepal.LitePal;
+import com.luckyxmobile.correction.R;
+import com.luckyxmobile.correction.adapter.PrintPreviewAdapter;
+import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.global.MySharedPreferences;
+import com.luckyxmobile.correction.model.BeanUtils;
+import com.luckyxmobile.correction.model.bean.Paper;
+import com.luckyxmobile.correction.model.bean.Topic;
+import com.luckyxmobile.correction.model.bean.TopicImage;
+import com.luckyxmobile.correction.ui.dialog.ProgressDialog;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -39,87 +40,133 @@ import java.util.List;
  * 两个相加就是pdf文件的路径, 注意 '/'
  */
 public class PdfUtils {
-    private static Document document;
+
     private final static String TAG = "PdfUtils";
     //左和右的margin
     private float documentMarginLR = 50;
     //top和bottom的margin
     private float documentMarginTB = 30;
 
-    private String filename;
     //文件的路径+名字
     private String filePathName;
-    private static BaseFont chinese;
-    private static BaseFont english;
-    private static Font BoldChinese;
-    private static Font NormalChinese;
-    private int titleFontSize = 20;
-    private int normalFontSize = 16;
+    private static Font boldFount20;
+    private static Font normalFount16;
+    private static Font normalFount12;
 
     //字间距
     private float CharacterSpace = 1.5f;
 
-    /**
-     * @param filepath 保存的pdf的路径 理应为系统的临时文件目录
-     * @throws DocumentException on error
-     */
-    public PdfUtils(String filepath) throws DocumentException, IOException {
-        File file = new File(filepath);
+    private static Document document;
 
-        //创建新的PDF文档：A4大小
-        document = new Document(PageSize.A4, documentMarginLR, documentMarginLR, documentMarginTB, documentMarginTB);
-        //如果路径不存在则创建该路径
-        if (!file.exists()) {
-            file.mkdir();
-        }
+    private PdfUtils() { }
 
-        //获取PDF书写器
-        filename = "pdf_" + FilesUtils.getCurrentTime() + ".pdf";
-        this.filePathName = filepath + filename;
+    private static final PdfUtils single = new PdfUtils();
+
+    public static PdfUtils getInstance() {
+        return single;
+    }
+
+    private Context context;
+    private Paper paper;
+    private List<Topic> topicList;
+    private boolean showHighlighter;
+
+
+    public PdfUtils init(Context context, Paper paper, List<Topic> topicList) throws Exception{
+
+        this.context = context;
+        this.paper = paper;
+        this.topicList = topicList;
+        this.showHighlighter = MySharedPreferences.getInstance().getBoolean(Constants.PRINT_HIDE_HIGHLIGHTER, false);
+
+        document = new Document(PageSize.A4, documentMarginLR,
+                documentMarginLR, documentMarginTB, documentMarginTB);
+        filePathName = FilesUtils.getInstance().getPaperDir() + "/" + paper.getId() + ".pdf";
         PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(filePathName));
         pdfWriter.setStrictImageSequence(true);
-        //打开文档
+
         document.open();
-        initFonts();
+
+        boldFount20 = setChineseFont(20, Font.BOLD);
+        normalFount16 = setChineseFont(16, Font.NORMAL);
+        normalFount12 = setChineseFont(12, Font.NORMAL);
+        return this;
     }
 
-    private void initFonts() throws IOException, DocumentException {
-        english = BaseFont.createFont();
-        chinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
-        BoldChinese = new Font(chinese, titleFontSize, Font.BOLD);
-        NormalChinese = new Font(chinese, normalFontSize, Font.NORMAL);
+    public PdfUtils init(Context context, Paper paper) throws Exception {
+        return init(context, paper, BeanUtils.findTopicAll(paper));
     }
 
-    /**
-     * 关闭并保存pdf
-     *
-     * @return error表示关闭失败 否则就是filename表示关闭成功
-     */
-    public String close() {
+    public String start() throws Exception{
+        ProgressDialog.getInstance().init(context).show();
+        create();
+        ProgressDialog.getInstance().init(context).dismiss();
+        return close();
+    }
+
+    private Font setChineseFont(int size, int style) {
+        BaseFont bf = null;
+        Font fontChinese = null;
+        try {
+            bf = BaseFont.createFont();
+//            bf = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
+            fontChinese = new Font(bf, size, style);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fontChinese;
+    }
+
+    //默认添加的PDF头
+    private void defaultOp() throws DocumentException {
+        //测试卷名
+        addTitle2PDF(paper.getPaperName());
+        //打印时间
+        addText2PDF(context.getString(R.string.print_time)+":\t\t" +
+                FilesUtils.getCurrentTime()+"\n", normalFount16, Element.ALIGN_RIGHT);
+        //名字：__ 分数：__
+        addText2PDF(context.getString(R.string.name)+" : ________\t\t\t\t\t\t\t\t"+
+                context.getString(R.string.score)+ " : ________\n\n", normalFount16, Element.ALIGN_CENTER);
+        addBlankToPdf(24);
+    }
+
+    private void create() throws Exception{
+        defaultOp();
+
+        String printPage = MySharedPreferences.getInstance().getString(Constants.TABLE_PRINT_PAGE, "0");
+
+        if (printPage.contains("0")) {
+            addTopicToPdf(Constants.TOPIC_STEM);
+        }
+
+        if (printPage.contains("1")) {
+            addTitle2PDF(context.getString(R.string.correct));
+            addTopicToPdf(Constants.TOPIC_CORRECT);
+        }
+
+        if (printPage.contains("2")) {
+            addTitle2PDF(context.getString(R.string.incorrect));
+            addTopicToPdf(Constants.TOPIC_INCORRECT);
+        }
+
+        if (printPage.contains("3")) {
+            addTitle2PDF(context.getString(R.string.key));
+            addTopicToPdf(Constants.TOPIC_KEY);
+        }
+
+        if (printPage.contains("4")) {
+            addTitle2PDF(context.getString(R.string.cause));
+            addTopicToPdf(Constants.TOPIC_CAUSE);
+        }
+    }
+
+    private String close() {
         if (document.isOpen()) {
             document.close();
             return filePathName;
         } else {
-            Log.d(TAG, "close: failed have not opened a document");
             return "error";
         }
-    }
-
-    public PdfUtils addPngToPdf(InputStream inputStream) throws DocumentException, IOException {
-        Image img = PngImage.getImage(inputStream);
-        img.setAlignment(Element.ALIGN_LEFT);
-
-        //添加到PDF文档
-        document.add(img);
-        return this;
-    }
-
-    // 添加文本到pdf中
-    public PdfUtils addTextToPdf(String content) throws DocumentException {
-        Paragraph elements = new Paragraph(content, new Font(chinese, 12, Font.NORMAL));
-        elements.setAlignment(Element.ALIGN_BASELINE);
-        document.add(elements);
-        return this;
     }
 
     /**
@@ -128,10 +175,8 @@ public class PdfUtils {
      * @author Changhao
      * 给pdf添加空白
      */
-    public PdfUtils addBlankToPdf(Integer Height) throws DocumentException {
-        Paragraph elements = new Paragraph(" ", NormalChinese);
-
-        //设置行间距
+    private PdfUtils addBlankToPdf(Integer Height) throws DocumentException {
+        Paragraph elements = new Paragraph(" ", normalFount16);
         elements.setLeading(Height);
         document.add(elements);
         return this;
@@ -139,10 +184,6 @@ public class PdfUtils {
 
     /**
      * 生成一个有字间距的chunk
-     *
-     * @param content 文字内容
-     * @param font    使用的字体
-     * @return chunk
      */
     private Chunk getParFromChunk(String content, Font font) {
         Chunk chunk = new Chunk(content, font);
@@ -150,334 +191,85 @@ public class PdfUtils {
         return chunk;
     }
 
-    // 给pdf添加标题，居中黑体
-    public PdfUtils addTitleToPdf(String title) throws DocumentException {
+    private PdfUtils addTitle2PDF(String title) throws DocumentException{
         Paragraph elements = new Paragraph();
-
-        elements.add(getParFromChunk(title, BoldChinese));
-        //设置居中对齐
+        elements.add(getParFromChunk(title, boldFount20));
         elements.setAlignment(Element.ALIGN_CENTER);
         document.add(elements); // result为保存的字符串
         return this;
     }
 
-    public PdfUtils addCenterTextToPdf(String title) throws DocumentException {
-        Paragraph elements = new Paragraph(title, NormalChinese);
-        //设置居中对齐
-        elements.setAlignment(Element.ALIGN_CENTER);
-        document.add(elements); // result为保存的字符串
+    private PdfUtils addText2PDF(String title, Font font, int alignment) throws DocumentException {
+        Paragraph elements = new Paragraph(title, font);
+        elements.setAlignment(alignment);
+        document.add(elements);
         return this;
     }
 
-    public PdfUtils addRightTextToPdf(String title) throws DocumentException {
-        Paragraph elements = new Paragraph(title, NormalChinese);
-        //设置居中对齐
-        elements.setAlignment(Element.ALIGN_RIGHT);
-        document.add(elements); // result为保存的字符串
-        return this;
-    }
-
-    //给pdf按照左对齐的方式添加图片
-    public PdfUtils addImageToPdfLEFTH(String imgPath, float imgWidth, float imgHeight) throws IOException, DocumentException {
+    private PdfUtils addImage2PDF(TopicImage topicImage, int alignment) throws Exception{
+        Bitmap bitmap = BitmapUtils.getBitmapInPdf(context, topicImage, showHighlighter);
+        //宽度要适中,如果比A4的宽, 宽度就减去两倍的margin大,就是它的最大值
         float maxWidth = PageSize.A4.getWidth() - 2 * documentMarginLR;
-        //获取图片
-        Bitmap bitmap = OpenCVUtil.file2Bitmap(imgPath);
-//        bitmap = ImageUtil.convertThreshod(bitmap);
+        if (bitmap.getWidth() > maxWidth) {
+            float maxHeight = maxWidth/bitmap.getWidth() * bitmap.getHeight();
+            bitmap = BitmapUtils.resizeBitmap(bitmap, (int) maxWidth, (int) maxHeight);
+        }
+
         ByteArrayOutputStream stream3 = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream3);
+
         Image img = Image.getInstance(stream3.toByteArray());
-        //设置左对齐
-        img.setAlignment(Element.ALIGN_LEFT);
-        //宽度要适中,如果比A4的宽, 宽度就减去两倍的margin大,就是它的最大值
-        img.scaleToFit(imgWidth > maxWidth ? maxWidth : imgWidth, imgHeight);
+        img.setAlignment(alignment);
+        img.scaleToFit(bitmap.getWidth(), bitmap.getHeight());
 
         Paragraph imgParagraph = new Paragraph();
         imgParagraph.add(img);
-        //添加到PDF文档
-        document.add(imgParagraph);
-        return this;
-    }
-    //给pdf按照左对齐的方式添加图片
-    public PdfUtils addImageToPdfLEFTH(Bitmap bitmap, float imgWidth, float imgHeight) throws IOException, DocumentException {
-        float maxWidth = PageSize.A4.getWidth() - 2 * documentMarginLR;
-//        bitmap = ImageUtil.convertThreshod(bitmap);
-        ByteArrayOutputStream stream3 = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream3);
-        Image img = Image.getInstance(stream3.toByteArray());
-        //设置左对齐
-        img.setAlignment(Element.ALIGN_LEFT);
-        //宽度要适中,如果比A4的宽, 宽度就减去两倍的margin大,就是它的最大值
-        img.scaleToFit(imgWidth > maxWidth ? maxWidth : imgWidth, imgHeight);
-
-        Paragraph imgParagraph = new Paragraph();
-        imgParagraph.add(img);
-        //添加到PDF文档
         document.add(imgParagraph);
         return this;
     }
 
-//    public static String CreatePaperPdf(Context context, String title, String pattern, String CacheDir, List<Topic> topicList, List<Book> booksList) {
-//        SimpleDateFormat format = new SimpleDateFormat(pattern);
-//
-//        SharedPreferences preferences = context.getSharedPreferences(Constants.TABLE_SHARED_CORRECTION,MODE_PRIVATE);
-//
-//        boolean hideHighlightAreas = preferences.getBoolean(Constants.TABLE_SHOW_SMEAR_MARK,false);
-//
-//        String printPage = preferences.getString(Constants.TABLE_PRINT_PAGE,"0");
-//
-//        PdfUtils pu = null;
-//        //生成的pdf名称
-////        String filepath = this.getCacheDir().getAbsolutePath() + "/";
-//        String filepath = CacheDir + "/";
-//        String filename = null;
-//
-//        //复习卷不能为空
-//        if(topicList.size() == 0){
-//            throw new IllegalArgumentException("topicList can not be empty");
-//        }
-//        try {
-//            int count = 0;
-//            String txt = "";
-//            Bitmap bitmap = null;
-//            pu = new PdfUtils(filepath);
-//            pu.addTitleToPdf(title);
-//            pu.addRightTextToPdf(context.getString(R.string.print_time)+":\t\t" +format.format(new Date())+"\n");
-//            pu.addCenterTextToPdf(context.getString(R.string.name)+" : ________\t\t\t\t\t\t\t\t"+
-//                            context.getString(R.string.score)+ " : ________\n\n");
-//
-//            TopicImagesHighlighter topicImagesHighlighter;
-//
-//            for(Topic topic : topicList){
-//                //给每一道题添加标题
-//                pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
-//                topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_original_picture(), TopicImagesHighlighter.class);
-//                assert topicImagesHighlighter != null;
-//                for (int i = 0; i < topicImagesHighlighter.getPrimitiveImagesPathSize(); i++) {
-//                    bitmap = ImageUtil.convertTopicImageByWhichs(context, topic.getId(), null,i, true, !hideHighlightAreas);
-//                    if (bitmap == null) continue;
-//                    bitmap = ImageUtil.resizeBitmapByImageWordSize(bitmap, topicImagesHighlighter.getImageWordSizeList().get(i));
-//                    //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
-//                    pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
-//                }
-//                //添加手敲的补充的原题题干
-//                txt = topic.getTopic_original_text();
-//                pu.addTextToPdf(txt+"\n\n");
-//                count++;
-//            }
-//
-//            if (printPage != null && !printPage.isEmpty()){
-//
-//                if (printPage.contains("1")){
-//                    pu.addTitleToPdf("\n"+title+"--"+context.getString(R.string.correct));
-//                    count = 0;
-//                    int j = 0;
-//                    bitmap = null;
-//                    for (Topic topic: topicList){
-//                        pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
-//                        topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_right_solution_picture(), TopicImagesHighlighter.class);
-//                        if (topicImagesHighlighter != null){
-//                            for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
-//                                bitmap = OpenCVUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
-//                                if (bitmap != null){
-//                                    bitmap = ImageUtil.resizeBitmapByImageWordSize(bitmap, topicImagesHighlighter.getImageWordSizeList().get(j));
-//                                    //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
-//                                    pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
-//                                }
-//
-//                            }
-//                        }
-//
-//                        //添加手敲的补充的原题题干
-//                        txt = topic.getTopic_right_solution_text();
-//
-//                        if(bitmap == null && (txt == null || txt.isEmpty())){
-//                            txt = "null";
-//                        }
-//
-//                        pu.addTextToPdf(txt+"\n\n");
-//
-//                        count++;
-//                    }
-//                }
-//
-//                if (printPage.contains("2")){
-//                    pu.addTitleToPdf("\n"+title+"--"+context.getString(R.string.incorrect));
-//                    count = 0;
-//                    bitmap = null;
-//                    for (Topic topic: topicList){
-//                        pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
-//                        topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_error_solution_picture(), TopicImagesHighlighter.class);
-//                        if (topicImagesHighlighter != null){
-//                            for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
-//                                bitmap = OpenCVUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
-//                                //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
-//                                pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
-//                            }
-//                        }
-//
-//                        txt = topic.getTopic_error_solution_text();
-//                        if(bitmap == null && (txt == null || txt.isEmpty())){
-//                            txt = "null";
-//                        }
-//                        pu.addTextToPdf(txt+"\n\n");
-//                        count++;
-//                    }
-//                }
-//
-//                if(printPage.contains("3")){
-//                    pu.addTitleToPdf("\n"+title+"--"+context.getString(R.string.key));
-//                    count = 0;
-//                    bitmap = null;
-//                    for (Topic topic: topicList){
-//                        pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
-//                        topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_knowledge_point_picture(), TopicImagesHighlighter.class);
-//                        if (topicImagesHighlighter != null){
-//                            for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
-//                                bitmap = OpenCVUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
-//                                //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
-//                                pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
-//                            }
-//                        }
-//                        txt = topic.getTopic_knowledge_point_text();
-//                        if(bitmap == null && (txt == null || txt.isEmpty())){
-//                            txt = "null";
-//                        }
-//                        pu.addTextToPdf(txt+"\n\n");
-//                        count++;
-//                    }
-//                }
-//
-//                if(printPage.contains("4")){
-//                    pu.addTitleToPdf("\n"+title+"--"+context.getString(R.string.cause));
-//                    count = 0;
-//                    bitmap = null;
-//                    for (Topic topic: topicList){
-//                        pu.addTextToPdf(count + 1 + "  • " + PaperDetailAdapter.getBookName(count, booksList, topicList));
-//                        topicImagesHighlighter = FastJsonUtil.jsonToObject(topic.getTopic_error_cause_picture(), TopicImagesHighlighter.class);
-//                        if (topicImagesHighlighter != null){
-//                            for (String path : topicImagesHighlighter.getPrimitiveImagePathList()) {
-//                                bitmap = OpenCVUtil.setImageContrastRadioByPath(Constants.CONTRAST_RADIO_COMMON,path);
-//                                //添加被白色涂抹过的图片 如果想要打印多种类型， 修改which
-//                                pu.addImageToPdfLEFTH(bitmap, bitmap.getWidth(), 480);
-//                            }
-//                        }
-//
-//                        txt = topic.getTopic_error_cause_text();
-//                        if(bitmap == null && (txt == null || txt.isEmpty())){
-//                            txt = "null";
-//                        }
-//                        pu.addTextToPdf(txt+"\n\n");
-//                        count++;
-//                    }
-//                }
-//            }
-//
-//
-//        } catch (IOException | DocumentException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (pu != null) {
-//                filename = pu.close();
-//            }
-//        }
-//        return filename;
-//    }
+    private void addTopicToPdf(@Constants.TopicImageType int type) throws Exception{
+        int count = 1;
+        List<TopicImage> topicImages;
+        for (Topic topic: topicList) {
+            //给每一道题添加标题
+            addText2PDF(count++ + "  • " + BeanUtils.getBookName(topic), normalFount16, Element.ALIGN_LEFT);
+            if (!TextUtils.isEmpty(topic.getText())) {
+                addText2PDF(topic.getText(), normalFount12, Element.ALIGN_BASELINE);
+            }
+            topicImages = BeanUtils.findTopicImageByType(topic, Constants.TOPIC_STEM);
+            for (TopicImage topicImage : topicImages) {
+                addImage2PDF(topicImage, Element.ALIGN_LEFT);
+            }
+        }
+    }
 
-    public static void printPreviewWindow(final Context context,
-                                          final List<Topic> topicList,
-                                          final List<Book> booksList,
-                                          final Paper paper) {
-        //调用android自带的pdf预览器
-        final PrintManager printManager = (PrintManager) context.getSystemService(Context.PRINT_SERVICE);
-        final PrintAttributes.Builder builder = new PrintAttributes.Builder();
-        //设置色彩模式，黑白或者彩色
+    public void previewWindow() throws Exception{
+
+        String path = FilesUtils.getInstance().getPdfPath(paper);
+
+        if (path == null) {
+            path = start();
+        }
+
+        PrintManager printManager = (PrintManager) context.getSystemService(Context.PRINT_SERVICE);
+        PrintAttributes.Builder builder = new PrintAttributes.Builder();
         builder.setColorMode(PrintAttributes.COLOR_MODE_COLOR);
-
-//        printManager.print(String.valueOf(R.string.app_name), new PrintPreviewAdapter(context,
-//                CreatePaperPdf(context,paper.getPaper_name(),
-//                        context.getString(R.string.date_pattern),
-//                        context.getCacheDir().getAbsolutePath(),
-//                        topicList,
-//                        booksList)), builder.build());
-
+        printManager.print(String.valueOf(R.string.app_name), new PrintPreviewAdapter(context, path), builder.build());
     }
 
-    public static void printPreviewWindow(final Context context,
-                                          final Paper paper) {
 
-//        PaperTopicDao paper_topic = new PaperTopicDaoImpl();
-//        List<Topic> topicList = paper_topic.selectPaper(paper.getId());
-        List<Book> booksList = LitePal.findAll(Book.class);
+    public void share() throws Exception{
 
-//        printPreviewWindow(context, topicList, booksList, paper);
-    }
+        String path = FilesUtils.getInstance().getPdfPath(paper);
 
-    public float getCharacterSpace() {
-        return CharacterSpace;
-    }
+        if (path == null) {
+            path = start();
+        }
 
-    public void setCharacterSpace(float characterSpace) {
-        CharacterSpace = characterSpace;
-    }
-
-    public float getDocumentMarginLR() {
-        return documentMarginLR;
-    }
-
-    public void setDocumentMarginLR(float documentMarginLR) {
-        this.documentMarginLR = documentMarginLR;
-    }
-
-    public float getDocumentMarginTB() {
-        return documentMarginTB;
-    }
-
-    public void setDocumentMarginTB(float documentMarginTB) {
-        this.documentMarginTB = documentMarginTB;
-    }
-
-    /**
-     * 根据topicList里的题获取图片列表, 目前只添加了原题题干的,之后可能会添加其他的
-     * TODO:add other types
-     * @param topicList topicLists
-     * @return 可用于迭代的map, 第一层的integer是topic的id, 第二层map是根据 '原题题干','正解','错解'进行分类
-     */
-//    public static Map<Integer, Map<String, List<String>>> getImagesMap(List<Topic> topicList){
-//        ArrayList<String> imageList = new ArrayList<>();
-//        Map<Integer, Map<String, List<String>>> ImagesMap = new LinkedHashMap<>();
-//        TopicImagesPaint topicImagesPaint;
-//        for (Topic imagePath : topicList) {
-////            imageList.add(SDCardUtil.handlePath(SDCardUtil.findPhotoPath(imagePath, "original")[1]).get(1));
-//            //获取图片在sd卡上的绝对路径
-//            topicImagesPaint = FastJsonUtil.jsonToObject(imagePath.getTopic_original_picture(),TopicImagesPaint.class);
-//            assert topicImagesPaint != null;
-//            List<String> paperOriginal = topicImagesPaint.getOperationalImagesPath();
-//            Map<String, List<String>> originalMap = new LinkedHashMap<>();
-//            originalMap.put("original", paperOriginal);
-//
-//            ImagesMap.put(imagePath.getId(), originalMap);
-//        }
-//        return ImagesMap;
-//    }
-
-    /**
-     * 分享pdf
-     *
-     * @param context 上下文
-     */
-    public static void sharePdfUris(Context context, Paper paper) {
-//        PaperTopicDao paperTopic = new PaperTopicDaoImpl();
-//        List<Topic> topicList = paperTopic.selectPaper(paper.getId());
-//        List<Book> booksList = LitePal.findAll(Book.class);
-//        ArrayList<String> imageList = new ArrayList<>();
-//
-//        String cachePath = getDiskCachePath(context);
-//        String pdfPath = CreatePaperPdf(context,paper.getPaper_name(), context.getString(R.string.date_pattern),
-//                    cachePath, topicList, booksList);
-//        Uri pdfUri = FilesUtils.getUri(context, new File(pdfPath));
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
-//        shareIntent.putExtra(Intent.EXTRA_STREAM, pdfUri);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, FilesUtils.getInstance().getUri(new File(path)));
         shareIntent.setType("application/pdf");
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         context.startActivity(Intent.createChooser(shareIntent, "分享到"));

@@ -1,6 +1,7 @@
 package com.luckyxmobile.correction.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,13 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
+import com.luckyxmobile.correction.ui.activity.EditTopicImageActivity;
 import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
+import com.luckyxmobile.correction.utils.BitmapUtils;
+import com.luckyxmobile.correction.utils.ImageTask;
 import com.luckyxmobile.correction.utils.OpenCVUtil;
 
 
@@ -35,7 +40,7 @@ import butterknife.ButterKnife;
 public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private final Context context;
-    private boolean isShowOriginalImage = true;
+    private boolean isShowOriginalImage;
     private final TopicInfoListener listener;
 
     private final List<Object> typeList = new ArrayList<>();
@@ -47,6 +52,8 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.listener = (TopicInfoListener) context;
         this.topicImageSize = imageList.size();
         size(imageList);
+
+        isShowOriginalImage = MySharedPreferences.getInstance().getBoolean(Constants.SHOW_ORIGINAL, true);
     }
 
     public void setRemoveMode(boolean removeMode) {
@@ -139,19 +146,25 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 Glide.with(context).load(topicImage.getPath()).into(viewHolder.topicIv);
             } else {
                 Glide.with(context).load(
-                        OpenCVUtil.setImageContrastRadioByPath(
-                                topicImage.getContrast_radio(), topicImage.getPath()
-                        )
+                        BitmapUtils.getBitmapInTopicInfo(context, topicImage)
                 ).into(viewHolder.topicIv);
             }
 
-            viewHolder.removeTopicBtn.setVisibility(removeMode?View.VISIBLE:View.INVISIBLE);
+            viewHolder.editTopicBtn.setVisibility(removeMode?View.VISIBLE:View.INVISIBLE);
+            viewHolder.editTopicBtn.setOnClickListener(view -> {
+                MySharedPreferences.getInstance().putInt(Constants.CURRENT_TOPIC_IMAGE_ID, topicImage.getId());
+                ImageTask.getInstance().clearTopicImage(topicImage);
+                Intent intent = new Intent(context, EditTopicImageActivity.class);
+                context.startActivity(intent);
+            });
 
+            viewHolder.removeTopicBtn.setVisibility(removeMode?View.VISIBLE:View.INVISIBLE);
             viewHolder.removeTopicBtn.setOnClickListener(view -> {
                 if (topicImageSize > 1) {
                     topicImageSize--;
                     typeList.remove(position);
                     notifyItemRemoved(position);
+                    ImageTask.getInstance().clearTopicImage(topicImage);
                     listener.removeTopicImage(topicImage);
                 } else {
                     Toast.makeText(context, R.string.warning_picture, Toast.LENGTH_SHORT).show();
@@ -200,12 +213,14 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         ImageView topicIv;
         ImageView removeTopicBtn;
+        ImageView editTopicBtn;
 
         TopicInfoHolder(@NonNull View itemView) {
             super(itemView);
 
             topicIv = itemView.findViewById(R.id.item_topic_image);
             removeTopicBtn = itemView.findViewById(R.id.item_remove_topic_image);
+            editTopicBtn = itemView.findViewById(R.id.item_edit_topic_image);
         }
     }
 

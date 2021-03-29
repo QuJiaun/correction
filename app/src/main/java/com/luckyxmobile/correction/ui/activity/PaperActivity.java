@@ -20,8 +20,11 @@ import android.widget.Toast;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.PaperAdapter;
 import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.ui.dialog.PaperInfoDialog;
+import com.luckyxmobile.correction.utils.FilesUtils;
+import com.luckyxmobile.correction.utils.PdfUtils;
 
 import org.litepal.LitePal;
 
@@ -83,7 +86,7 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
         paperAdapter = new PaperAdapter(this, paperList);
         paperRv.setAdapter(paperAdapter);
         paperRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int mScrollThreshold;
+            final int mScrollThreshold = 100;
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -108,6 +111,7 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
 
     private void showPaperInfoDialog(Paper paper) {
         paperInfoDialog = new PaperInfoDialog(this);
+        paperInfoDialog.setTitle(R.string.test_page);
         paperInfoDialog.setPaper(paper);
         paperInfoDialog.setNeutralButton(R.string.select_topics, (dialogInterface, i) -> {
             Paper tmp = paperInfoDialog.getPaper();
@@ -179,7 +183,13 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
                     break;
 
                 case R.id.share:
-
+                    try {
+                        PdfUtils.getInstance().init(this, paper).share();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        FilesUtils.getInstance().deletePaperPdf(paper);
+                        onToast("error...");
+                    }
                     break;
 
                 case R.id.rename:
@@ -187,6 +197,13 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
                     break;
 
                 case R.id.print:
+                    try {
+                        PdfUtils.getInstance().init(this, paper).previewWindow();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        FilesUtils.getInstance().deletePaperPdf(paper);
+                        onToast("error...");
+                    }
 
                     break;
 

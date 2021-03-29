@@ -3,6 +3,7 @@ package com.luckyxmobile.correction.adapter;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
@@ -10,6 +11,7 @@ import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.youth.banner.Banner;
+import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.transformer.DepthPageTransformer;
 
 import org.jetbrains.annotations.NotNull;
@@ -59,13 +61,14 @@ public class TopicViewPageAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
 
+        int topic_id = topics.get(position).getId();
+        List<TopicImage> topicImages = topicImageMap.get(topic_id);
+
         View view = View.inflate(context,R.layout.layout_banner,null);
         Banner<TopicImage, BannerTopicImageAdapter> banner = view.findViewById(R.id.banner);
         banner.setOrientation(Banner.VERTICAL);
-
-        int topic_id = topics.get(position).getId();
-
-        banner.setAdapter(new BannerTopicImageAdapter(context, topicImageMap.get(topic_id)));
+        BannerTopicImageAdapter adapterBanner = new BannerTopicImageAdapter(topicImages);
+        banner.setAdapter(adapterBanner);
 
         container.addView(view);
         return view;

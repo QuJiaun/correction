@@ -7,11 +7,9 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.ColorRes;
-
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.model.bean.Highlighter;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 
 import java.util.List;
@@ -26,6 +24,9 @@ public class HighlighterUtil {
 
     public static void setHighlighter(Context context, Paint paint, int type) {
 
+        int color = type2Color(type);
+        paint.setColor(context.getColor(color));
+
         if (type == Constants.PAINT_ERASE) {
             paint.setXfermode(new  PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
             paint.setAlpha(255);
@@ -36,16 +37,17 @@ public class HighlighterUtil {
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
             paint.setAlpha(150);
         }
-
-        int color = type2Color(type);
-        paint.setColor(context.getColor(color));
     }
 
     public static Paint defaultHighlighter(Context context) {
-        return getHighlighter(context, Constants.PAINT_THIN, Constants.PAINT_BLUE, true);
+        return getHighlighter(context, 40, Constants.PAINT_BLUE, true);
     }
 
-    public static Paint getHighlighter(Context context, int width, @Constants.HighlighterType int type, boolean isShow) {
+    public static Paint getHighlighterInPdf(Context context, int width) {
+        return getHighlighter(context, width, Constants.PAINT_WHITE_OUT, false);
+    }
+
+    private static Paint getHighlighter(Context context, int width, @Constants.HighlighterType int type, boolean isShow) {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setDither(true);
@@ -67,7 +69,7 @@ public class HighlighterUtil {
 
         if (color == Constants.PAINT_ERASE) {
             paint.setXfermode(new  PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-            paint.setAlpha(255);
+            paint.setAlpha(150);
         } else if (color == Constants.PAINT_WHITE_OUT) {
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
             paint.setAlpha(255);
@@ -76,7 +78,7 @@ public class HighlighterUtil {
         return paint;
     }
 
-    public static Paint getHighlighter(Context context, TopicImage.Highlighter highlighter, boolean isShow) {
+    public static Paint getHighlighter(Context context, Highlighter highlighter, boolean isShow) {
         return getHighlighter(context, highlighter.getWidth(), highlighter.getType(), isShow);
     }
 
@@ -106,7 +108,7 @@ public class HighlighterUtil {
 
     }
 
-    private static int type2Color(int type) {
+    private static int type2Color(@Constants.HighlighterType int type) {
         switch (type) {
             case Constants.PAINT_BLUE:
                 return R.color.highlighter_blue;

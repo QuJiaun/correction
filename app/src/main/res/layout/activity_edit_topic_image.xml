@@ -94,17 +94,29 @@
             app:checked_text_color="@color/orange_f7"
             app:menu_text="@string/erase"/>
 
-
         <com.luckyxmobile.correction.ui.views.CheckMenuItemView
-            android:id="@+id/drawing_view_tool_contrast_radio"
+            android:id="@+id/drawing_view_tool_width"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            app:checked_img="@drawable/ic_paint_contrast_ratio_checked"
-            app:checked_text_color="@color/colorPrimaryDark"
+            app:checked_img="@drawable/ic_width_1"
+            app:unchecked_img="@drawable/ic_width_2"
+            app:checked_text_color="@color/orange_f7"
             app:default_checked="true"
-            app:menu_text="@string/contrast_ratio"/>
+            app:menu_text="宽度"/>
+
+
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_tool_image_param"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            app:checked_img="@drawable/ic_adjust"
+            app:checked_text_color="@color/orange_f7"
+            app:default_checked="true"
+            app:menu_text="调节"/>
 
     </LinearLayout>
 

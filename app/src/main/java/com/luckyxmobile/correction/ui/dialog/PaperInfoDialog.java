@@ -20,7 +20,6 @@ public class PaperInfoDialog extends AlertDialog.Builder {
 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_paper, null);
         setView(view);
-
         paperNameEt = view.findViewById(R.id.paperNameEdt);
 
         setNegativeButton(R.string.cancel, null);

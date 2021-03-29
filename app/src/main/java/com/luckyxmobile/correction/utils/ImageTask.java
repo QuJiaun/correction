@@ -3,7 +3,6 @@ package com.luckyxmobile.correction.utils;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.util.LruCache;
 import android.widget.ImageView;
 
@@ -15,7 +14,6 @@ import java.util.concurrent.Executors;
 
 public class ImageTask {
 
-    private String TAG = ImageTask.class.getSimpleName();
     private Handler handler;
     private final ExecutorService service;
     private final LruCache<Integer, Bitmap> imageCache;
@@ -25,7 +23,7 @@ public class ImageTask {
     private ImageTask(){
 
         int maxMemory=(int)(Runtime.getRuntime().maxMemory()/1024);
-        int cacheSize=maxMemory/8;
+        int cacheSize = maxMemory/16;
         imageCache = new LruCache<Integer, Bitmap>(cacheSize){
             @Override
             protected int sizeOf(Integer key, Bitmap value) {
@@ -41,25 +39,25 @@ public class ImageTask {
         return single;
     }
 
-    public void loadTopicImage(ImageView view, TopicImage topicImage) {
-        Bitmap bitmap = getImageCache(topicImage.getId());
+    public Bitmap getBitmapImage(TopicImage topicImage) {
+        return getImageCache(topicImage.getId());
+    }
 
-        if (bitmap != null) {
-            Glide.with(view.getContext()).load(bitmap).centerCrop().thumbnail(0.1f).into(view);
-        } else if (FilesUtils.getInstance().existsCache(topicImage)) {
+    public void loadTopicImage(ImageView view, TopicImage topicImage) {
+        Bitmap bitmap = getImageCache(topicImage.getId()); //通过id获取缓存
+        if (bitmap != null) { //存在，直接加载
+            Glide.with(view.getContext()).load(bitmap).thumbnail(0.1f).into(view);
+        } else if (FilesUtils.getInstance().existsCache(topicImage)) { //本地缓存存在，加载本地
             Glide.with(view.getContext())
                     .load(FilesUtils.getInstance().getTopicImageCachePath(topicImage))
-                    .centerCrop()
                     .thumbnail(0.1f).into(view);
-        }else {
+        }else { //都不存在，让线程池中的线程异步处理图片
             service.submit(() -> {
-                Bitmap cache1 = ImageUtil.getBitmap(topicImage);
+                Bitmap cache1 = BitmapUtils.getBitmap(topicImage); //处理图片
                 if (cache1 != null) {
-                    imageCache.put(topicImage.getId(), cache1);
-                    FilesUtils.getInstance().saveCacheTopicImage(topicImage, cache1);
-                    handler.post(() ->{
-                        loadTopicImage(view, topicImage);
-                    });
+                    imageCache.put(topicImage.getId(), cache1); //放入缓存
+                    FilesUtils.getInstance().saveCacheTopicImage(topicImage, cache1); //缓存到本地
+                    handler.post(() -> loadTopicImage(view, topicImage)); //重新加载
                 }
             });
         }
@@ -67,6 +65,7 @@ public class ImageTask {
 
     public void clearTopicImage(TopicImage topicImage) {
         imageCache.remove(topicImage.getId());
+        FilesUtils.getInstance().deleteCacheTopicImage(topicImage);
     }
 
     private Bitmap getImageCache(int id) {

@@ -11,6 +11,7 @@ import android.util.Log;
 
 import androidx.core.content.FileProvider;
 import com.luckyxmobile.correction.model.bean.Book;
+import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.TopicImage;
@@ -84,6 +85,20 @@ public class FilesUtils{
         return getBookDir(LitePal.find(Book.class, topic.getBook_id())) + "/" + topic.getId();
     }
 
+    public String getPaperDir() {
+        return PAPER_DIR;
+    }
+
+    public String getPdfPath(Paper paper) {
+        File file = new File(getPaperDir(), paper.getId()+".pdf");
+
+        if (file.exists()) {
+            return file.getPath();
+        }
+
+        return null;
+    }
+
     public String getTopicImagePath(TopicImage topicImage) {
 
         if (topicImage == null || topicImage.getId() <= 0) {
@@ -93,7 +108,7 @@ public class FilesUtils{
         return getTopicDir(LitePal.find(Topic.class, topicImage.getTopic_id())) + "/" + topicImage.getId() + ".jpeg";
     }
 
-    public String getCacheFilePath() {
+    public String getTmpFilePath() {
         return CACHE_DIR + "/tmp.jpeg";
     }
 
@@ -101,9 +116,8 @@ public class FilesUtils{
         return CACHE_DIR + "/TopicImage_"+ topicImage.getId() +".jpeg";
     }
 
-    public Uri getCacheFileUri() {
-        File file = new File(getCacheFilePath());
-
+    public Uri getTmpFileUri() {
+        File file = new File(getTmpFilePath());
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -111,7 +125,6 @@ public class FilesUtils{
                 e.printStackTrace();
             }
         }
-
         return getUri(file);
     }
 
@@ -120,79 +133,61 @@ public class FilesUtils{
         return cache.exists();
     }
 
-    public boolean saveCacheTopicImage(TopicImage topicImage, Bitmap bitmap) {
-
-        File cache = new File(getTopicImageCachePath(topicImage));
-
-        if (!cache.exists()) {
-            try {
-                cache.createNewFile();
-
-                FileOutputStream fos  = new FileOutputStream(cache);
-
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-
-                fos.flush();
-                fos.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public boolean saveBitmap2TmpFile(Bitmap bitmap)  {
-
-        File tmp = new File(CACHE_DIR, "tmp.jpeg");
-
+    private boolean saveBitmap(String path, Bitmap bitmap) {
+        int quality = BitmapUtils.qualityBitmap(bitmap, 1000);
+        File tmp = new File(path);
         try {
             if (!tmp.exists()){
                 tmp.createNewFile();
             }
-
             FileOutputStream fos  = new FileOutputStream(tmp);
-
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos);
             fos.flush();
             fos.close();
         }catch (Exception e){
             e.printStackTrace();
             return false;
         }
-
         return true;
     }
 
+    public boolean saveBitmap2TmpFile(Bitmap bitmap)  {
+        return saveBitmap(CACHE_DIR+"/tmp.jpeg", bitmap);
+    }
+
+    public boolean saveCacheTopicImage(TopicImage topicImage, Bitmap bitmap) {
+        return saveBitmap(getTopicImageCachePath(topicImage), bitmap);
+    }
+
     public boolean saveBookInfoFile(Book book) {
-
         File bookDir = new File(getBookDir(book));
-
         if (!bookDir.exists()){
             return bookDir.mkdirs();
         }
-
         return true;
     }
 
     public boolean saveTopicInfoFile(Topic topic) {
-
         File topicDir = new File(getTopicDir(topic));
-
         if (!topicDir.exists()){
             return topicDir.mkdirs();
         }
-
         return true;
     }
 
-    public void deleteTopicImage(TopicImage topicImage, DaoListener listener) {
+    public void deleteCacheTopicImage(TopicImage topicImage) {
+        String path = getTopicImageCachePath(topicImage);
+        deleteFile(path);
+    }
 
+    public void deleteCache() {
+        executorService.submit(()-> deleteFile(CACHE_DIR+"/"));
+    }
+
+    public void deleteTopicImage(TopicImage topicImage, DaoListener listener) {
         executorService.submit(()->{
             deleteFile(topicImage.getPath());
+            deleteCache(topicImage);
             if (listener != null) {
                 handler.post(listener::onDeleteFinished);
             }
@@ -200,9 +195,7 @@ public class FilesUtils{
     }
 
     public void deleteTopicDir(Topic topic, DaoListener listener) {
-
         File topicDir = new File(getTopicDir(topic));
-
         if (topicDir.exists()){
             executorService.submit(()->{
                 deleteFile(topicDir);
@@ -216,12 +209,10 @@ public class FilesUtils{
     }
 
     public void deleteTopicDirList(List<Topic> topicList, DaoListener listener) {
-
         executorService.submit(()->{
             for (Topic topic : topicList) {
                 deleteTopicDir(topic, null);
             }
-
             if (listener != null) {
                 handler.post(listener::onDeleteFinished);
             }
@@ -230,7 +221,6 @@ public class FilesUtils{
 
     public void deleteBookDir(Book book, DaoListener listener) {
         File bookDir = new File(getBookDir(book));
-
         if (bookDir.exists()){
             executorService.submit(() ->{
                 deleteFile(bookDir);
@@ -243,22 +233,27 @@ public class FilesUtils{
         }
     }
 
+    public void deletePaperPdf(Paper paper) {
+        deleteFile(new File(getPdfPath(paper)));
+    }
+
+    private void deleteCache(TopicImage topicImage) {
+        deleteFile(new File(getTopicImageCachePath(topicImage)));
+    }
+
     private void deleteFile(String path) {
         deleteFile(new File(path));
     }
 
     private void deleteFile(File file) {
-
         if (!file.exists()) {
             return;
         }
-
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files == null) {
                 return;
             }
-
             for (File f : files) {
                 if (f.isFile()) {
                     f.delete();
@@ -271,13 +266,11 @@ public class FilesUtils{
         } else {
             file.delete();
         }
-
     }
 
     public boolean copyFile(String oldPath$Name, String newPath$Name) {
 
         try {
-
             File oldFile = new File(oldPath$Name);
             if (!oldFile.exists()) {
                 Log.e("--Method--", "copyFile:  oldFile not exist.");
@@ -308,7 +301,6 @@ public class FilesUtils{
     }
 
     public Uri getUri(File file) {
-
         //判断版本
         if (Build.VERSION.SDK_INT >= 24) {
             //如果在Android7.0以上,使用FileProvider获取Uri
@@ -317,12 +309,10 @@ public class FilesUtils{
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         } else {
             //否则使用Uri.fromFile(file)方法获取Uri
             return Uri.fromFile(file);
         }
-
         return null;
     }
 

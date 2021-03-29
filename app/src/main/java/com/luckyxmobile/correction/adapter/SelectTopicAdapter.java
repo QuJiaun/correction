@@ -1,12 +1,9 @@
 package com.luckyxmobile.correction.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -25,11 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public class SelectTopicAdapter extends RecyclerView.Adapter<SelectTopicAdapter.ViewHolder> {
 
@@ -60,7 +53,7 @@ public class SelectTopicAdapter extends RecyclerView.Adapter<SelectTopicAdapter.
 
         setViewChecked(viewHolder, isChecked);
 
-        TopicImage topicImage = BeanUtils.findFirst(curTopic);
+        TopicImage topicImage = BeanUtils.findTopicImageFirst(curTopic);
 
         Glide.with(viewHolder.itemView.getContext())
                 .load(topicImage.getPath())
@@ -98,7 +91,6 @@ public class SelectTopicAdapter extends RecyclerView.Adapter<SelectTopicAdapter.
 
         List<Topic> tmp = new ArrayList<>();
         boolean isNullChecked = true;
-
         for (int i = 0; i < filtrateList.size(); i++) {
             FiltrateBean filtrateBean = filtrateList.get(i);
             for (FiltrateBean.Children children: filtrateBean.getChildren()) {
@@ -106,18 +98,14 @@ public class SelectTopicAdapter extends RecyclerView.Adapter<SelectTopicAdapter.
                 for (Topic topic : topicList) {
                     //已经包含了 跳出
                     if (tmp.contains(topic)) continue;
-
                     //选中的必须加入
                     if (paper.getTopicSet().contains(topic.getId())) {
                         tmp.add(topic);
                         continue;
                     }
-
                     //没有选中直接跳出
                     if (!children.isSelected()) continue;
-
                     isNullChecked = false;
-
                     if (i == 0) {
                         if (children.getId() == 1 && topic.isCollection()) {
                             tmp.add(topic);

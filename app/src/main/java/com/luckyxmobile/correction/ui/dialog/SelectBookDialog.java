@@ -1,20 +1,15 @@
 package com.luckyxmobile.correction.ui.dialog;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.TextTagAdapter;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.Book;
-import com.luckyxmobile.correction.utils.ImageUtil;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import org.litepal.LitePal;
@@ -40,7 +35,7 @@ public class SelectBookDialog {
         dialog = new BottomSheetDialog(context);
         listener = (OnClickListener) context;
 
-        view = LayoutInflater.from(context).inflate(R.layout.dialog_view_select_book,null);
+        view = LayoutInflater.from(context).inflate(R.layout.dialog_select_book,null);
         dialog.setContentView(view);
         dialog.getWindow().setLayout(view.getWidth(), view.getHeight());
 
@@ -110,7 +105,6 @@ public class SelectBookDialog {
             topicImageTypeLayout.onChanged();
             return true;
         });
-
     }
 
     public BottomSheetDialog getDialog() {

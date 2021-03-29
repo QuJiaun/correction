@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:key="set"
     android:title="@string/main_set">
 
@@ -19,29 +18,6 @@
         android:key="view_pager_show_tag"
         android:title="@string/view_topics_display_tags"
         app:iconSpaceReserved="false"/>
-
-    <PreferenceCategory
-        android:title="@string/highlighter"
-        app:iconSpaceReserved="false">
-
-        <MultiSelectListPreference
-            android:key="view_smear_by"
-            android:title="@string/view_smear_method"
-            android:entries="@array/view_smear_method"
-            android:summary="@string/click_highlighter_by"
-            app:entryValues="@array/view_smear_method_value"
-            app:defaultValue="@array/view_smear_method_value"
-            app:iconSpaceReserved="false"/>
-
-        <MultiSelectListPreference
-            android:key="show_smear_pre"
-            android:title="@string/show_translucency"
-            android:entries="@array/show_print"
-            app:entryValues="@array/show_print_value"
-            android:summary="x,x,x"
-            app:iconSpaceReserved="false"/>
-
-    </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/print"
@@ -72,6 +48,11 @@
             android:key="version_pre"
             android:summary="x.x.x"
             android:title="@string/version"
+            app:iconSpaceReserved="false"/>
+
+        <PreferenceScreen
+            android:key="clear_pre"
+            android:title="清理缓存"
             app:iconSpaceReserved="false"/>
 
   </PreferenceCategory>

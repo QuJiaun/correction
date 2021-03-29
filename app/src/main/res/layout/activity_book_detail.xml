@@ -22,7 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
         android:padding="4dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/shape_box_view"
+        android:layout_marginBottom="8dp"
         zhy:max_select="-1"/>
 
     <ImageView

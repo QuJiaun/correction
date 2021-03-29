@@ -7,7 +7,7 @@
     xmlns:zhy="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/black_f5"
-    tools:context="com.luckyxmobile.correction.ui.activity.TagActivity">
+    tools:context="com.luckyxmobile.correction.ui.activity.TagManagerActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/add_tag_toolbar"

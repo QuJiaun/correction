@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -15,9 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.PaperDetailAdapter;
 import com.luckyxmobile.correction.global.Constants;
-import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.ui.callback.ItemTouchCallback;
+import com.luckyxmobile.correction.utils.FilesUtils;
+import com.luckyxmobile.correction.utils.PdfUtils;
 
 import org.litepal.LitePal;
 
@@ -103,7 +103,14 @@ public class PaperDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.paper_print:
-
+                try {
+                    PdfUtils.getInstance()
+                            .init(this, curPaper, paperDetailAdapter.getTopicList())
+                            .previewWindow();
+                } catch (Exception e) {
+                    FilesUtils.getInstance().deletePaperPdf(curPaper);
+                    e.printStackTrace();
+                }
                 break;
             case R.id.paper_regroup:
                 Intent intent = new Intent(this, SelectTopicActivity.class);

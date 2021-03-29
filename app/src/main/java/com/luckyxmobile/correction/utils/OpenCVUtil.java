@@ -1,23 +1,24 @@
 package com.luckyxmobile.correction.utils;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.util.Log;
 
 import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.model.bean.ImageParam;
+
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.RotatedRect;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 
 import org.opencv.imgproc.Imgproc;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,119 +28,66 @@ import java.util.List;
  * 用于opencv图像处理工具类
  */
 public class OpenCVUtil {
-    /**
-     * 转换图片为灰色
-     *
-     * @param bitmap
-     * @return
-     */
-    public static Bitmap convertGray(Bitmap bitmap) {
-        Mat src = new Mat();
-        Mat temp = new Mat();
-        Mat dst = new Mat();
+
+    private String TAG = OpenCVUtil.class.getSimpleName();
+
+    private Mat src;
+    private Bitmap bitmap;
+
+    private static final OpenCVUtil openCVUtil = new OpenCVUtil();
+
+    private OpenCVUtil() {
+    }
+
+    public static OpenCVUtil getInstance() {
+        return openCVUtil;
+    }
+
+    public OpenCVUtil init(Bitmap bitmap) {
+        this.bitmap = bitmap;
+        src = new Mat();
         Utils.bitmapToMat(bitmap, src);
-        Imgproc.cvtColor(src, temp, Imgproc.COLOR_BGRA2BGR);
-        Log.i("CV", "image type:" + (temp.type() == CvType.CV_8UC3));
-        Imgproc.cvtColor(temp, dst, Imgproc.COLOR_BGR2GRAY);
-        Utils.matToBitmap(dst, bitmap);
+        Imgproc.cvtColor(src, src, Imgproc.COLOR_BGRA2GRAY);
+        return this;
+    }
+
+    public Bitmap get(ImageParam param) {
+        multiply(param.multiply);
+        threshold(param.adaptiveThreshold);
+        medianBlur(param.medianBlur);
+        return get();
+    }
+
+    public Bitmap get() {
+        Utils.matToBitmap(src, bitmap);
         return bitmap;
     }
 
-    /**
-     * @param imgPath 文件的绝对路径
-     * @return Bitmap
-     * @throws FileNotFoundException error
-     */
-    public static Bitmap file2Bitmap(String imgPath) throws FileNotFoundException {
-        FileInputStream fis = new FileInputStream(imgPath);
-        return BitmapFactory.decodeStream(fis);
-    }
-
-    /**
-     * 将带有文字的图片二值化 对没有阴影的图片处理较好
-     *
-     * @param bitmap
-     * @return
-     */
-    public static Bitmap convertThreshodOTSU(Bitmap bitmap) {
-        Mat src = new Mat();
+    public OpenCVUtil multiply(double multiply) {
         Mat tmp = new Mat();
-        Mat des = new Mat();
-        Utils.bitmapToMat(bitmap, src);
-        Imgproc.cvtColor(src, tmp, Imgproc.COLOR_BGRA2GRAY);
-        Imgproc.threshold(tmp, des, 220, 255, Imgproc.THRESH_OTSU);
-        Utils.matToBitmap(des, bitmap);
-
+        Core.multiply(src, new Scalar(multiply), tmp);
         src.release();
-        tmp.release();
-        des.release();
-        return bitmap;
+        src = tmp;
+        return this;
     }
 
-    /**
-     * 将带有文字的图片二值化, 带有一定的阴影处理能力
-     *
-     * @param bitmap
-     * @return
-     */
-    public static Bitmap convertThreshod(Bitmap bitmap) {
-        Mat src = new Mat();
+    public OpenCVUtil threshold(boolean adaptive) {
         Mat tmp = new Mat();
-        Mat des = new Mat();
-        Utils.bitmapToMat(bitmap, src);
-        Imgproc.cvtColor(src, tmp, Imgproc.COLOR_BGRA2GRAY);
-        //直接转换的话 遇到阴影是黑的一片, 需要此函数处理
-        Imgproc.adaptiveThreshold(tmp, des, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 25, 10);
-        Utils.matToBitmap(des, bitmap);
-
-        src.release();
-        tmp.release();
-        des.release();
-        return bitmap;
-    }
-
-    /**
-     * 将带有文字的图片二值化, 带有一定的阴影处理能力 并且中间加了一层模糊处理
-     *
-     * @param bitmap
-     * @return
-     */
-    public static Bitmap convertBlurThreshod(Bitmap bitmap) {
-//         创建一张新的bitmap
-        Bitmap result = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Mat origin = new Mat();
-        Mat gray = new Mat();
-        Mat GaussianBlur = new Mat();
-        Mat out = new Mat();
-        Utils.bitmapToMat(bitmap, origin);
-        Imgproc.cvtColor(origin, gray, Imgproc.COLOR_RGB2GRAY);
-        Imgproc.GaussianBlur(gray, GaussianBlur, new Size(5, 5), 0);
-        // 二值化处理
-        Imgproc.adaptiveThreshold(GaussianBlur, out, 255.0D, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 7.0D);
-        Utils.matToBitmap(out, result);
-        origin.release();
-        gray.release();
-        out.release();
-        return result;
-    }
-
-
-    public static Bitmap setImageContrastRadioByPath(int contrastRadio,String imagePath){
-
-        Bitmap bitmap = ImageUtil.getBitmapByImagePath(imagePath);
-
-        switch(contrastRadio){
-            case Constants.CONTRAST_RADIO_WEAK:
-                return  OpenCVUtil.convertBlurThreshod(bitmap);
-
-            case Constants.CONTRAST_RADIO_COMMON:
-                return OpenCVUtil.convertThreshod(bitmap);
-
-            case Constants.CONTRAST_RADIO_STRONG:
-                return OpenCVUtil.convertThreshodOTSU(bitmap);
+        if (adaptive) {
+            Imgproc.adaptiveThreshold(src, tmp, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 25, 10);
+        } else {
+            Imgproc.threshold(src, tmp, 170, 255, Imgproc.THRESH_OTSU);
         }
+        src.release();
+        src = tmp;
+        return this;
+    }
 
-        return bitmap;
+    public OpenCVUtil medianBlur(boolean medianBlur) {
+        if (medianBlur) {
+            Imgproc.medianBlur(src, src, 3);
+        }
+        return this;
     }
 
     /**
@@ -201,7 +149,7 @@ public class OpenCVUtil {
 
         imageWordSize = (int) (Height * 1.1);
 
-        imageWordSize = imageWordSize<20?20:imageWordSize;
+        imageWordSize = Math.max(imageWordSize, 25);
 
         Log.i("ImageUtil","轮廓 众数 "+Height);
 

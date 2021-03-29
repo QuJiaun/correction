@@ -1,9 +1,14 @@
 package com.luckyxmobile.correction.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Toast;
+
 import com.luckyxmobile.correction.R;
+import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.zhy.view.flowlayout.FlowLayout;
@@ -12,21 +17,30 @@ import androidx.annotation.ColorInt;
 
 import org.litepal.LitePal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TopicTagAdapter extends com.zhy.view.flowlayout.TagAdapter<Tag> {
 
-    private final OnTagClickListener listener;
     private boolean isItemClickable = false;
     private boolean isShowUnchecked = false;
     private int textColor = 0;
     private int curTopicId;
+    private List<Integer> topicIdList;
 
-    public TopicTagAdapter(OnTagClickListener listener) {
+    public TopicTagAdapter() {
         super(LitePal.findAll(Tag.class));
-        this.listener = listener;
     }
 
     public void setCurTopicId(int curTopicId) {
         this.curTopicId = curTopicId;
+    }
+
+    public void setTopicIdList(List<Topic> topicList) {
+        this.topicIdList = new ArrayList<>();
+        for (Topic topic : topicList) {
+            topicIdList.add(topic.getId());
+        }
     }
 
     public void setItemClickable(boolean itemClickable) {
@@ -47,21 +61,26 @@ public class TopicTagAdapter extends com.zhy.view.flowlayout.TagAdapter<Tag> {
 
         CheckBox checkBox = (CheckBox) view;
         checkBox.setClickable(isItemClickable);
-        if (isItemClickable && listener != null) {
-            checkBox.setOnClickListener(view1 -> listener.onTagClick(curTopicId, tag));
-        }
         if (textColor != 0) {
             checkBox.setTextColor(textColor);
         }
         checkBox.setText(tag.getTag_name());
-        checkBox.setChecked(tag.getTopicSet().contains(curTopicId));
+        if (curTopicId >= 0) {
+            checkBox.setChecked(tag.getTopicSet().contains(curTopicId));
+        } else if (topicIdList != null && !topicIdList.isEmpty()) {
+            checkBox.setVisibility(View.GONE);
+            for (int id : topicIdList) {
+                if (tag.getTopicSet().contains(id)) {
+                    checkBox.setVisibility(View.VISIBLE);
+                    break;
+                }
+            }
+
+        }
+
         if (!isShowUnchecked && !checkBox.isChecked()) {
             checkBox.setVisibility(View.GONE);
         }
         return checkBox;
-    }
-
-    public interface OnTagClickListener {
-        void onTagClick(int topicId, Tag tag);
     }
 }

@@ -8,6 +8,12 @@
         android:icon="@drawable/ic_collect"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/topic_menu_edit"
+        android:title="编辑"
+        android:icon="@drawable/ic_edit"
+        app:showAsAction="always"/>
+
     <item android:id="@+id/topic_menu_add_text"
         android:title="@string/add_text"
         android:icon="@drawable/ic_text_fields_24"

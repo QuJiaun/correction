@@ -44,8 +44,6 @@ public class CheckMenuItemView extends LinearLayout{
         iconIv = view.findViewById(R.id.check_menu_icon);
         menuTv = view.findViewById(R.id.check_menu_text);
 
-        iconIv.setImageDrawable(isChecked?checkedImg:uncheckedImg);
-
         if (text == null || text.isEmpty()) {
             menuTv.setVisibility(GONE);
         } else {
@@ -53,11 +51,17 @@ public class CheckMenuItemView extends LinearLayout{
             menuTv.setTextColor(isChecked?checkedColor:uncheckedColor);
         }
 
+        setChecked(isChecked);
+
         typedArray.recycle();
     }
 
     public void setCheckedImg(Drawable checkedImg) {
         this.checkedImg = checkedImg;
+    }
+
+    public Drawable getCheckedImg() {
+        return checkedImg;
     }
 
     public void setUncheckedImg(Drawable uncheckedImg) {
@@ -79,7 +83,11 @@ public class CheckMenuItemView extends LinearLayout{
     public void setChecked(boolean checked) {
 
         isChecked = checked;
-        iconIv.setImageDrawable(isChecked?checkedImg:uncheckedImg);
+        if (isChecked || uncheckedImg == null) {
+            iconIv.setImageDrawable(checkedImg);
+        } else {
+            iconIv.setImageDrawable(uncheckedImg);
+        }
         menuTv.setTextColor(isChecked?checkedColor:uncheckedColor);
         invalidate();
     }

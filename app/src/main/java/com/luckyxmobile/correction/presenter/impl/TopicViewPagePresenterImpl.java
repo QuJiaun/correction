@@ -34,7 +34,7 @@ public class TopicViewPagePresenterImpl implements TopicViewPagePresenter {
         topicList = topicDao.getTopicListByBookId(curTopic.getBook_id());
 
         sharedPreferences = MySharedPreferences.getInstance();
-        isShowTag = sharedPreferences.getBoolean(Constants.TABLE_SHOW_TAG_IN_TOPIC_VIEW_PAGE, true);
+        isShowTag = sharedPreferences.getBoolean(Constants.SHOW_TAG_IN_TOPIC_VIEW_PAGE, true);
 
         if (!sharedPreferences.getBoolean(Constants.IS_NEWEST_ORDER, true)) {
             Collections.reverse(topicList);

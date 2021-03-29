@@ -22,6 +22,14 @@
         tools:ignore="ContentDescription" />
 
     <ImageView
+        android:id="@+id/item_edit_topic_image"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:padding="6dp"
+        android:src="@drawable/ic_edit"
+        android:background="#6600bcd4"/>
+
+    <ImageView
         android:id="@+id/item_remove_topic_image"
         android:layout_width="36dp"
         android:layout_height="36dp"

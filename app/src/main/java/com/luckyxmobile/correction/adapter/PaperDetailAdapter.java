@@ -34,8 +34,18 @@ public class PaperDetailAdapter extends RecyclerView.Adapter<PaperDetailAdapter.
         this.curPaper = LitePal.find(Paper.class, paperId);
         topicList = new ArrayList<>();
         for (int topicId : curPaper.getTopicSet()){
-            topicList.add(LitePal.find(Topic.class, topicId));
+            Topic topic = LitePal.find(Topic.class, topicId);
+            if (topic != null) {
+                topicList.add(topic);
+            } else {
+                curPaper.getTopicSet().remove(topicId);
+            }
         }
+        curPaper.save();
+    }
+
+    public List<Topic> getTopicList() {
+        return topicList;
     }
 
     @NonNull
@@ -51,7 +61,7 @@ public class PaperDetailAdapter extends RecyclerView.Adapter<PaperDetailAdapter.
 
         Topic topic = topicList.get(position);
 
-        TopicImage topicImage = BeanUtils.findFirst(topic);
+        TopicImage topicImage = BeanUtils.findTopicImageFirst(topic);
 
         Glide.with(holder.itemView.getContext())
                 .load(topicImage.getPath())

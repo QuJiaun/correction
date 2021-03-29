@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.model.TopicDao;
@@ -45,11 +46,12 @@ public class BookDetailViewPresenterImpl implements BookDetailViewPresenter, Dao
 
     @Override
     public void init(int bookId) {
-        Book curBook = LitePal.find(Book.class, bookId, true);
+        Book curBook = LitePal.find(Book.class, bookId);
         if (curBook == null) throw new RuntimeException(BookDetailActivity.TAG + " : curBook is null");
 
-        if (curBook.getId() == 1) {
+        if (curBook.getId() == 1 || curBook.getName().equals(context.getString(R.string.favorites))) {
             topicList = topicDao.getTopicListByCollection(true);
+            Log.d("123456", "init: " + Arrays.toString(topicList.toArray()));
         } else {
             topicList = topicDao.getTopicListByBookId(bookId);
         }
@@ -60,6 +62,7 @@ public class BookDetailViewPresenterImpl implements BookDetailViewPresenter, Dao
 
         bookDetailView.setToolBar(curBook.getName());
         bookDetailView.setTopicListRv(topicList);
+        bookDetailView.setTagLayout();
     }
 
     @Override
@@ -68,6 +71,7 @@ public class BookDetailViewPresenterImpl implements BookDetailViewPresenter, Dao
             this.isNewest = isNewest;
             Collections.reverse(topicList);
             bookDetailView.setTopicListRv(topicList);
+            MySharedPreferences.getInstance().putBoolean(Constants.IS_NEWEST_ORDER, isNewest);
         }
     }
 
