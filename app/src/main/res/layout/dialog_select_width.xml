@@ -17,7 +17,7 @@
         android:layout_marginBottom="24dp"
         android:text="选择宽度"
         android:gravity="center"
-        android:textColor="@color/colorText"
+        android:textColor="@color/textLight"
         android:textSize="@dimen/text_body_size"/>
 
     <SeekBar

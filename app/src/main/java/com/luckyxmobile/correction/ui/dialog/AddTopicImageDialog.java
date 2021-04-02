@@ -33,18 +33,17 @@ public class AddTopicImageDialog {
         Button uploadAlbum = view.findViewById(R.id.upload_topic_dialog_album);
 
         uploadCamera.setOnClickListener(view1 ->{
-            listener.addTopicFromCamera();
+            listener.addTopicFrom(false);
             dialog.dismiss();
         } );
 
         uploadAlbum.setOnClickListener(view2 ->{
-            listener.addTopicFromAlbum();
+            listener.addTopicFrom(true);
             dialog.dismiss();
         } );
     }
 
     public interface OnClickListener {
-        void addTopicFromCamera();
-        void addTopicFromAlbum();
+        void addTopicFrom(boolean album);
     }
 }

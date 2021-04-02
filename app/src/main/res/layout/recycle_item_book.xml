@@ -11,14 +11,11 @@
 
     <ImageView
         android:id="@+id/book_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="56dp"
-        android:minHeight="56dp"
-        android:layout_marginBottom="4dp"
-        android:padding="4dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:padding="2dp"
         android:src="@drawable/correction_book"
-        android:scaleType="fitCenter"/>
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/book_name"

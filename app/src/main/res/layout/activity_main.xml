@@ -4,21 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/layout_view_bg"
+    android:background="@color/layout_background"
     tools:context="com.luckyxmobile.correction.ui.activity.MainActivity">
-
 
     <!--使用Toolbar-->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentTop="true"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/menu_pop_window"
-        app:title="@string/app_name"/>
+        app:title="@string/app_name"
+        android:theme="@style/MyPopupMenu"
+        style="@style/MyToolbar"/>
 
 
    <androidx.core.widget.NestedScrollView
@@ -36,15 +30,15 @@
            <TextView
                android:id="@+id/my_notebook"
                android:layout_width="match_parent"
-               android:layout_height="48dp"
+               android:layout_height="36dp"
                android:layout_alignParentTop="true"
                android:layout_alignParentStart="true"
                android:gravity="center|start"
                android:paddingStart="16dp"
                android:paddingEnd="16dp"
                android:text="@string/my_notebooks"
-               android:textColor="@color/colorPrimary"
-               android:background="@color/colorWhite"/>
+               android:background="@color/layout_background2"
+               android:textColor="@color/textDark"/>
 
            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_head_book"
@@ -52,20 +46,21 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/my_notebook"
                android:padding="8dp"
-                android:background="@drawable/main_centre_background" />
+               android:background="@color/layout_background2"/>
 
            <Button
                android:id="@+id/add_book_main"
                android:layout_width="wrap_content"
-               android:layout_height="48dp"
+               android:layout_height="wrap_content"
                android:layout_above="@id/rv_head_book"
                android:layout_alignEnd="@id/rv_head_book"
-               android:gravity="center|end"
                android:paddingStart="16dp"
                android:paddingEnd="16dp"
                android:text="@string/new_notebook"
-               android:textColor="@color/colorAccent"
-               android:background="@color/transparent"/>
+               android:textColor="?colorAccent"
+               android:textStyle="bold"
+               android:textSize="16sp"
+               android:background="@color/btn_background"/>
 
            <TextView
                android:id="@+id/tv_recent_topic"
@@ -78,7 +73,7 @@
                android:paddingStart="16dp"
                android:paddingEnd="16dp"
                android:text="@string/recent_topic"
-               android:textColor="@color/colorPrimary"/>
+               android:textColor="@color/textDark"/>
 
            <androidx.recyclerview.widget.RecyclerView
                android:id="@+id/main_recycler_recent_topic"

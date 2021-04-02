@@ -18,7 +18,6 @@ import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.BookDetailAdapter;
 import com.luckyxmobile.correction.adapter.TopicTagAdapter;
 import com.luckyxmobile.correction.adapter.ViewHolderTopicItem;
-import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.global.Constants;
@@ -32,7 +31,6 @@ import com.zhy.view.flowlayout.TagFlowLayout;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -224,20 +222,11 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
     }
 
     @Override
-    public void addTopicFromCamera() {
-        DestroyActivityUtil.addDestroyActivityToMap(this, TAG);
-        MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
-        MySharedPreferences.getInstance().putInt(Constants.CURRENT_BOOK_ID, book_id == 1? -1: book_id);
-        Intent intent = CropImageActivity.getCropImageActivityIntent(this, false, true);
-        startActivity(intent);
-    }
-
-    @Override
-    public void addTopicFromAlbum() {
-        DestroyActivityUtil.addDestroyActivityToMap(this, TAG);
-        MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
-        MySharedPreferences.getInstance().putInt(Constants.CURRENT_BOOK_ID, book_id == 1? -1: book_id);
-        Intent intent = CropImageActivity.getCropImageActivityIntent(this, true, true);
+    public void addTopicFrom(boolean album) {
+        DestroyActivityUtil.addDestroyActivityToMap(this,TAG);
+        Intent intent = CropImageActivity.getIntent(this, album, true);
+        intent.putExtra(Constants.FROM_ACTIVITY, TAG);
+        intent.putExtra(Constants.BOOK_ID, book_id == 1?-1:book_id);
         startActivity(intent);
     }
 }

@@ -27,7 +27,7 @@ public class TextTagAdapter extends com.zhy.view.flowlayout.TagAdapter<String>{
         checkBox.setChecked(this.position == position);
 
         checkBox.setTextColor(this.position == position?
-                Color.WHITE : parent.getContext().getColor(R.color.tag_unchecked));
+                Color.WHITE : parent.getContext().getColor(R.color.text_unchecked));
 
         return checkBox;
     }

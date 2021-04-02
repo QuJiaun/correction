@@ -17,7 +17,7 @@
         android:layout_marginBottom="16dp"
         android:text="调节"
         android:gravity="center"
-        android:textColor="@color/colorText"
+        android:textColor="@color/textLight"
         android:textSize="@dimen/text_body_size"/>
 
 
@@ -36,10 +36,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layoutDirection="rtl"
+            android:buttonTint="@color/textLight"
             android:padding="8dp"
             android:text="消除噪点"
             android:gravity="center|start"
-            android:textColor="@color/colorText"/>
+            android:textColor="@color/textLight" />
 
         <CheckBox
             android:id="@+id/shadow"
@@ -48,10 +49,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layoutDirection="rtl"
+            android:buttonTint="@color/textLight"
             android:padding="8dp"
             android:text="消除阴影"
             android:gravity="center|start"
-            android:textColor="@color/colorText"/>
+            android:textColor="@color/textLight"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -65,7 +67,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorText"
+                android:textColor="@color/textLight"
                 android:text="对比度"/>
 
             <SeekBar
@@ -84,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1.0"
-                android:textColor="@color/colorText"/>
+                android:textColor="@color/textLight"/>
 
         </LinearLayout>
 

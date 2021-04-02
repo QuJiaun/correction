@@ -14,5 +14,5 @@
     android:textStyle="bold"
     android:background="@color/colorWhite"
     android:drawableStart="@drawable/ic_attach_file"
-    android:drawableTint="@color/blue_title"
-    android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+    android:drawableTint="@color/text_checked"
+    android:textColor="@color/text_checked"/>

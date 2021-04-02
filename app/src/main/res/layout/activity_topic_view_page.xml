@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/colorPrimary"
+    android:background="@color/layout_background_dark"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.activity.TopicViewPageActivity">
 
@@ -27,13 +27,14 @@
     <LinearLayout
         android:id="@+id/topic_view_pager_top_bar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="?actionBarSize"
         app:layout_constraintTop_toTopOf="parent"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:gravity="center"
-        android:background="@color/colorPrimaryDark"
-        android:orientation="horizontal">
+        android:background="@color/layout_background_dark"
+        android:orientation="horizontal"
+        android:elevation="4dp">
 
         <ImageButton
             android:id="@+id/collect_button"
@@ -48,7 +49,7 @@
             android:gravity="center_vertical"
             android:padding="8dp"
             android:text="2020-01-01"
-            android:textColor="@color/colorText"/>
+            android:textColor="@color/textLight"/>
 
         <ImageButton
             android:id="@+id/topic_image_edit_btn"

@@ -11,8 +11,6 @@ import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.youth.banner.Banner;
-import com.youth.banner.listener.OnBannerListener;
-import com.youth.banner.transformer.DepthPageTransformer;
 
 import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;
@@ -35,7 +33,6 @@ public class TopicViewPageAdapter extends PagerAdapter {
             int topic_id = topic.getId();
             List<TopicImage> topicImages =  LitePal.where("topic_id = ?",
                     String.valueOf(topic_id)).find(TopicImage.class);
-
             topicImageMap.put(topic_id, topicImages);
         }
     }

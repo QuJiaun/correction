@@ -4,17 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/layout_view_bg"
+    android:background="@color/layout_background"
     tools:context="com.luckyxmobile.correction.ui.activity.SelectTopicActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
+        android:theme="@style/MyPopupMenu"
+        app:title="@string/select_topics"
+        style="@style/MyToolbar"/>
 
     <TextView
         android:id="@+id/hint_select"

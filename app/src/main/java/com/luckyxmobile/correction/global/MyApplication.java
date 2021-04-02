@@ -1,7 +1,8 @@
 package com.luckyxmobile.correction.global;
 
 import android.util.DisplayMetrics;
-import android.util.Log;
+
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Book;
@@ -22,6 +23,9 @@ public class MyApplication extends LitePalApplication {
         MySharedPreferences.getInstance().init(this);
 
         initSQLFirst();
+
+        //日间 切换 夜间
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
     }
 
     /**
@@ -31,9 +35,9 @@ public class MyApplication extends LitePalApplication {
 
         MySharedPreferences table = MySharedPreferences.getInstance();
 
-        if (table.getBoolean(Constants.TABLE_SHARED_IS_FIRST_START, true)) {
+        if (table.getBoolean(Constants.IS_FIRST_START, true)) {
             table.clearAll();
-            table.putBoolean(Constants.TABLE_SHARED_IS_FIRST_START, false);
+            table.putBoolean(Constants.IS_FIRST_START, false);
 
             Book book = new Book(getString(R.string.favorites), "R.mipmap.favorite");
             book.save();

@@ -1,14 +1,10 @@
 package com.luckyxmobile.correction.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import com.luckyxmobile.correction.R;
-import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.zhy.view.flowlayout.FlowLayout;

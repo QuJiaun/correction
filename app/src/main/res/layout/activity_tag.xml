@@ -6,19 +6,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:zhy="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/black_f5"
+    android:background="@color/layout_background"
     tools:context="com.luckyxmobile.correction.ui.activity.TagManagerActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/add_tag_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:theme="@style/MyPopupMenu"
         app:title="@string/tags"
-        android:elevation="4dp"
-        app:titleTextColor="@color/colorWhite"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
+        style="@style/MyToolbar"/>
 
     <com.zhy.view.flowlayout.TagFlowLayout
         android:id="@+id/tag_layout_choose"
@@ -32,7 +27,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/gray_9c"
+        android:background="@color/colorPrimaryDark"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"/>
 
@@ -46,7 +41,7 @@
         android:gravity="center_vertical"
         android:text="@string/all_tag"
         android:textSize="@dimen/text_body_size"
-        android:textColor="@color/gray_7d"
+        android:textColor="@color/textDark"
         tools:ignore="RtlSymmetry" />
 
     <com.zhy.view.flowlayout.TagFlowLayout

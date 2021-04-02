@@ -60,6 +60,7 @@ public class HeadBookAdapter extends RecyclerView.Adapter<HeadBookAdapter.ViewHo
         //设置封面图片和删除效果
         if (book.getId() == 1 && position == 0){
             holder.bookImage.setImageResource(R.drawable.ic_favorite);
+            holder.bookName.setTextColor(context.getColor(R.color.text_checked));
         }else if (!TextUtils.isEmpty(book.getCover())){
             //Glide 加载封面图
             Glide.with(context)
@@ -67,11 +68,13 @@ public class HeadBookAdapter extends RecyclerView.Adapter<HeadBookAdapter.ViewHo
                     .error(R.drawable.ic_broken_image)
                     .skipMemoryCache(true) // 不使用内存缓存
                     .diskCacheStrategy(DiskCacheStrategy.NONE) // 不使用磁盘缓存
-                    .fitCenter()
-                    .centerCrop()
                     .into(holder.bookImage);
         } else {
-            Glide.with(context).load(R.drawable.correction_book).into(holder.bookImage);
+            Glide.with(context)
+                    .load(R.drawable.correction_book)
+                    .skipMemoryCache(true) // 不使用内存缓存
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) // 不使用磁盘缓存
+                    .into(holder.bookImage);
         }
 
         holder.bookName.setText(book.getName());
@@ -97,6 +100,19 @@ public class HeadBookAdapter extends RecyclerView.Adapter<HeadBookAdapter.ViewHo
         if (book != null){
             bookList.add(book);
             notifyItemInserted(bookList.size()-1);
+        }
+    }
+
+    public void upBook(Book book) {
+        int index = 0;
+        for (Book b : bookList) {
+            index++;
+            if (b.getId() == book.getId()) {
+                b.setName(book.getName());
+                b.setCover(book.getCover());
+                notifyItemChanged(index);
+                return;
+            }
         }
     }
 

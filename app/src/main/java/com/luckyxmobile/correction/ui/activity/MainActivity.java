@@ -23,7 +23,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.HeadBookAdapter;
 import com.luckyxmobile.correction.adapter.RecentTopicAdapter;
-import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.presenter.MainViewPresenter;
@@ -47,6 +46,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.pqpo.smartcropperlib.SmartCropper;
+import sakura.particle.Factory.ExplodeParticleFactory;
+import sakura.particle.Factory.ParticleFactory;
+import sakura.particle.Main.ExplosionSite;
 
 
 /**
@@ -73,10 +75,9 @@ public class MainActivity extends AppCompatActivity implements MainView,
     Animation hideAnim;
 
     private HeadBookAdapter headBookAdapter;
-
     private BookInfoDialog bookInfoDialog;
-
     private MainViewPresenter mainViewPresenter;
+    private ExplosionSite explosionSite;
 
     private final BaseLoaderCallback mOpenCVCallBack = new BaseLoaderCallback(this) {
         @Override
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
         //申请权限
         PermissionsUtil.initRequestPermission(this);
         mainViewPresenter = new MainViewPresenterImpl(this);
+        explosionSite = new ExplosionSite(this, new ExplodeParticleFactory());
         //初始化openCV
         initOpenCV();
         //初始化裁剪框
@@ -132,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements MainView,
 
         GridLayoutManager mLayoutManager = new GridLayoutManager(this,4);
         headBookAdapter = new HeadBookAdapter(this, headBookList);
-
         headBookRv.setLayoutManager(mLayoutManager);
         headBookRv.setItemAnimator(new DefaultItemAnimator());
         headBookRv.setNestedScrollingEnabled(false);//解决卡顿
@@ -158,17 +159,13 @@ public class MainActivity extends AppCompatActivity implements MainView,
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-
             if (requestCode == Constants.REQUEST_CODE_BOOK_COVER_IMAGE) {
-
                 String imagePath = data.getStringExtra(Constants.IMAGE_PATH);
-
                 if (bookInfoDialog == null) {
                     showBookInfoDialog(null);
                 }
                 bookInfoDialog.alterBookCover(imagePath);
             }
-
         }
     }
 
@@ -224,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
 
     @Override
     public void updateBookFinished(Book book) {
-        headBookAdapter.notifyDataSetChanged();
+        headBookAdapter.upBook(book);
     }
 
     @Override
@@ -261,7 +258,9 @@ public class MainActivity extends AppCompatActivity implements MainView,
                         .setIcon(R.drawable.ic_delete_red_24dp)
                         .setMessage(R.string.confirm_delete_notebook_hint)
                         .setPositiveButton(R.string.ensure, (dialog, which) ->{
+                            explosionSite.addListener(view);
                             mainViewPresenter.removeBook(book);
+                            explosionSite.explode(view);
                         } )
                         .setNegativeButton(R.string.cancel,null).show();
             }
@@ -294,21 +293,14 @@ public class MainActivity extends AppCompatActivity implements MainView,
     }
 
     @Override
-    public void addTopicFromCamera() {
-        MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
-        Intent intent = CropImageActivity.getCropImageActivityIntent(this, false, true);
-        startActivity(intent);
-    }
-
-    @Override
-    public void addTopicFromAlbum() {
-        MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
-        Intent intent = CropImageActivity.getCropImageActivityIntent(this, true, true);
+    public void addTopicFrom(boolean album) {
+        Intent intent = CropImageActivity.getIntent(this, album, true);
+        intent.putExtra(Constants.FROM_ACTIVITY, TAG);
         startActivity(intent);
     }
 
     @Override
     public void onToast(String showLog) {
-        Toast.makeText(this, showLog, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplication(), showLog, Toast.LENGTH_SHORT).show();
     }
 }

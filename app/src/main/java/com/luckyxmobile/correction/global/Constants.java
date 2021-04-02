@@ -15,21 +15,15 @@ public class Constants {
     public static final String TABLE_CORRECTION = "correction_sharePer_table";
     public static final String IS_NEWEST_ORDER = "is_newest_order";
     public static final String SHOW_ORIGINAL = "show_original";
-    public static final String TABLE_SHARED_IS_FIRST_START = "is_first_start";
+    public static final String IS_FIRST_START = "is_first_start";
 
     public static final String SCREEN_WIDTH = "screen_width";
     public static final String SCREEN_HEIGHT = "screen_height";
-
-    public static final String FROM_ACTIVITY = "from_activity";
-    public static final String CURRENT_BOOK_ID = "current_book_id";
-    public static final String CURRENT_TOPIC_ID = "current_topic_id";
-    public static final String CURRENT_TOPIC_IMAGE_ID = "current_topic_image_id";
 
     public static final String TABLE_PRINT_PAGE = "print_page";
     public static final String VIEW_PAGE_FULL_SCREEN = "view_page_full_screen";
     public static final String SHOW_TAG_IN_TOPIC_VIEW_PAGE = "is_show_tag_in_topic_view_page";
     public static final String PRINT_HIDE_HIGHLIGHTER = "print_hide_highlighter";
-    public static final String TABLE_FROM_FAVORITE = "from_favorite";
 
 
     //多少秒点击一次 默认1秒
@@ -46,18 +40,14 @@ public class Constants {
     public static final int FROM_MAIN_ACTIVITY = 0x111;
 
     //intent参数
-    public static final String IS_FROM_ALBUM = "whether_from_album";
-    public static final String IMAGE_TYPE = "image_type";
-    public static final String WHICH_ACTIVITY = "which_activity";
+    public static final String FROM_ACTIVITY = "from_activity";
+    public static final String FROM_ALBUM = "whether_from_album";
     public static final String TOPIC_ID = "topic_id";
-    public static final String TOPIC_POSITION = "topic_position";
-    public static final String IMAGE_POSITION = "image_position";
     public static final String BOOK_ID = "book_id";
     public static final String PAPER_ID = "paper_id";
+    public static final String TOPIC_IMAGE_ID = "topic_image_id";
     public static final String IS_EDIT_PHOTO = "whether_edit_photo";
-    public static final String TOOLBAR_NAME = "toolbar_name";
     public static final String IMAGE_PATH = "image_path";
-    public static final String IS_TOPIC = "is_topic";
 
     //book
     public static final  int BOOK_COVER = 0x200;

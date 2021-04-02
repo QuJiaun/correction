@@ -4,15 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.util.Log;
 
-import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.ImageParam;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Rect;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -88,6 +87,50 @@ public class OpenCVUtil {
             Imgproc.medianBlur(src, src, 3);
         }
         return this;
+    }
+
+    public static List<Rect> HSV(Bitmap bitmap) {
+
+        List<Rect> rectList = new ArrayList<>();
+
+        Mat rgbMat = new Mat();
+        Mat grayMat = new Mat();
+        Mat blur1 = new Mat();
+
+        //将原始的bitmap转换为mat型.
+        Utils.bitmapToMat(bitmap, rgbMat);
+        //将图像转换为灰度
+        Imgproc.cvtColor(rgbMat, grayMat, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.GaussianBlur(grayMat, blur1, new Size(5, 5), 0);
+        //图片二值化
+        Imgproc.threshold(blur1, blur1, 60, 255, Imgproc.THRESH_BINARY);
+        //寻找图形的轮廓
+        List<MatOfPoint> contours = new ArrayList<>();
+        Mat hierarchy = new Mat();
+        Imgproc.findContours(blur1, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+
+        //遍历每个图形的轮廓
+        for (MatOfPoint c : contours) {
+
+            MatOfPoint2f matOfPoint2f = new MatOfPoint2f(c.toArray());
+            double peri = Imgproc.arcLength(matOfPoint2f,true);
+            MatOfPoint2f approx = new MatOfPoint2f();
+            //得到大概值
+            Imgproc.approxPolyDP(matOfPoint2f,approx,0.04 * peri,true);
+
+            approx.toList().size();
+
+            if (approx.toList().size()==4){
+                Rect rect = Imgproc.boundingRect(new MatOfPoint(approx.toArray()));
+                rectList.add(rect);
+            }
+        }
+
+        rgbMat.release();
+        grayMat.release();
+        blur1.release();
+
+        return rectList;
     }
 
     /**

@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:background="#000"
+    android:background="@color/layout_background_dark"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?actionBarSize"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:elevation="4dp">
 
         <Button
             android:id="@+id/exit_btn"
@@ -20,8 +21,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/exit"
-            android:textColor="@color/colorWhite"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+            android:textColor="@color/textLight"
             android:drawableStart="@drawable/ic_cancel_white_24dp"
             android:background="@color/transparent"/>
 
@@ -36,8 +36,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/next_step"
-            android:textColor="@color/colorWhite"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+            android:textColor="@color/textLight"
             android:background="@color/transparent"/>
 
     </LinearLayout>
@@ -54,7 +53,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?actionBarSize"
         android:orientation="horizontal"
         android:gravity="center">
 
@@ -68,9 +67,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/reset"
+            android:gravity="bottom|center"
             android:layout_marginEnd="8dp"
             android:drawableTop="@drawable/ic_reset"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/textLight"
             android:background="@color/transparent"/>
 
         <View
@@ -83,11 +83,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/rotate"
+            android:paddingTop="8dp"
+            android:drawablePadding="4dp"
+            android:gravity="bottom|center"
             android:layout_marginStart="8dp"
-            android:drawableTop="@drawable/ic_paint_rotate_24dp"
-            android:textColor="@color/colorWhite"
-            android:background="@color/transparent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+            android:drawableTop="@drawable/ic_rotate"
+            android:textColor="@color/textLight"
+            android:background="@color/transparent"/>
 
         <View
             android:layout_width="0dp"

@@ -2,17 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/layout_view_bg"
+    android:background="@color/layout_background"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/topic_info_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/menu_pop_window"
-        app:title="@string/app_name"/>
+        android:theme="@style/MyPopupMenu"
+        style="@style/MyToolbar"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -38,21 +34,22 @@
                 android:background="@color/colorWhite"/>
 
             <include
-                layout="@layout/activity_topic_tag"
+                layout="@layout/layout_topic_tag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"/>
 
-            <TextView
-                android:id="@+id/topic_create_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:layout_margin="8dp"
-                android:gravity="center|end"
-                android:hint="2020-02-02"/>
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/topic_create_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="end"
+        android:padding="8dp"
+        android:layout_margin="8dp"
+        android:hint="2020-02-02"/>
 
 </RelativeLayout>

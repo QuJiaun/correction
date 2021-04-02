@@ -39,14 +39,14 @@ public class CropImageActivity extends AppCompatActivity{
     @BindView(R.id.next_btn)
     Button nextBtn;
 
+    private Intent curIntent;
     private boolean isEdit = true;
     private Bitmap imageBitmap = null;
 
-    public static Intent getCropImageActivityIntent(Activity activity, boolean fromAlbum, boolean isEdit){
+    public static Intent getIntent(Activity activity, boolean fromAlbum, boolean isEdit){
         Intent intent = new Intent(activity, CropImageActivity.class);
-        intent.putExtra(Constants.IS_FROM_ALBUM,fromAlbum);
+        intent.putExtra(Constants.FROM_ALBUM,fromAlbum);
         intent.putExtra(Constants.IS_EDIT_PHOTO, isEdit);
-
         return intent;
     }
 
@@ -61,12 +61,12 @@ public class CropImageActivity extends AppCompatActivity{
         ButterKnife.bind(this);
 
         // 得到传入的action和type
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        String type = intent.getType();
+        curIntent = getIntent();
+        String action = curIntent.getAction();
+        String type = curIntent.getType();
 
-        isEdit = intent.getBooleanExtra(Constants.IS_EDIT_PHOTO, true);
-        boolean isFromAlbum = intent.getBooleanExtra(Constants.IS_FROM_ALBUM, true);
+        isEdit = curIntent.getBooleanExtra(Constants.IS_EDIT_PHOTO, true);
+        boolean isFromAlbum = curIntent.getBooleanExtra(Constants.FROM_ALBUM, true);
 
         Uri exterUri = null;
 
@@ -74,7 +74,7 @@ public class CropImageActivity extends AppCompatActivity{
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if (type.startsWith("image/")) {
                 //得到Uri
-                exterUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                exterUri = curIntent.getParcelableExtra(Intent.EXTRA_STREAM);
             }
         }
 
@@ -187,14 +187,24 @@ public class CropImageActivity extends AppCompatActivity{
             Intent intent = new Intent();
             intent.putExtra(Constants.IMAGE_PATH, cropImagePath);
             setResult(RESULT_OK, intent);
+            finish();
         }else{
             DestroyActivityUtil.addDestroyActivityToMap(CropImageActivity.this,TAG);
 //            跳转到EditPhotoActivity页面
             Intent intent = new Intent(this, EditTopicImageActivity.class);
+            intent.putExtra(Constants.FROM_ACTIVITY, curIntent.getStringExtra(Constants.FROM_ACTIVITY));
+            setExtraInt(intent, Constants.BOOK_ID);
+            setExtraInt(intent, Constants.TOPIC_ID);
+            setExtraInt(intent, Constants.TOPIC_IMAGE_ID);
             intent.putExtra(Constants.IMAGE_PATH,  cropImagePath);
             startActivity(intent);
         }
-        finish();
+    }
+
+    public void setExtraInt(Intent intent, String name) {
+        if (curIntent.hasExtra(name)) {
+            intent.putExtra(name, curIntent.getIntExtra(name, -1));
+        }
     }
 
     public void onToast(String showLog) {

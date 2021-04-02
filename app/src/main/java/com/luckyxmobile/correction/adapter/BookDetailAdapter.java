@@ -116,7 +116,7 @@ public class BookDetailAdapter extends RecyclerView.Adapter<ViewHolderTopicItem>
         holder.topicDate.setText(FilesUtils.getTimeByDate(topic.getCreate_date()));
         holder.collectBtn.setVisibility(topic.isCollection()? View.VISIBLE:View.GONE);
         holder.tagTv.setText(BeanUtils.tagsToString(topic.getId()));
-        holder.tagTv.setTextColor(mContext.getColor(R.color.blue_title));
+        holder.tagTv.setTextColor(mContext.getColor(R.color.text_checked));
 
         if (isDeleteMode) {
             holder.checkBtn.setVisibility(View.VISIBLE);

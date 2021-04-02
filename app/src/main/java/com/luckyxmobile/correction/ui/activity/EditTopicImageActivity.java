@@ -96,12 +96,11 @@ public class EditTopicImageActivity extends AppCompatActivity implements
         DestroyActivityUtil.addDestroyActivityToMap(EditTopicImageActivity.this,TAG);
 
         String imagePath = getIntent().getStringExtra(Constants.IMAGE_PATH);
+        fromActivity = getIntent().getStringExtra(Constants.FROM_ACTIVITY);
+        curBookId = getIntent().getIntExtra(Constants.BOOK_ID, -1);
+        curTopicId = getIntent().getIntExtra(Constants.TOPIC_ID, -1);
 
-        sharedPreferences = MySharedPreferences.getInstance();
-        fromActivity = sharedPreferences.getString(Constants.FROM_ACTIVITY, MainActivity.TAG);
-        curBookId = sharedPreferences.getInt(Constants.CURRENT_BOOK_ID, -1);
-        curTopicId = sharedPreferences.getInt(Constants.CURRENT_TOPIC_ID, -1);
-        int curTopicImageId = sharedPreferences.getInt(Constants.CURRENT_TOPIC_IMAGE_ID, -1);
+        int curTopicImageId = getIntent().getIntExtra(Constants.TOPIC_IMAGE_ID, -1);
 
         if (curTopicImageId <= 0) {
             if (TextUtils.isEmpty(imagePath)) throw new RuntimeException("imagePath is null");
@@ -110,7 +109,6 @@ public class EditTopicImageActivity extends AppCompatActivity implements
             curTopicImage.setImageParam(GsonUtils.obj2Json(new ImageParam()));
             curTopicImage.setWord_size(-1);
             curTopicImage.setHighlighterList(new ArrayList<>());
-
         } else{
             Button returnBtn = findViewById(R.id.drawing_view_return);
             returnBtn.setText("退出");
@@ -160,19 +158,17 @@ public class EditTopicImageActivity extends AppCompatActivity implements
 
     @OnClick(R.id.drawing_view_ok)
     public void onClickOkBtn() {
-
         //修改TopicImage
         if (curTopicImage.getId() > 0) {
             List<String> highlighterList = BeanUtils.obj2Strings(drawingView.getHighlighterList());
             curTopicImage.setHighlighterList(highlighterList);
             curTopicImage.save();
-            finishEdit();
+            DestroyActivityUtil.destroyActivityALL();
             return;
         }
 
         //添加TopicImage
         selectBookDialog = new SelectBookDialog(this);
-
         selectBookDialog.initBookAll(curBookId);
         selectBookDialog.getDialog().show();
     }
@@ -199,11 +195,9 @@ public class EditTopicImageActivity extends AppCompatActivity implements
         curTopicImage.setType(imageType);
 
         if (fromActivity.equals(TopicInfoActivity.TAG)) {
-
             presenter.addTopicImage2Topic(curTopicId, curTopicImage);
 
         } else if (fromActivity.equals(MainActivity.TAG) || fromActivity.equals(BookDetailActivity.TAG)) {
-
             presenter.saveTopicImage(book.getId(), curTopicImage);
 
             Intent intent = new Intent(this, BookDetailActivity.class);
@@ -211,24 +205,9 @@ public class EditTopicImageActivity extends AppCompatActivity implements
             startActivity(intent);
         }
 
-        finishEdit();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        finishEdit();
-    }
-
-    private void finishEdit() {
-        //删除缓存数据
-        sharedPreferences.clear(Constants.FROM_ACTIVITY);
-        sharedPreferences.clear(Constants.CURRENT_BOOK_ID);
-        sharedPreferences.clear(Constants.CURRENT_TOPIC_ID);
-        sharedPreferences.clear(Constants.CURRENT_TOPIC_IMAGE_ID);
-
         DestroyActivityUtil.destroyActivityALL();
     }
+
 
     @Override
     public void onEnsure(int curType, Drawable res) {

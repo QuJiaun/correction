@@ -24,7 +24,6 @@ import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.presenter.TopicInfoViewPresenter;
 import com.luckyxmobile.correction.presenter.impl.TopicInfoViewPresenterImpl;
 import com.luckyxmobile.correction.ui.dialog.SetTopicTextDialog;
-import com.luckyxmobile.correction.utils.DestroyActivityUtil;
 import com.luckyxmobile.correction.view.ITopicInfoView;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
@@ -216,21 +215,13 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
                 break;
 
             case R.id.topic_menu_add_camera:
-                MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
-                MySharedPreferences.getInstance().putInt(Constants.CURRENT_BOOK_ID, presenter.getCurTopic().getBook_id());
-                MySharedPreferences.getInstance().putInt(Constants.CURRENT_TOPIC_ID, presenter.getCurTopic().getId());
-//                DestroyActivityUtil.addDestroyActivityToMap(this, TAG);
-
-                startActivity(CropImageActivity.getCropImageActivityIntent(this, false, true));
-                break;
-
             case R.id.topic_menu_add_album:
-                MySharedPreferences.getInstance().putString(Constants.FROM_ACTIVITY, TAG);
-                MySharedPreferences.getInstance().putInt(Constants.CURRENT_BOOK_ID, presenter.getCurTopic().getBook_id());
-                MySharedPreferences.getInstance().putInt(Constants.CURRENT_TOPIC_ID, presenter.getCurTopic().getId());
-//                DestroyActivityUtil.addDestroyActivityToMap(this, TAG);
-
-                startActivity(CropImageActivity.getCropImageActivityIntent(this, true, true));
+                Intent intent = CropImageActivity.getIntent(this,
+                        item.getItemId() == R.id.topic_menu_add_album, true);
+                intent.putExtra(Constants.FROM_ACTIVITY, TAG);
+                intent.putExtra(Constants.BOOK_ID, presenter.getCurTopic().getBook_id());
+                intent.putExtra(Constants.TOPIC_ID, presenter.getCurTopic().getId());
+                startActivity(intent);
                 break;
 
             case R.id.topic_menu_show_original:

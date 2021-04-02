@@ -16,7 +16,6 @@ import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.utils.FilesUtils;
-import com.luckyxmobile.correction.utils.ImageTask;
 
 import java.util.Objects;
 

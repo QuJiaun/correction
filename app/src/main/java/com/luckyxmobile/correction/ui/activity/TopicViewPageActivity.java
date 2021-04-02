@@ -2,15 +2,12 @@ package com.luckyxmobile.correction.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -21,9 +18,9 @@ import com.luckyxmobile.correction.adapter.TopicViewPageAdapter;
 import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.global.Constants;
-import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.presenter.TopicViewPagePresenter;
 import com.luckyxmobile.correction.presenter.impl.TopicViewPagePresenterImpl;
+import com.luckyxmobile.correction.ui.views.MyPagerTransformer;
 import com.luckyxmobile.correction.view.ITopicViewPage;
 import com.zhy.view.flowlayout.TagFlowLayout;
 import java.util.List;
@@ -107,6 +104,7 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
         topicViewPageAdapter = new TopicViewPageAdapter(this,topicList);
         topicViewPager.setAdapter(topicViewPageAdapter);
         topicViewPager.setCurrentItem(curPosition);
+        topicViewPager.setPageTransformer(false, new MyPagerTransformer());
         //滚动监听事件 刷新
         topicViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

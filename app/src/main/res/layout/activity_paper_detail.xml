@@ -5,18 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/layout_view_bg"
+    android:background="@color/layout_background"
     tools:context="com.luckyxmobile.correction.ui.activity.PaperDetailActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/Theme.ToolBar.Menu"
-        app:title="@string/test_page" />
+        app:title="@string/test_page"
+        android:theme="@style/MyPopupMenu"
+        style="@style/MyToolbar"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/paper_detail_rv"

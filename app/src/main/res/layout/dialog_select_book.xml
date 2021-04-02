@@ -7,7 +7,7 @@
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
     android:paddingBottom="16dp"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/layout_background_dark"
     android:orientation="vertical">
 
     <TextView
@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/notebook"
-        android:textColor="@color/colorText"
+        android:textColor="@color/textLight"
         android:textStyle="bold"
         android:layout_marginTop="16dp"/>
 
@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/topic_image_type"
-        android:textColor="@color/colorText"
+        android:textColor="@color/textLight"
         android:textStyle="bold"
         android:layout_marginTop="16dp"/>
 

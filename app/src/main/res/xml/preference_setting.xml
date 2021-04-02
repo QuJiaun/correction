@@ -45,14 +45,18 @@
         app:iconSpaceReserved="false">
 
         <PreferenceScreen
-            android:key="version_pre"
-            android:summary="x.x.x"
-            android:title="@string/version"
+            android:key="clear_pre"
+            android:title="清理缓存"
+            app:iconSpaceReserved="false"/>
+
+        <DropDownPreference
+            app:title="主题设置"
             app:iconSpaceReserved="false"/>
 
         <PreferenceScreen
-            android:key="clear_pre"
-            android:title="清理缓存"
+            android:key="version_pre"
+            android:summary="x.x.x"
+            android:title="@string/version"
             app:iconSpaceReserved="false"/>
 
   </PreferenceCategory>

@@ -152,9 +152,11 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             viewHolder.editTopicBtn.setVisibility(removeMode?View.VISIBLE:View.INVISIBLE);
             viewHolder.editTopicBtn.setOnClickListener(view -> {
-                MySharedPreferences.getInstance().putInt(Constants.CURRENT_TOPIC_IMAGE_ID, topicImage.getId());
                 ImageTask.getInstance().clearTopicImage(topicImage);
                 Intent intent = new Intent(context, EditTopicImageActivity.class);
+                intent.putExtra(Constants.FROM_ACTIVITY, TopicInfoActivity.TAG);
+                intent.putExtra(Constants.TOPIC_IMAGE_ID, topicImage.getId());
+                intent.putExtra(Constants.IMAGE_PATH, topicImage.getPath());
                 context.startActivity(intent);
             });
 

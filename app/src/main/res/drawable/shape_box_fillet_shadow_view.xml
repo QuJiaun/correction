@@ -57,7 +57,7 @@
     </item>
     <item>
         <shape>
-            <solid android:color="@color/gray_f8" />
+            <solid android:color="@color/layout_background" />
             <corners android:radius="4dp" />
         </shape>
     </item>

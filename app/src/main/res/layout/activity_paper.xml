@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:background="@color/layout_view_bg"
+    android:background="@color/layout_background"
     tools:context=".ui.activity.PaperActivity">
 
     <!--使用Toolbar-->
@@ -18,7 +18,7 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/menu_pop_window"
+        app:popupTheme="@style/MyPopupMenu"
         app:title="@string/test_page" />
 
     <ImageView

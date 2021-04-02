@@ -17,7 +17,7 @@
         android:layout_marginBottom="24dp"
         android:text="选择荧光笔"
         android:gravity="center"
-        android:textColor="@color/colorText"
+        android:textColor="@color/textLight"
         android:textSize="@dimen/text_body_size"/>
 
     <LinearLayout
@@ -37,7 +37,7 @@
             app:checked_img="@drawable/ic_highlighter_blue"
             app:unchecked_img="@drawable/ic_paint_unchecked"
             app:menu_text="BLUE"
-            app:checked_text_color="@color/orange_f7"
+            app:checked_text_color="@color/btn_icon"
             app:default_checked="true"/>
 
         <com.luckyxmobile.correction.ui.views.CheckMenuItemView
@@ -49,7 +49,7 @@
             app:checked_img="@drawable/ic_highlighter_red"
             app:unchecked_img="@drawable/ic_paint_unchecked"
             app:menu_text="RED"
-            app:checked_text_color="@color/orange_f7"/>
+            app:checked_text_color="@color/btn_icon"/>
 
         <com.luckyxmobile.correction.ui.views.CheckMenuItemView
             android:id="@+id/highlighter_yellow"
@@ -60,7 +60,7 @@
             app:checked_img="@drawable/ic_highlighter_yellow"
             app:unchecked_img="@drawable/ic_paint_unchecked"
             app:menu_text="YELLOW"
-            app:checked_text_color="@color/orange_f7"/>
+            app:checked_text_color="@color/btn_icon"/>
 
         <com.luckyxmobile.correction.ui.views.CheckMenuItemView
             android:id="@+id/highlighter_green"
@@ -71,7 +71,7 @@
             app:checked_img="@drawable/ic_highlighter_green"
             app:unchecked_img="@drawable/ic_paint_unchecked"
             app:menu_text="GREEN"
-            app:checked_text_color="@color/orange_f7"/>
+            app:checked_text_color="@color/btn_icon"/>
 
         <com.luckyxmobile.correction.ui.views.CheckMenuItemView
             android:id="@+id/highlighter_white"
@@ -82,7 +82,7 @@
             app:checked_img="@drawable/ic_highlighter_white"
             app:unchecked_img="@drawable/ic_paint_unchecked"
             app:menu_text="WHITE"
-            app:checked_text_color="@color/orange_f7"/>
+            app:checked_text_color="@color/btn_icon"/>
 
     </LinearLayout>
 

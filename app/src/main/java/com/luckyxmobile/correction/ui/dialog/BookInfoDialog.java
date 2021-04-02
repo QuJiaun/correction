@@ -17,6 +17,7 @@ import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.ui.activity.CropImageActivity;
+import com.luckyxmobile.correction.ui.activity.MainActivity;
 
 public class BookInfoDialog extends AlertDialog.Builder {
 
@@ -49,7 +50,8 @@ public class BookInfoDialog extends AlertDialog.Builder {
         deleteBookCoverBtn.setOnClickListener(v1 -> alterBookCover(null));
 
         alterBookCoverBtn.setOnClickListener(v2 ->{
-            Intent intent =  CropImageActivity.getCropImageActivityIntent(activity, true, false);
+            Intent intent =  CropImageActivity.getIntent(activity, true, false);
+            intent.putExtra(Constants.FROM_ACTIVITY, MainActivity.TAG);
             activity.startActivityForResult(intent, Constants.REQUEST_CODE_BOOK_COVER_IMAGE);
         });
     }

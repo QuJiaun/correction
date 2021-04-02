@@ -17,7 +17,7 @@
         android:paddingEnd="16dp"
         android:paddingBottom="4dp"
         android:text="topicImageInfo"
-        android:textColor="@color/colorText"
+        android:textColor="@color/textLight"
         android:textSize="@dimen/text_body_size"
         android:textStyle="italic"
         android:gravity="end"
