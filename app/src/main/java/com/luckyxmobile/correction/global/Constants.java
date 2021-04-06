@@ -21,6 +21,7 @@ public class Constants {
     public static final String SCREEN_HEIGHT = "screen_height";
 
     public static final String TABLE_PRINT_PAGE = "print_page";
+    public static final String TABLE_APP_THEME = "app_theme";
     public static final String VIEW_PAGE_FULL_SCREEN = "view_page_full_screen";
     public static final String SHOW_TAG_IN_TOPIC_VIEW_PAGE = "is_show_tag_in_topic_view_page";
     public static final String PRINT_HIDE_HIGHLIGHTER = "print_hide_highlighter";

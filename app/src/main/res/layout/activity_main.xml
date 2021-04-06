@@ -37,6 +37,7 @@
                android:paddingStart="16dp"
                android:paddingEnd="16dp"
                android:text="@string/my_notebooks"
+               android:textStyle="bold"
                android:background="@color/layout_background2"
                android:textColor="@color/textDark"/>
 
@@ -58,7 +59,6 @@
                android:paddingEnd="16dp"
                android:text="@string/new_notebook"
                android:textColor="?colorAccent"
-               android:textStyle="bold"
                android:textSize="16sp"
                android:background="@color/btn_background"/>
 
@@ -73,6 +73,7 @@
                android:paddingStart="16dp"
                android:paddingEnd="16dp"
                android:text="@string/recent_topic"
+               android:textStyle="bold"
                android:textColor="@color/textDark"/>
 
            <androidx.recyclerview.widget.RecyclerView

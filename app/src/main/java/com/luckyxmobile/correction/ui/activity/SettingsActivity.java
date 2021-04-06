@@ -6,15 +6,19 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.CheckBoxPreference;
+import androidx.preference.DropDownPreference;
 import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.global.MyApplication;
 import com.luckyxmobile.correction.global.MySharedPreferences;
+import com.luckyxmobile.correction.ui.dialog.ProgressDialog;
 import com.luckyxmobile.correction.utils.FilesUtils;
 
 import java.util.Objects;
@@ -45,6 +49,7 @@ public class SettingsActivity extends AppCompatActivity{
 
         private PreferenceScreen setTagPre;
         private PreferenceScreen clearPre;
+        private DropDownPreference themePre;
         private MultiSelectListPreference printPagePre;
         private CheckBoxPreference fullScreenViewPagePre;
         private CheckBoxPreference showTagViewPagePre;
@@ -65,12 +70,15 @@ public class SettingsActivity extends AppCompatActivity{
             hideHighlightPre = findPreference("print_page_show_smear");
             PreferenceScreen versionPre = findPreference("version_pre");
             versionPre.setSummary(FilesUtils.getInstance().appVersionName());
+            themePre = findPreference("theme_pre");
 
             hideHighlightPre.setChecked(preferences.getBoolean(Constants.PRINT_HIDE_HIGHLIGHTER,true));
             showTagViewPagePre.setChecked(preferences.getBoolean(Constants.SHOW_TAG_IN_TOPIC_VIEW_PAGE,true));
             fullScreenViewPagePre.setChecked(preferences.getBoolean(Constants.VIEW_PAGE_FULL_SCREEN,false));
 
             setPrintPage();
+
+            setThemePre();
         }
 
         @Override
@@ -88,6 +96,21 @@ public class SettingsActivity extends AppCompatActivity{
                 FilesUtils.getInstance().deleteCache();
             }
             return super.onPreferenceTreeClick(preference);
+        }
+
+        private void setThemePre() {
+            String index = preferences.getString(Constants.TABLE_APP_THEME, "0");
+            themePre.setValue(index);
+            themePre.setSummary(themePre.getEntry());
+
+            themePre.setOnPreferenceChangeListener((preference, newValue) -> {
+                String choose = (String) newValue;
+                themePre.setValue(choose);
+                themePre.setSummary(themePre.getEntry());
+                this.preferences.putString(Constants.TABLE_APP_THEME, choose);
+                MyApplication.setThem(choose);
+                return true;
+            });
         }
 
         private void setPrintPage() {

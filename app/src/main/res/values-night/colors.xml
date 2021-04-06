@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#191919</color>
-    <color name="colorPrimaryDark">#1E1E1E</color>
-    <color name="colorAccent">#BE9117</color>
+    <color name="colorPrimary">#1382B4</color>
+    <color name="colorPrimaryDark">#126C9C</color>
+    <color name="colorAccent">#BB3C67</color>
 
     <color name="textLight">#AFB1B3</color>
-    <color name="textDark">#00838f</color>
+    <color name="textDark">#116870</color>
 
-    <color name="layout_background">#111111</color>
-    <color name="layout_background2">#191919</color>
-    <color name="layout_background_dark">#212121</color>
+    <color name="layout_background">#303030</color>
+    <color name="layout_background2">#2B2B2B</color>
+    <color name="layout_background_dark">#1A1A1A</color>
 
-    <color name="btn_icon">#BE9117</color>
+    <color name="btn_icon">#f57c00</color>
     <color name="btn_background">#4400838f</color>
 
     <color name="colorWhite">#9F9F9F</color>

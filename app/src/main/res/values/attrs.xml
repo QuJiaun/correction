@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string-array name="topic_image_type">
+        <item>@string/stem</item>
+        <item>@string/correct</item>
+        <item>@string/incorrect</item>
+        <item>@string/key</item>
+        <item>@string/cause</item>
+    </string-array>
+
+    <string-array name="theme_choose">
+        <item>跟随系统</item>
+        <item>深色模式</item>
+        <item>浅色模式</item>
+    </string-array>
+
+    <string-array name="theme_choose_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="print_page">
         <item>@string/stem</item>
         <item>@string/correct</item>

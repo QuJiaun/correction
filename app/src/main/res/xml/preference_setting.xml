@@ -44,13 +44,16 @@
         android:title="@string/about"
         app:iconSpaceReserved="false">
 
+        <DropDownPreference
+            android:key="theme_pre"
+            android:title="主题设置"
+            app:entries="@array/theme_choose"
+            app:entryValues="@array/theme_choose_value"
+            app:iconSpaceReserved="false"/>
+
         <PreferenceScreen
             android:key="clear_pre"
             android:title="清理缓存"
-            app:iconSpaceReserved="false"/>
-
-        <DropDownPreference
-            app:title="主题设置"
             app:iconSpaceReserved="false"/>
 
         <PreferenceScreen
