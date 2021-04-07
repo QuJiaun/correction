@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.util.Log;
 
+import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.model.bean.Highlighter;
 import com.luckyxmobile.correction.model.bean.ImageParam;
 
 import org.opencv.android.Utils;
@@ -16,10 +18,14 @@ import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.opencv.imgproc.Imgproc.COLOR_RGB2HSV;
 
 /**
  * @author ChangHao
@@ -29,6 +35,9 @@ import java.util.List;
 public class OpenCVUtil {
 
     private String TAG = OpenCVUtil.class.getSimpleName();
+
+    private final Scalar scalarMin = new Scalar(0, 43, 46);
+    private final Scalar scalarMax = new Scalar(180, 255, 255);
 
     private Mat src;
     private Bitmap bitmap;
@@ -51,6 +60,7 @@ public class OpenCVUtil {
     }
 
     public Bitmap get(ImageParam param) {
+        brightness(param.brightness);
         multiply(param.multiply);
         threshold(param.adaptiveThreshold);
         medianBlur(param.medianBlur);
@@ -60,6 +70,19 @@ public class OpenCVUtil {
     public Bitmap get() {
         Utils.matToBitmap(src, bitmap);
         return bitmap;
+    }
+
+    /**
+     * 设置图片亮度
+     * @param brightness <0 降低亮度， >0增加亮度
+     * @return this
+     */
+    public OpenCVUtil brightness(double brightness) {
+        Mat tmp = new Mat();
+        Core.add(src, new Scalar(brightness), tmp);
+        src.release();
+        src = tmp;
+        return this;
     }
 
     public OpenCVUtil multiply(double multiply) {
@@ -89,48 +112,37 @@ public class OpenCVUtil {
         return this;
     }
 
-    public static List<Rect> HSV(Bitmap bitmap) {
+    public List<Highlighter> HSV(String path, int wordSize) {
 
-        List<Rect> rectList = new ArrayList<>();
+        Mat rgbMat = Imgcodecs.imread(path, Imgcodecs.IMREAD_COLOR);
+        Mat hsvMat = new Mat();
+        Mat des = new Mat();
 
-        Mat rgbMat = new Mat();
-        Mat grayMat = new Mat();
-        Mat blur1 = new Mat();
+        Imgproc.cvtColor(rgbMat, hsvMat, COLOR_RGB2HSV);
+        Core.inRange(hsvMat, scalarMin, scalarMax, des);
 
-        //将原始的bitmap转换为mat型.
-        Utils.bitmapToMat(bitmap, rgbMat);
-        //将图像转换为灰度
-        Imgproc.cvtColor(rgbMat, grayMat, Imgproc.COLOR_BGR2GRAY);
-        Imgproc.GaussianBlur(grayMat, blur1, new Size(5, 5), 0);
-        //图片二值化
-        Imgproc.threshold(blur1, blur1, 60, 255, Imgproc.THRESH_BINARY);
-        //寻找图形的轮廓
-        List<MatOfPoint> contours = new ArrayList<>();
+        List<Highlighter> highlighterList = new ArrayList<>();
+
         Mat hierarchy = new Mat();
-        Imgproc.findContours(blur1, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        List<MatOfPoint> contours = new ArrayList<>();
+        Imgproc.findContours(des, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
-        //遍历每个图形的轮廓
-        for (MatOfPoint c : contours) {
-
-            MatOfPoint2f matOfPoint2f = new MatOfPoint2f(c.toArray());
-            double peri = Imgproc.arcLength(matOfPoint2f,true);
-            MatOfPoint2f approx = new MatOfPoint2f();
-            //得到大概值
-            Imgproc.approxPolyDP(matOfPoint2f,approx,0.04 * peri,true);
-
-            approx.toList().size();
-
-            if (approx.toList().size()==4){
-                Rect rect = Imgproc.boundingRect(new MatOfPoint(approx.toArray()));
-                rectList.add(rect);
+        for (MatOfPoint matOfPoint : contours) {
+            Rect rect = Imgproc.boundingRect(matOfPoint);
+            Highlighter highlighter = new Highlighter(Constants.PAINT_OCR);
+            if (rect.width >= wordSize && rect.height < 120 && rect.height >= wordSize ) {
+                highlighter.setRect(new android.graphics.Rect(rect.x, rect.y,
+                        rect.x + rect.width, rect.y + rect.height));
+                highlighterList.add(highlighter);
+                Log.d(TAG, "HSV: " + highlighter.getRect().width() + ":" + highlighter.getRect().height());
             }
         }
 
         rgbMat.release();
-        grayMat.release();
-        blur1.release();
-
-        return rectList;
+        hsvMat.release();
+        des.release();
+        hierarchy.release();
+        return highlighterList;
     }
 
     /**
@@ -170,7 +182,7 @@ public class OpenCVUtil {
             int width = rect.boundingRect().width;
             int height = rect.boundingRect().height;
 
-            if ( (250>height && height > 25) && (250 > width && width > 20) ){
+            if ( (120>height && height > 25) && (120 > width && width > 20) ){
                 wordHeights.add(height);
             }
         }

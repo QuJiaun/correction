@@ -37,6 +37,12 @@ public class TopicImage extends LitePalSupport {
     private String imageParam;
 
     /**
+     * 该图调用ocr
+     * 调用ocr后，不能调编辑图片
+     */
+    private boolean ocr;
+
+    /**
      * 荧光笔涂抹信息
      */
     private List<String> highlighterList = new ArrayList<>();
@@ -116,6 +122,14 @@ public class TopicImage extends LitePalSupport {
         this.create_time = create_time;
     }
 
+    public void setOcr(boolean ocr) {
+        this.ocr = ocr;
+    }
+
+    public boolean isOcr() {
+        return ocr;
+    }
+
     @Override
     public String toString() {
         return "TopicImage{" +
@@ -125,6 +139,7 @@ public class TopicImage extends LitePalSupport {
                 ", path=" + path +
                 ", word_size=" + word_size +
                 ", imageParam=" + imageParam +
+                ", ocr=" + ocr +
                 ", highlighterList=" + highlighterList +
                 ", create_time=" + create_time +
                 '}';

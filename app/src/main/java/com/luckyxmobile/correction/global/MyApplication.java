@@ -6,9 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Book;
-import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.model.bean.Tag;
-import com.luckyxmobile.correction.ui.dialog.ProgressDialog;
 import com.luckyxmobile.correction.utils.FilesUtils;
 
 import org.litepal.LitePal;
@@ -24,11 +22,11 @@ public class MyApplication extends LitePalApplication {
         FilesUtils.getInstance().init(this);
         MySharedPreferences.getInstance().init(this);
 
-        setThem(MySharedPreferences.getInstance().getString(Constants.TABLE_APP_THEME,"0"));
+        setTheme(MySharedPreferences.getInstance().getString(Constants.TABLE_APP_THEME,"0"));
         initSQLFirst();
     }
 
-    public static void setThem(String them) {
+    public static void setTheme(String them) {
         switch (them) {
             case "0":
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);

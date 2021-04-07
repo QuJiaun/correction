@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/add_topic_toolbar"
-        android:icon="@drawable/ic_add_white_24dp"
+        android:icon="@drawable/ic_add"
         app:showAsAction="always"
         android:title="@string/add_topic"/>
 

@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.DropDownPreference;
@@ -18,7 +17,6 @@ import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.global.MyApplication;
 import com.luckyxmobile.correction.global.MySharedPreferences;
-import com.luckyxmobile.correction.ui.dialog.ProgressDialog;
 import com.luckyxmobile.correction.utils.FilesUtils;
 
 import java.util.Objects;
@@ -108,7 +106,7 @@ public class SettingsActivity extends AppCompatActivity{
                 themePre.setValue(choose);
                 themePre.setSummary(themePre.getEntry());
                 this.preferences.putString(Constants.TABLE_APP_THEME, choose);
-                MyApplication.setThem(choose);
+                MyApplication.setTheme(choose);
                 return true;
             });
         }

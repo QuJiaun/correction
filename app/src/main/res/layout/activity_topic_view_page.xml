@@ -52,7 +52,6 @@
             android:textColor="@color/textLight"/>
 
         <ImageButton
-            android:id="@+id/topic_image_edit_btn"
             android:src="@drawable/ic_edit"
             android:visibility="gone"
             style="@style/normal_icon_button"/>

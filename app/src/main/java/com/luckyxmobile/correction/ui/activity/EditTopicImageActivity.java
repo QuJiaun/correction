@@ -61,7 +61,9 @@ public class EditTopicImageActivity extends AppCompatActivity implements
     @BindView(R.id.drawing_view_tool_erase)
     CheckMenuItemView eraseBtn;
     @BindView(R.id.drawing_view_tool_image_param)
-    CheckMenuItemView radioBtn;
+    CheckMenuItemView imageParamBtn;
+    @BindView(R.id.drawing_view_tool_ocr)
+    CheckMenuItemView ocrBtn;
 
     private SelectBookDialog selectBookDialog;
 
@@ -117,14 +119,20 @@ public class EditTopicImageActivity extends AppCompatActivity implements
         }
 
         drawingView.init(curTopicImage);
-        undoBtn.setChecked(drawingView.undoAble());
-        redoBtn.setChecked(drawingView.redoAble());
+        drawingView.setScrollListener(() -> {
+            undoBtn.setChecked(drawingView.undoAble());
+            redoBtn.setChecked(drawingView.redoAble());
+        });
+
+        ocrBtn.setChecked(curTopicImage.isOcr());
+        imageParamBtn.setChecked(!curTopicImage.isOcr());
     }
 
     @OnClick({R.id.drawing_view_tool_highlighter,
             R.id.drawing_view_tool_erase,
             R.id.drawing_view_tool_width,
-            R.id.drawing_view_tool_image_param})
+            R.id.drawing_view_tool_image_param,
+            R.id.drawing_view_tool_ocr})
     public void onClickTools(View view) {
         switch (view.getId()) {
             case R.id.drawing_view_tool_highlighter:
@@ -141,12 +149,29 @@ public class EditTopicImageActivity extends AppCompatActivity implements
             case R.id.drawing_view_tool_erase:
                 eraseBtn.setChecked(true);
                 highlighterBtn.setChecked(false);
-                drawingView.setCurPaint(Constants.PAINT_ERASE);
+                drawingView.setCurType(Constants.PAINT_ERASE);
                 break;
 
             case R.id.drawing_view_tool_image_param:
-                new setImageParamDialog(this, curTopicImage)
-                        .getDialog().show();
+                if (imageParamBtn.isChecked()) {
+                    new setImageParamDialog(this, curTopicImage)
+                            .getDialog().show();
+                } else {
+                    Toast.makeText(this, "必须先关闭OCR", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+
+            case R.id.drawing_view_tool_ocr:
+                if (ocrBtn.isChecked()) {
+                    drawingView.removeOCR();
+                    ocrBtn.setChecked(false);
+                    imageParamBtn.setChecked(true);
+                } else {
+                    boolean result = drawingView.startOCR();
+                    ocrBtn.setChecked(result);
+                    imageParamBtn.setChecked(!result);
+                }
                 break;
         }
     }
@@ -211,7 +236,7 @@ public class EditTopicImageActivity extends AppCompatActivity implements
 
     @Override
     public void onEnsure(int curType, Drawable res) {
-        drawingView.setCurPaint(curType);
+        drawingView.setCurType(curType);
         highlighterBtn.setCheckedImg(res);
         highlighterBtn.setChecked(true);
     }

@@ -43,7 +43,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="16dp"
         android:padding="8dp"
-        android:drawableStart="@drawable/ic_add_white_24dp"
+        android:drawableStart="@drawable/ic_add"
         android:text="@string/new_test_page"
         android:textColor="@color/colorWhite"
         android:background="@drawable/shape_new_paper_btn"/>

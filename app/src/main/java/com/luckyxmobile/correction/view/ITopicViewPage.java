@@ -16,4 +16,6 @@ public interface ITopicViewPage {
     void setTopicCollectBtn(boolean isCollect);
 
     void setTopicTagFlowLayout(int curTopicId);
+
+    void setTopicDate(String date);
 }

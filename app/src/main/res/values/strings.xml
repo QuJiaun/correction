@@ -66,7 +66,6 @@
     <string name="warning_picture">Keep at least one picture!</string>
     <string name="show_original_images">Display original images</string>
     <string name="random_num_questions">Enter the number of the exam questions.</string>
-    <string name="contrast_ratio">Contrast</string>
     <string name="main_set">Settings</string>
     <string name="recent_topic">Latest</string>
     <string name="exit">Exit</string>

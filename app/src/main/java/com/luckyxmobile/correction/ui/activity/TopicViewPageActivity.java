@@ -8,6 +8,7 @@ import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -23,6 +24,9 @@ import com.luckyxmobile.correction.presenter.impl.TopicViewPagePresenterImpl;
 import com.luckyxmobile.correction.ui.views.MyPagerTransformer;
 import com.luckyxmobile.correction.view.ITopicViewPage;
 import com.zhy.view.flowlayout.TagFlowLayout;
+
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 import butterknife.BindAnim;
@@ -44,6 +48,8 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
     ProgressBar topicViewPageBar;
     @BindView(R.id.collect_button)
     ImageButton collectBtn;
+    @BindView(R.id.tv_topic_date)
+    TextView topicDateTv;
 
     @BindAnim(R.anim.layout_in_above)
     Animation aboveLayoutIn;
@@ -94,6 +100,11 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
     @Override
     public void setProgressBar(int progress) {
         topicViewPageBar.setProgress(progress, true);
+    }
+
+    @Override
+    public void setTopicDate(String date) {
+        topicDateTv.setText(date);
     }
 
     @Override

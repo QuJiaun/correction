@@ -4,7 +4,7 @@
     <item android:id="@android:id/background">
         <shape>
             <!--未加载的进度区域颜色-->
-            <solid android:color="@color/secondaryProgress"/>
+            <solid android:color="@color/transparent"/>
         </shape>
     </item>
     <!--已经加载完的进度的区域-->
@@ -21,7 +21,7 @@
         <clip>
             <shape>
                 <!--已经加载完的进度的颜色-->
-                <solid android:color="@color/secondaryProgress"/>
+                <solid android:color="@color/transparent"/>
             </shape>
         </clip>
     </item>

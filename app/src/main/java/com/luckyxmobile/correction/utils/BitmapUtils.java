@@ -5,19 +5,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.media.ExifInterface;
-import android.media.Image;
 import android.net.Uri;
-import android.util.Log;
-import android.widget.ImageView;
 
-import com.google.gson.Gson;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.model.BeanUtils;
@@ -25,7 +18,6 @@ import com.luckyxmobile.correction.model.bean.Highlighter;
 import com.luckyxmobile.correction.model.bean.ImageParam;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -141,9 +133,9 @@ public class BitmapUtils {
             List<Highlighter> highlighters = BeanUtils.findAll(topicImage);
             mCanvas.save();
             for (Highlighter highlighter : highlighters) {
-                Paint paint = HighlighterUtil.getHighlighterInPdf(context, highlighter.getWidth());
-                Path path = HighlighterUtil.pointsToPath(highlighter.getPointList());
-                mCanvas.drawPath(path, paint);
+                PaintUtil.setPaintInPdf(context, highlighter.getWidth());
+                Path path = PaintUtil.pointsToPath(highlighter.getPointList());
+                mCanvas.drawPath(path, PaintUtil.mPaint);
             }
             mCanvas.restore();
         }
@@ -160,9 +152,9 @@ public class BitmapUtils {
 
         for (Highlighter highlighter : highlighters) {
             mCanvas.save();
-            Paint paint = HighlighterUtil.getHighlighter(context, highlighter, true);
-            Path path = HighlighterUtil.pointsToPath(highlighter.getPointList());
-            mCanvas.drawPath(path, paint);
+            PaintUtil.setPaint(context, highlighter, true);
+            Path path = PaintUtil.pointsToPath(highlighter.getPointList());
+            mCanvas.drawPath(path, PaintUtil.mPaint);
             mCanvas.restore();
         }
         return bitmap2;
@@ -175,7 +167,9 @@ public class BitmapUtils {
         }
 
         bitmap = getBitmap(topicImage.getPath());
-
+        if (topicImage.isOcr()) {
+            return bitmap;
+        }
         ImageParam param = GsonUtils.json2Obj(topicImage.getImageParam(), ImageParam.class);
         if (param == null) {
             param = new ImageParam();

@@ -11,5 +11,5 @@
         android:id="@+id/add_tag"
         android:title="@string/delete_tag"
         app:showAsAction="always"
-        android:icon="@drawable/ic_add_white_24dp"/>
+        android:icon="@drawable/ic_add"/>
 </menu>

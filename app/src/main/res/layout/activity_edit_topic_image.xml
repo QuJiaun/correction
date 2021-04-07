@@ -115,9 +115,22 @@
             android:layout_margin="8dp"
             android:layout_weight="1"
             app:checked_img="@drawable/ic_adjust"
+            app:unchecked_img="@drawable/ic_adjust_2"
             app:checked_text_color="@color/btn_icon"
             app:default_checked="true"
             app:menu_text="调节"/>
+
+        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+            android:id="@+id/drawing_view_tool_ocr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            app:checked_img="@drawable/ic_ocr"
+            app:unchecked_img="@drawable/ic_ocr_2"
+            app:checked_text_color="@color/btn_icon"
+            app:default_checked="false"
+            app:menu_text="自动识别"/>
 
     </LinearLayout>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">智能错题管家</string>
+    <string name="app_name">智能错题本</string>
     <string name="test_page">测试卷</string>
     <string name="name"> 姓名 </string>
     <string name="score"> 分数 </string>
@@ -67,7 +67,6 @@
     <string name="warning_picture">至少保留一张图片！</string>
     <string name="show_original_images">显示原图</string>
     <string name="random_num_questions">输入题目数量</string>
-    <string name="contrast_ratio">对比度</string>
     <string name="main_set">设置</string>
     <string name="recent_topic">最近添加</string>
     <string name="exit">退出</string>

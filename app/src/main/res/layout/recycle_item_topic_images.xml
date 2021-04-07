@@ -7,7 +7,6 @@
     android:layout_marginTop="1dp"
     android:layout_marginBottom="1dp"
     android:padding="8dp"
-    android:id="@+id/item_topic_image_layout"
     android:foreground="?android:attr/selectableItemBackgroundBorderless"
     android:background="@drawable/shape_box_view">
 

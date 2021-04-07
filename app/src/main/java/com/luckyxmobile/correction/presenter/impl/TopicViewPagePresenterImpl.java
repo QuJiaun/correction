@@ -6,6 +6,7 @@ import com.luckyxmobile.correction.model.TopicDao;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.impl.TopicDaoImpl;
 import com.luckyxmobile.correction.presenter.TopicViewPagePresenter;
+import com.luckyxmobile.correction.utils.FilesUtils;
 import com.luckyxmobile.correction.view.ITopicViewPage;
 
 import org.litepal.LitePal;
@@ -45,6 +46,7 @@ public class TopicViewPagePresenterImpl implements TopicViewPagePresenter {
         topicViewPage.setTopicViewPage(topicList, curPosition);
         topicViewPage.setTopicCollectBtn(curTopic.isCollection());
         topicViewPage.setTopicTagLayout(isShowTag, curTopic);
+        topicViewPage.setTopicDate(FilesUtils.getTimeByDate(curTopic.getCreate_date()));
     }
 
     @Override
@@ -53,6 +55,7 @@ public class TopicViewPagePresenterImpl implements TopicViewPagePresenter {
         this.curTopic = topicList.get(position);
         topicViewPage.setProgressBar(position+1);
         topicViewPage.setTopicCollectBtn(curTopic.isCollection());
+        topicViewPage.setTopicDate(FilesUtils.getTimeByDate(curTopic.getCreate_date()));
         if (isShowTag) {
             topicViewPage.setTopicTagFlowLayout(getCurTopicId());
         }

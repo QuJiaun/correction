@@ -22,6 +22,8 @@ import com.luckyxmobile.correction.utils.BitmapUtils;
 import com.luckyxmobile.correction.utils.GsonUtils;
 import com.luckyxmobile.correction.utils.OpenCVUtil;
 
+import org.w3c.dom.Text;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,8 @@ public class setImageParamDialog {
     private CheckBox shadow;
     private TextView multiplyHint;
     private SeekBar multiply;
+    private TextView brightnessHint;
+    private SeekBar brightness;
 
     public setImageParamDialog(Context context, TopicImage topicImage) {
         dialog = new BottomSheetDialog(context);
@@ -65,11 +69,15 @@ public class setImageParamDialog {
         shadow = view.findViewById(R.id.shadow);
         multiply = view.findViewById(R.id.multiply);
         multiplyHint= view.findViewById(R.id.multiplyHint);
+        brightness = view.findViewById(R.id.brightness);
+        brightnessHint = view.findViewById(R.id.brightnessHint);
 
         noise.setChecked(param.medianBlur);
         shadow.setChecked(param.adaptiveThreshold);
         multiply.setProgress((int) (param.multiply*10));
         multiplyHint.setText(param.multiply+"");
+        brightness.setProgress((int)(param.brightness*10 + 10));
+        brightnessHint.setText(param.brightness+"");
 
         noise.setOnCheckedChangeListener((compoundButton, b) -> {
             param.medianBlur = b;
@@ -84,6 +92,24 @@ public class setImageParamDialog {
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 param.multiply = div(i,10);
                 multiplyHint.setText(param.multiply+"");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                param.brightness = div(i-10,10);
+                brightnessHint.setText(param.brightness+"");
             }
 
             @Override

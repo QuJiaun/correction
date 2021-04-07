@@ -98,8 +98,9 @@ public class Constants {
     public static final int PAINT_YELLOW = 0x223;
     public static final int PAINT_ERASE = 0x224;
     public static final int PAINT_WHITE_OUT = 0x225;
+    public static final int PAINT_OCR = 0x226;
 
-    @IntDef({PAINT_BLUE, PAINT_RED, PAINT_GREEN, PAINT_YELLOW, PAINT_ERASE, PAINT_WHITE_OUT})
+    @IntDef({PAINT_BLUE, PAINT_RED, PAINT_GREEN, PAINT_YELLOW, PAINT_ERASE, PAINT_WHITE_OUT, PAINT_OCR})
     @Target({ElementType.PARAMETER, ElementType.FIELD})
     @Retention(RetentionPolicy.SOURCE)
     public @interface HighlighterType{

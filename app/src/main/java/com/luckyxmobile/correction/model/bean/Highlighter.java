@@ -1,6 +1,7 @@
 package com.luckyxmobile.correction.model.bean;
 
 import android.graphics.Point;
+import android.graphics.Rect;
 
 import com.luckyxmobile.correction.global.Constants;
 
@@ -19,6 +20,8 @@ public class Highlighter implements Serializable {
      * 荧光笔宽度
      */
     private int width;
+
+    private Rect rect;
 
     /**
      * 涂抹位置信息
@@ -53,4 +56,11 @@ public class Highlighter implements Serializable {
         this.pointList = pointList;
     }
 
+    public Rect getRect() {
+        return rect;
+    }
+
+    public void setRect(Rect rect) {
+        this.rect = rect;
+    }
 }

@@ -3,14 +3,15 @@ package com.luckyxmobile.correction.ui.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -21,11 +22,15 @@ import com.luckyxmobile.correction.model.bean.ImageParam;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.utils.BitmapUtils;
 import com.luckyxmobile.correction.utils.GsonUtils;
-import com.luckyxmobile.correction.utils.HighlighterUtil;
+import com.luckyxmobile.correction.utils.PaintUtil;
 import com.luckyxmobile.correction.utils.ImageTask;
 import com.luckyxmobile.correction.utils.OpenCVUtil;
+
+import org.opencv.core.Mat;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.forward.androids.ScaleGestureDetectorApi27;
@@ -39,20 +44,19 @@ public class DrawingView extends View implements
         TouchGesture.OnTouchGestureScale, TouchGesture.OnTouchGestureScroll{
 
     public final static String TAG = "DrawingView";
-    private Context context = null;
     private TouchGesture touchGesture;
+
+    private OnScrollListener scrollListener;
 
     private TopicImage topicImage;
     private List<Highlighter> highlighterList;
-    private List<Highlighter> redoHighlighterList = new ArrayList<>();
+    private List<Highlighter> undoList;
 
-    private final Paint curPaint = new Paint();
     private int curType;
     private int curWidth;
     private List<Point> curPoints;
 
-    private Canvas mCanvas;
-    private Bitmap mBgBitmap, mFgBitmap;
+    private Bitmap mBgBitmap;
     private int imageWidth, imageHeight;
     private float mBitmapTransX, mBitmapTransY, mBitmapScale = 1;
 
@@ -68,13 +72,43 @@ public class DrawingView extends View implements
 
     public void init(@NonNull TopicImage topicImage) {
         this.topicImage = topicImage;
-        String imagePath = topicImage.getPath();
-
         highlighterList = BeanUtils.findAll(topicImage);
+        undoList = new ArrayList<>();
 
-        setCurPaint(Constants.PAINT_BLUE);
+        setCurType(Constants.PAINT_BLUE);
         setImageParam(GsonUtils.json2Obj(topicImage.getImageParam(), ImageParam.class));
         setCurPaintWidth(topicImage.getWord_size());
+    }
+
+    public void setScrollListener(OnScrollListener listener) {
+        scrollListener = listener;
+        listener.scrollEnd();
+    }
+
+    public boolean startOCR() {
+        List<Highlighter> ocrResult;
+        ocrResult = OpenCVUtil.getInstance().HSV(topicImage.getPath(), topicImage.getWord_size());
+        if (ocrResult == null || ocrResult.isEmpty()) {
+            Toast.makeText(getContext(), "未识别出任何内容....", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            highlighterList.addAll(ocrResult);
+            topicImage.setOcr(true);
+            setImageParam(null);
+            return true;
+        }
+    }
+
+    public void removeOCR() {
+        Iterator<Highlighter> iterator = highlighterList.iterator();
+        while (iterator.hasNext()){
+            Highlighter highlighter = iterator.next();
+            if (highlighter.getRect() != null) {
+                iterator.remove();
+            }
+        }
+        topicImage.setOcr(false);
+        setImageParam(new ImageParam());
     }
 
     public List<Highlighter> getHighlighterList() {
@@ -89,20 +123,25 @@ public class DrawingView extends View implements
         canvas.scale(mBitmapScale, mBitmapScale);
 
         canvas.drawBitmap(mBgBitmap, 0, 0, null);
-        canvas.drawBitmap(mFgBitmap, 0, 0, null);
-
-        //每次清屏
-        mCanvas.save();
-
-        mCanvas.drawPaint(HighlighterUtil.clearPaint());
 
         for (Highlighter highlighter : highlighterList) {
-            Paint paint = HighlighterUtil.getHighlighter(getContext(), highlighter, true);
-            Path path = HighlighterUtil.pointsToPath(highlighter.getPointList());
-            mCanvas.drawPath(path, paint);
+            canvas.save();
+            if (highlighter.getRect() != null) {
+                PaintUtil.setRectPaint(getContext(), true);
+                canvas.drawRect(highlighter.getRect(), PaintUtil.mPaint);
+            } else {
+                PaintUtil.setPaint(getContext(), highlighter, true);
+                Path path = PaintUtil.pointsToPath(highlighter.getPointList());
+                canvas.drawPath(path, PaintUtil.mPaint);
+            }
+            canvas.restore();
         }
 
-        mCanvas.restore();
+        if (curType == Constants.PAINT_ERASE && curPoints != null) {
+            PaintUtil.setErasePaint(getContext(), curWidth);
+            Path path = PaintUtil.pointsToPath(curPoints);
+            canvas.drawPath(path, PaintUtil.mPaint);
+        }
     }
 
     public final float toX(float touchX) {
@@ -114,9 +153,50 @@ public class DrawingView extends View implements
     }
 
     private void onTouchEvent() {
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         touchGesture = new TouchGesture(getContext());
         touchGesture.setScaleListener(this);
         touchGesture.setScrollListener(this);
+    }
+
+    private void erasePoints() {
+        if (curPoints == null || curPoints.isEmpty() || curType != Constants.PAINT_ERASE) {
+            return;
+        }
+
+        Iterator<Highlighter> iterator = highlighterList.iterator();
+
+        boolean flag;
+
+        while (iterator.hasNext()) {
+            Highlighter highlighter = iterator.next();
+            flag = false;
+
+            Rect rect = highlighter.getRect();
+            if (rect != null) {
+                for (Point point : curPoints) {
+                    if (rect.contains(point.x, point.y)) {
+                        undoList.add(highlighter);
+                        iterator.remove();
+                        break;
+                    }
+                }
+                continue;
+            }
+            List<Point> pointList = highlighter.getPointList();
+            for (Point p1 : curPoints) {
+                if (flag) break;
+                for (Point p2 : pointList) {
+                    if (Math.abs(p1.x - p2.x) < highlighter.getWidth()
+                        && Math.abs(p1.y - p2.y) < highlighter.getWidth()) {
+                        undoList.add(highlighter);
+                        iterator.remove();
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+        }
     }
     /**
      * 计算手指滑动的区域，删去过小涂抹
@@ -151,11 +231,11 @@ public class DrawingView extends View implements
         float rectWidth = Math.abs(rect.left - rect.right);
         float rectHeight = Math.abs(rect.top - rect.bottom);
 
-        if (rectWidth * rectHeight < 2000) {
+        if (rectWidth * rectHeight < 625) {
             Log.d(TAG,"涂抹区域太小，删除以上涂抹点");
             highlighterList.remove(highlighterList.size()-1);
         }else{
-           redoHighlighterList.clear();
+           undoList.clear();
         }
     }
 
@@ -194,24 +274,21 @@ public class DrawingView extends View implements
     }
 
     public boolean redoAble() {
-        return !redoHighlighterList.isEmpty();
+        return !undoList.isEmpty();
     }
 
     public boolean redo(){
 
         if (redoAble()){
-
-            Highlighter tmp = redoHighlighterList.get(redoHighlighterList.size()-1);
+            Highlighter tmp = undoList.get(undoList.size()-1);
             highlighterList.add(tmp);
-            redoHighlighterList.remove(tmp);
+            undoList.remove(tmp);
             invalidate();
-
-            return !redoHighlighterList.isEmpty();
         }
-
-        return false;
+        return redoAble();
     }
 
+    //撤销
     public boolean undoAble() {
         return !highlighterList.isEmpty();
     }
@@ -219,21 +296,16 @@ public class DrawingView extends View implements
     public boolean undo(){
 
         if (undoAble()){
-
             Highlighter tmp = highlighterList.get(highlighterList.size()-1);
-            redoHighlighterList.add(tmp);
+            undoList.add(tmp);
             highlighterList.remove(tmp);
             invalidate();
-
-            return !highlighterList.isEmpty();
         }
-
-        return false;
+        return undoAble();
     }
 
-    public void setCurPaint(int type) {
+    public void setCurType(int type) {
         curType = type;
-        HighlighterUtil.setHighlighter(getContext(), curPaint, type);
     }
 
     public int getCurType() {
@@ -247,7 +319,6 @@ public class DrawingView extends View implements
             topicImage.setWord_size(width);
         }
         curWidth = width;
-        curPaint.setStrokeWidth(width);
     }
 
     public int getCurWidth() {
@@ -256,70 +327,72 @@ public class DrawingView extends View implements
 
     public void setImageParam(ImageParam param) {
         topicImage.setImageParam(GsonUtils.obj2Json(param));
-
         ImageTask.getInstance().clearTopicImage(topicImage);
         this.mBgBitmap = BitmapUtils.getBitmap(topicImage);
-        this.mFgBitmap = Bitmap.createBitmap(mBgBitmap.getWidth(),mBgBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-
         imageWidth = mBgBitmap.getWidth();
         imageHeight = mBgBitmap.getHeight();
-
-        mCanvas = new Canvas(mFgBitmap);
         invalidate();
     }
 
     @Override
     public void onScrollBegin(float x, float y) {
-        x = toX(x);
-        y = toY(y);
+        int X = (int) toX(x);
+        int Y = (int) toY(y);
 
-        Log.d(TAG, "滑动开始-->("+x+":"+y+")");
-        if (x > 0 && x < mCanvas.getWidth() && y > 0 && y < mCanvas.getHeight()){
+        Log.d(TAG, "滑动开始-->("+X+":"+Y+")");
+        if (X > 0 && X < imageWidth && Y > 0 && Y < imageHeight){
 
             curPoints = new ArrayList<>();
-            curPoints.add(new Point((int)x,(int)y));
+            curPoints.add(new Point(X,Y));
 
-            Highlighter curHighlighter = new Highlighter(curType);
-            curHighlighter.setWidth(curWidth);
-            curHighlighter.setPointList(curPoints);
-
-            highlighterList.add(curHighlighter);
-            invalidate(); // 刷新
+            if (curType != Constants.PAINT_ERASE) {
+                Highlighter curHighlighter = new Highlighter(curType);
+                curHighlighter.setWidth(curWidth);
+                curHighlighter.setPointList(curPoints);
+                highlighterList.add(curHighlighter);
+            }
         }
     }
 
     @Override
     public boolean onScroll(float x, float y) {
-        x = toX(x);
-        y = toY(y);
 
-        if (x < 0 || x > mCanvas.getWidth() || y < 0 || y > mCanvas.getHeight()){
-            return false;
-        }else{
-            Log.d(TAG, "滑动中-->("+x+":"+y+")");
+        int X = (int) toX(x);
+        int Y = (int) toY(y);
 
-            if (curPaint != null) {
-                curPoints.add(new Point((int)x,(int)y));
+        if (X > 0 && X < imageWidth && Y > 0 && Y < imageHeight) {
+            Log.d(TAG, "滑动中-->(" + X + ":" + Y + ")");
+            if (curPoints != null) {
+                curPoints.add(new Point(X, Y));
+                invalidate();
+                return true;
+            } else {
+                onScrollBegin(x, y);
             }
-            invalidate();
-            return true;
         }
+        return false;
     }
 
     @Override
     public void onScrollEnd(float x, float y) {
-        x = toX(x);
-        y = toY(y);
+        int X = (int) toX(x);
+        int Y = (int) toY(y);
 
-        if (x > 0 && x < mCanvas.getWidth() && y > 0 && y < mCanvas.getHeight()){
-            Log.d(TAG, "滑动结束-->("+x+":"+y+")");
+        if (X > 0 && X < imageWidth && Y > 0 && Y < imageHeight){
+            Log.d(TAG, "滑动结束-->("+X+":"+Y+")");
             if (curPoints != null) {
-                curPoints.add(new Point((int)x,(int)y));
+                curPoints.add(new Point(X,Y));
             }
-
-            changePoints();//计算涂抹点是否合理
-
-            invalidate(); // 刷新
+        }
+        if (curType == Constants.PAINT_ERASE) {
+            erasePoints();
+        } else {
+            undoList.clear();
+        }
+        invalidate();
+        curPoints = null;
+        if (scrollListener != null) {
+            scrollListener.scrollEnd();
         }
     }
 
@@ -360,5 +433,9 @@ public class DrawingView extends View implements
         mLastFocusY = mTouchCentreY;
 
         return true;
+    }
+
+    public interface OnScrollListener {
+        void scrollEnd();
     }
 }

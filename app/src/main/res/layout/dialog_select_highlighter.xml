@@ -25,64 +25,73 @@
         android:layout_below="@id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
 
         <com.luckyxmobile.correction.ui.views.CheckMenuItemView
             android:id="@+id/highlighter_blue"
-            android:layout_width="48dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
             android:gravity="center"
             app:checked_img="@drawable/ic_highlighter_blue"
             app:unchecked_img="@drawable/ic_paint_unchecked"
             app:menu_text="BLUE"
-            app:checked_text_color="@color/btn_icon"
+            app:checked_text_color="@color/highlighter_blue"
             app:default_checked="true"/>
+
 
         <com.luckyxmobile.correction.ui.views.CheckMenuItemView
             android:id="@+id/highlighter_red"
-            android:layout_width="48dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
             android:gravity="center"
             app:checked_img="@drawable/ic_highlighter_red"
             app:unchecked_img="@drawable/ic_paint_unchecked"
             app:menu_text="RED"
-            app:checked_text_color="@color/btn_icon"/>
+            app:checked_text_color="@color/highlighter_red"/>
+
 
         <com.luckyxmobile.correction.ui.views.CheckMenuItemView
             android:id="@+id/highlighter_yellow"
-            android:layout_width="48dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
             android:gravity="center"
             app:checked_img="@drawable/ic_highlighter_yellow"
             app:unchecked_img="@drawable/ic_paint_unchecked"
             app:menu_text="YELLOW"
-            app:checked_text_color="@color/btn_icon"/>
+            app:checked_text_color="@color/highlighter_yellow"/>
+
 
         <com.luckyxmobile.correction.ui.views.CheckMenuItemView
             android:id="@+id/highlighter_green"
-            android:layout_width="48dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
             android:gravity="center"
             app:checked_img="@drawable/ic_highlighter_green"
             app:unchecked_img="@drawable/ic_paint_unchecked"
             app:menu_text="GREEN"
-            app:checked_text_color="@color/btn_icon"/>
+            app:checked_text_color="@color/highlighter_green"/>
+
 
         <com.luckyxmobile.correction.ui.views.CheckMenuItemView
             android:id="@+id/highlighter_white"
-            android:layout_width="48dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_margin="4dp"
+            android:visibility="gone"
             android:gravity="center"
             app:checked_img="@drawable/ic_highlighter_white"
             app:unchecked_img="@drawable/ic_paint_unchecked"
             app:menu_text="WHITE"
-            app:checked_text_color="@color/btn_icon"/>
+            app:checked_text_color="@color/highlighter_white_out"/>
 
     </LinearLayout>
 

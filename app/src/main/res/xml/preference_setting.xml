@@ -20,6 +20,37 @@
         app:iconSpaceReserved="false"/>
 
     <PreferenceCategory
+        app:title="荧光笔颜色矫正"
+        app:isPreferenceVisible="false"
+        app:iconSpaceReserved="false">
+
+        <PreferenceScreen
+            app:title="蓝色"
+            app:summary="暂未矫正"
+            app:icon="@drawable/ic_highlighter_blue"
+            android:iconSpaceReserved="true"/>
+
+        <PreferenceScreen
+            app:title="红色"
+            app:summary="暂未矫正"
+            app:icon="@drawable/ic_highlighter_red"
+            android:iconSpaceReserved="true"/>
+
+        <PreferenceScreen
+            app:title="绿色"
+            app:summary="暂未矫正"
+            app:icon="@drawable/ic_highlighter_green"
+            android:iconSpaceReserved="true"/>
+
+        <PreferenceScreen
+            app:title="黄色色"
+            app:summary="暂未矫正"
+            app:icon="@drawable/ic_highlighter_yellow"
+            android:iconSpaceReserved="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/print"
         app:iconSpaceReserved="false">
 

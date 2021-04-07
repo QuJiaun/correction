@@ -4,40 +4,10 @@
     <color name="colorPrimaryDark">#126C9C</color>
     <color name="colorAccent">#BB3C67</color>
 
-    <color name="textLight">#AFB1B3</color>
-    <color name="textDark">#116870</color>
-
     <color name="layout_background">#303030</color>
     <color name="layout_background2">#2B2B2B</color>
     <color name="layout_background_dark">#1A1A1A</color>
 
     <color name="btn_icon">#f57c00</color>
-    <color name="btn_background">#4400838f</color>
-
-    <color name="colorWhite">#9F9F9F</color>
-    <color name="colorBlack">#000000</color>
-    <color name="transparent">#00000000</color>
-
-    <color name="secondaryProgress">#2B2B2B</color>
-
-    <color name="topic_checked_stroke">#177B88</color>
-    <color name="topic_checked_delete_stroke">#9F4444</color>
-
-    <color name="text_checked">#177B88</color>
-    <color name="text_unchecked">#6A6A6A</color>
-
-
-    <color name="shape_view_stroke">#9B9B9B</color>
-
-
-    <color name="checked_menu_text">#9F9F9F</color>
-    <color name="unchecked_menu">#6A6A6A</color>
-
-    <color name="highlighter_blue">#43519E</color>
-    <color name="highlighter_red">#9F1761</color>
-    <color name="highlighter_green">#4F8F3D</color>
-    <color name="highlighter_yellow">#959C17</color>
-    <color name="highlighter_erase">#88000000</color>
-    <color name="highlighter_white_out">#fff</color>
 
 </resources>

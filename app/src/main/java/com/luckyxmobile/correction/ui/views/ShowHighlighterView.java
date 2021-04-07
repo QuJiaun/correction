@@ -3,25 +3,19 @@ package com.luckyxmobile.correction.ui.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.bumptech.glide.Glide;
-import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Highlighter;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.BitmapUtils;
-import com.luckyxmobile.correction.utils.FilesUtils;
-import com.luckyxmobile.correction.utils.HighlighterUtil;
-import com.luckyxmobile.correction.utils.OpenCVUtil;
+import com.luckyxmobile.correction.utils.PaintUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,13 +111,21 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
         canvas.drawBitmap(mFgBitmap, 0, 0, null);
         canvas.drawBitmap(mBgBitmap, 0, 0, null);
 
+        canvas.save();
         for (HighlighterArea area: highlighterAreaArrayList){
-            canvas.save();
-            Path path = HighlighterUtil.pointsToPath(area.highlighter.getPointList());
-            Paint paint = HighlighterUtil.getHighlighter(getContext(), area.highlighter, area.isShow);
-            canvas.drawPath(path,paint);
-            canvas.restore();
+            Highlighter highlighter = area.highlighter;
+            if (highlighter.getRect() != null) {
+                if (!area.isShow) {
+                    PaintUtil.setRectPaint(getContext(), false);
+                    canvas.drawRect(highlighter.getRect(), PaintUtil.mPaint);
+                }
+            } else {
+                Path path = PaintUtil.pointsToPath(highlighter.getPointList());
+                PaintUtil.setPaint(getContext(), highlighter, area.isShow);
+                canvas.drawPath(path, PaintUtil.mPaint);
+            }
         }
+        canvas.restore();
 
     }
 
@@ -222,13 +224,15 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
         }
 
         boolean judgePointInPoints(Point point){
+            if (highlighter.getRect() != null) {
+                Rect rect = highlighter.getRect();
+                return rect.contains(point.x, point.y);
+            }
             for (Point p: highlighter.getPointList()){
                 if (Math.abs(p.x-point.x)< highlighter.getWidth()
                         && Math.abs(p.y-point.y)< highlighter.getWidth()){
-
                     if (highlighter.getType() != Constants.PAINT_WHITE_OUT
                             && highlighter.getType() != Constants.PAINT_ERASE) {
-
                         return true;
                     }
                 }

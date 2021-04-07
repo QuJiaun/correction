@@ -53,6 +53,7 @@
                android:id="@+id/add_book_main"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
+               android:gravity="center"
                android:layout_above="@id/rv_head_book"
                android:layout_alignEnd="@id/rv_head_book"
                android:paddingStart="16dp"
@@ -60,7 +61,7 @@
                android:text="@string/new_notebook"
                android:textColor="?colorAccent"
                android:textSize="16sp"
-               android:background="@color/btn_background"/>
+               android:background="@color/transparent"/>
 
            <TextView
                android:id="@+id/tv_recent_topic"
@@ -95,6 +96,6 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
         android:padding="8dp"
-        android:src="@drawable/ic_add_white_24dp"/>
+        android:src="@drawable/ic_add"/>
 
 </RelativeLayout>
