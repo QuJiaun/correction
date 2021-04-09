@@ -90,13 +90,26 @@ public class FilesUtils{
     }
 
     public String getPdfPath(Paper paper) {
-        File file = new File(getPaperDir(), paper.getId()+".pdf");
+        return getPaperDir() + "/" + paper.getId() + ".pdf";
+    }
 
-        if (file.exists()) {
-            return file.getPath();
+    public boolean exists(String path) {
+        if (path == null || path.isEmpty()) {
+            return false;
         }
+        return new File(path).exists();
+    }
 
-        return null;
+    public boolean createFile(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            try {
+                return file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
     }
 
     public String getTopicImagePath(TopicImage topicImage) {
@@ -148,6 +161,7 @@ public class FilesUtils{
             e.printStackTrace();
             return false;
         }
+        bitmap.recycle();
         return true;
     }
 
@@ -234,7 +248,7 @@ public class FilesUtils{
     }
 
     public void deletePaperPdf(Paper paper) {
-        deleteFile(new File(getPdfPath(paper)));
+        deleteFile(getPdfPath(paper));
     }
 
     private void deleteCache(TopicImage topicImage) {
@@ -242,7 +256,9 @@ public class FilesUtils{
     }
 
     private void deleteFile(String path) {
-        deleteFile(new File(path));
+        if (exists(path)) {
+            deleteFile(new File(path));
+        }
     }
 
     private void deleteFile(File file) {

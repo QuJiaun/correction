@@ -18,6 +18,7 @@ import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
+import com.luckyxmobile.correction.utils.ImageTask;
 
 import org.litepal.LitePal;
 
@@ -63,9 +64,7 @@ public class PaperDetailAdapter extends RecyclerView.Adapter<PaperDetailAdapter.
 
         TopicImage topicImage = BeanUtils.findTopicImageFirst(topic);
 
-        Glide.with(holder.itemView.getContext())
-                .load(topicImage.getPath())
-                .into(holder.topicImageIv);
+        ImageTask.getInstance().loadTopicImage(holder.topicImageIv, topicImage);
 
         holder.topicIndexTv.setText(String.valueOf(position+1));
 
@@ -95,8 +94,6 @@ public class PaperDetailAdapter extends RecyclerView.Adapter<PaperDetailAdapter.
 
             }
         });
-
-
     }
 
     @Override
@@ -120,7 +117,7 @@ public class PaperDetailAdapter extends RecyclerView.Adapter<PaperDetailAdapter.
     /**
      * 加载布局的Holder
      */
-    static class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
 
         ImageView topicImageIv;
         TextView topicIndexTv;

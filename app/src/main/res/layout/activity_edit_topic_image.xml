@@ -32,13 +32,13 @@
             android:layout_weight="1"/>
 
 
-        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+        <com.luckyxmobile.correction.ui.views.CheckView
             android:id="@+id/drawing_view_undo"
             app:checked_img="@drawable/ic_paint_undo_yes"
             app:unchecked_img="@drawable/ic_paint_undo_no"
             style="@style/normal_icon_button"/>
 
-        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+        <com.luckyxmobile.correction.ui.views.CheckView
             android:id="@+id/drawing_view_redo"
             app:checked_img="@drawable/ic_paint_redo_yes"
             app:unchecked_img="@drawable/ic_paint_redo_no"
@@ -71,7 +71,7 @@
         android:gravity="center"
         android:elevation="4dp">
 
-        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+        <com.luckyxmobile.correction.ui.views.CheckView
             android:id="@+id/drawing_view_tool_highlighter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,10 +84,11 @@
             app:checked_text_color="@color/btn_icon"
             app:default_checked="true"/>
 
-        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+        <com.luckyxmobile.correction.ui.views.CheckView
             android:id="@+id/drawing_view_tool_erase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_margin="8dp"
             android:layout_weight="1"
             app:checked_img="@drawable/ic_paint_erase_checked"
@@ -95,10 +96,11 @@
             app:checked_text_color="@color/btn_icon"
             app:menu_text="@string/erase"/>
 
-        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+        <com.luckyxmobile.correction.ui.views.CheckView
             android:id="@+id/drawing_view_tool_width"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_margin="8dp"
             android:layout_weight="1"
             app:checked_img="@drawable/ic_width_1"
@@ -108,10 +110,11 @@
             app:menu_text="宽度"/>
 
 
-        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+        <com.luckyxmobile.correction.ui.views.CheckView
             android:id="@+id/drawing_view_tool_image_param"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_margin="8dp"
             android:layout_weight="1"
             app:checked_img="@drawable/ic_adjust"
@@ -120,10 +123,11 @@
             app:default_checked="true"
             app:menu_text="调节"/>
 
-        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+        <com.luckyxmobile.correction.ui.views.CheckView
             android:id="@+id/drawing_view_tool_ocr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_margin="8dp"
             android:layout_weight="1"
             app:checked_img="@drawable/ic_ocr"

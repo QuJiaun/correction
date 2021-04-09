@@ -90,6 +90,8 @@ public class DrawingView extends View implements
         ocrResult = OpenCVUtil.getInstance().HSV(topicImage.getPath(), topicImage.getWord_size());
         if (ocrResult == null || ocrResult.isEmpty()) {
             Toast.makeText(getContext(), "未识别出任何内容....", Toast.LENGTH_SHORT).show();
+            topicImage.setOcr(false);
+            topicImage.setToDefault("ocr");
             return false;
         } else {
             highlighterList.addAll(ocrResult);
@@ -115,6 +117,13 @@ public class DrawingView extends View implements
         return highlighterList;
     }
 
+    public void recycle() {
+        if (mBgBitmap != null) {
+            mBgBitmap.recycle();
+        }
+        ImageTask.getInstance().clearTopicImage(topicImage);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
 
@@ -127,10 +136,10 @@ public class DrawingView extends View implements
         for (Highlighter highlighter : highlighterList) {
             canvas.save();
             if (highlighter.getRect() != null) {
-                PaintUtil.setRectPaint(getContext(), true);
+                PaintUtil.setRectPaint(true);
                 canvas.drawRect(highlighter.getRect(), PaintUtil.mPaint);
             } else {
-                PaintUtil.setPaint(getContext(), highlighter, true);
+                PaintUtil.setPaint(highlighter, true);
                 Path path = PaintUtil.pointsToPath(highlighter.getPointList());
                 canvas.drawPath(path, PaintUtil.mPaint);
             }
@@ -138,7 +147,7 @@ public class DrawingView extends View implements
         }
 
         if (curType == Constants.PAINT_ERASE && curPoints != null) {
-            PaintUtil.setErasePaint(getContext(), curWidth);
+            PaintUtil.setErasePaint(curWidth);
             Path path = PaintUtil.pointsToPath(curPoints);
             canvas.drawPath(path, PaintUtil.mPaint);
         }
@@ -327,7 +336,9 @@ public class DrawingView extends View implements
 
     public void setImageParam(ImageParam param) {
         topicImage.setImageParam(GsonUtils.obj2Json(param));
-        ImageTask.getInstance().clearTopicImage(topicImage);
+        if (mBgBitmap != null) {
+            mBgBitmap.recycle();
+        }
         this.mBgBitmap = BitmapUtils.getBitmap(topicImage);
         imageWidth = mBgBitmap.getWidth();
         imageHeight = mBgBitmap.getHeight();

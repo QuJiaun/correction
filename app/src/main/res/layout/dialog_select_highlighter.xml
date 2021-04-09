@@ -28,7 +28,7 @@
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+        <com.luckyxmobile.correction.ui.views.CheckView
             android:id="@+id/highlighter_blue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             app:default_checked="true"/>
 
 
-        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+        <com.luckyxmobile.correction.ui.views.CheckView
             android:id="@+id/highlighter_red"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
             app:checked_text_color="@color/highlighter_red"/>
 
 
-        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+        <com.luckyxmobile.correction.ui.views.CheckView
             android:id="@+id/highlighter_yellow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             app:checked_text_color="@color/highlighter_yellow"/>
 
 
-        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+        <com.luckyxmobile.correction.ui.views.CheckView
             android:id="@+id/highlighter_green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
             app:checked_text_color="@color/highlighter_green"/>
 
 
-        <com.luckyxmobile.correction.ui.views.CheckMenuItemView
+        <com.luckyxmobile.correction.ui.views.CheckView
             android:id="@+id/highlighter_white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

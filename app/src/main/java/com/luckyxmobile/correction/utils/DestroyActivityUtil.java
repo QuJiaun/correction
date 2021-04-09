@@ -2,12 +2,11 @@ package com.luckyxmobile.correction.utils;
 
 import android.app.Activity;
 
+import androidx.annotation.NonNull;
+
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
-import cn.forward.androids.utils.LogUtil;
 
 /**
  * @author qjj
@@ -15,44 +14,36 @@ import cn.forward.androids.utils.LogUtil;
  * 用于销毁指定活动
  */
 public class DestroyActivityUtil {
-    private static Map<String, Activity> destroyMap = new HashMap<>();
+    private static Map<String, WeakReference<Activity>> destroyMap = new HashMap<>();
 
-    /**
-     * 将Activity添加到队列中
-     * @param activity 活动
-     * @param activityName 活动名
-     */
-    public static void addDestroyActivityToMap(Activity activity, String activityName) {
-        destroyMap.put(activityName, activity);
+    public static void add(@NonNull Activity activity) {
+        destroyMap.put(getName(activity), new WeakReference<>(activity));
     }
 
-    /**
-     * 根据名字销毁制定Activity
-     * @param activityName 活动名
-     */
-    public static void destroyActivity(String activityName) {
-        Set<String> keySet = destroyMap.keySet();
-        LogUtil.i(String.valueOf(keySet.size()));
-        if (keySet.size() > 0) {
-            for (String key : keySet) {
-                if (activityName.equals(key)) {
-                    Objects.requireNonNull(destroyMap.get(key)).finish();
-                }
-            }
+    public static void destroy(@NonNull Activity activity) {
+        String TAG = getName(activity);
+        WeakReference<Activity> weakReference = destroyMap.get(TAG);
+        if (weakReference != null) {
+            weakReference.get().finish();
+            weakReference.clear();
+            destroyMap.remove(TAG);
+        } else {
+            activity.finish();
         }
     }
 
-
-    /**
-     * 销毁全部Activity
-     */
-    public static void destroyActivityALL(){
-        Set<String> keySet = destroyMap.keySet();
-        LogUtil.i(String.valueOf(keySet.size()));
-        if (keySet.size() > 0) {
-            for (String key : keySet) {
-                Objects.requireNonNull(destroyMap.get(key)).finish();
+    public static void clear() {
+        for (WeakReference<Activity> weakReference : destroyMap.values()) {
+            Activity activity = weakReference.get();
+            if (activity != null) {
+                activity.finish();
             }
+            weakReference.clear();
         }
+        destroyMap.clear();
+    }
+
+    private static String getName(Activity activity) {
+        return activity.getClass().getSimpleName();
     }
 }

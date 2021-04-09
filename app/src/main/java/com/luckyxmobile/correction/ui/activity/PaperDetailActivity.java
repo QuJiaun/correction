@@ -1,10 +1,14 @@
 package com.luckyxmobile.correction.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.print.PrintAttributes;
+import android.print.PrintManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,9 +17,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.PaperDetailAdapter;
+import com.luckyxmobile.correction.adapter.PrintPreviewAdapter;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.ui.callback.ItemTouchCallback;
+import com.luckyxmobile.correction.ui.dialog.ProgressDialog;
 import com.luckyxmobile.correction.utils.FilesUtils;
 import com.luckyxmobile.correction.utils.PdfUtils;
 
@@ -28,7 +34,7 @@ import java.lang.reflect.Method;
  */
 public class PaperDetailActivity extends AppCompatActivity {
 
-    public static final String TAG = "PaperDetailActivity";
+    private String TAG = "PaperDetailActivity";
 
     private PaperDetailAdapter paperDetailAdapter;
     private Paper curPaper;
@@ -50,7 +56,6 @@ public class PaperDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         setPaperDetailRv();
-
     }
 
     @Override
@@ -103,14 +108,7 @@ public class PaperDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.paper_print:
-                try {
-                    PdfUtils.getInstance()
-                            .init(this, curPaper, paperDetailAdapter.getTopicList())
-                            .previewWindow();
-                } catch (Exception e) {
-                    FilesUtils.getInstance().deletePaperPdf(curPaper);
-                    e.printStackTrace();
-                }
+                previewWindow();
                 break;
             case R.id.paper_regroup:
                 Intent intent = new Intent(this, SelectTopicActivity.class);
@@ -123,4 +121,48 @@ public class PaperDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void previewWindow() {
+
+        String path = FilesUtils.getInstance().getPdfPath(curPaper);
+        PdfUtils pdfUtils = PdfUtils.getInstance();
+
+        new ProgressDialog(this) {
+            @Override
+            public boolean onPreExecute() {
+                if (paperDetailAdapter.getTopicList().isEmpty()) {
+                    onToast("还没有添加题目哟...");
+                    return false;
+                } else {
+                    if (FilesUtils.getInstance().exists(path)) {
+                        onPostExecute(true);
+                        return false;
+                    }
+                    return true;
+                }
+            }
+            @Override
+            public boolean doInBackground() throws Exception {
+                pdfUtils.init(curPaper, paperDetailAdapter.getTopicList());
+                return pdfUtils.start();
+            }
+            @Override
+            public void onPostExecute(boolean result) {
+                super.onPostExecute(result);
+                if (result) {
+                    onToast("创建chen");
+                    PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+                    PrintAttributes.Builder builder = new PrintAttributes.Builder();
+                    builder.setColorMode(PrintAttributes.COLOR_MODE_COLOR);
+                    PrintPreviewAdapter adapter = new PrintPreviewAdapter(PaperDetailActivity.this, path);
+                    printManager.print(getString(R.string.app_name), adapter, builder.build());
+                } else {
+                    onToast("发生了点错误...");
+                }
+            }
+        }.start();
+    }
+
+    private void onToast(String log) {
+        Toast.makeText(this, log, Toast.LENGTH_SHORT).show();
+    }
 }

@@ -59,6 +59,7 @@ public class TopicInfoViewPresenterImpl implements TopicInfoViewPresenter {
         } else {
             curTopic.setText(text);
         }
+        curTopic.save();
     }
 
     @Override

@@ -116,12 +116,12 @@ public class ShowHighlighterView extends View implements TouchGesture.OnTouchGes
             Highlighter highlighter = area.highlighter;
             if (highlighter.getRect() != null) {
                 if (!area.isShow) {
-                    PaintUtil.setRectPaint(getContext(), false);
+                    PaintUtil.setRectPaint(false);
                     canvas.drawRect(highlighter.getRect(), PaintUtil.mPaint);
                 }
             } else {
                 Path path = PaintUtil.pointsToPath(highlighter.getPointList());
-                PaintUtil.setPaint(getContext(), highlighter, area.isShow);
+                PaintUtil.setPaint(highlighter, area.isShow);
                 canvas.drawPath(path, PaintUtil.mPaint);
             }
         }

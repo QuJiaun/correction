@@ -6,10 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.util.Log;
 
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.global.MySharedPreferences;
@@ -45,6 +47,9 @@ public class BitmapUtils {
             e.printStackTrace();
         }
 
+        if (bitmap == null) {
+            return null;
+        }
         return autoSize(bitmap);
     }
 
@@ -124,26 +129,19 @@ public class BitmapUtils {
         return resizeBitmap(bitmap,newWidth,newHeight);
     }
 
-    public static Bitmap getBitmapInPdf(Context context, TopicImage topicImage, boolean showHighlighter) {
-        Bitmap bitmap = getBitmap(topicImage);
-
+    public static Bitmap getBitmapInPdf(TopicImage topicImage, boolean showHighlighter) {
+        Bitmap bitmap = getBitmap(topicImage.getPath());
         if (showHighlighter) {
-            Canvas mCanvas = new Canvas();
-            mCanvas.drawBitmap(bitmap, 0,0, null);
-            List<Highlighter> highlighters = BeanUtils.findAll(topicImage);
-            mCanvas.save();
-            for (Highlighter highlighter : highlighters) {
-                PaintUtil.setPaintInPdf(context, highlighter.getWidth());
-                Path path = PaintUtil.pointsToPath(highlighter.getPointList());
-                mCanvas.drawPath(path, PaintUtil.mPaint);
-            }
-            mCanvas.restore();
+            bitmap = getCanvasBitmap(topicImage, true);
         }
-
         return resizeBitmap(bitmap, topicImage.getWord_size());
     }
 
-    public static Bitmap getBitmapInTopicInfo(Context context, TopicImage topicImage) {
+    public static Bitmap getBitmapInTopicInfo(TopicImage topicImage) {
+        return getCanvasBitmap(topicImage, false);
+    }
+
+    private static Bitmap getCanvasBitmap(TopicImage topicImage, boolean isPrint) {
         Bitmap bitmap = getBitmap(topicImage);
         Bitmap bitmap2 = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas mCanvas = new Canvas(bitmap2);
@@ -152,21 +150,25 @@ public class BitmapUtils {
 
         for (Highlighter highlighter : highlighters) {
             mCanvas.save();
-            PaintUtil.setPaint(context, highlighter, true);
-            Path path = PaintUtil.pointsToPath(highlighter.getPointList());
-            mCanvas.drawPath(path, PaintUtil.mPaint);
+            if (isPrint) {
+                PaintUtil.setPaintInPdf(highlighter.getWidth());
+            } else {
+                PaintUtil.setPaint(highlighter, true);
+            }
+            Rect rect = highlighter.getRect();
+            if (rect != null) {
+                mCanvas.drawRect(rect, PaintUtil.mPaint);
+            } else {
+                Path path = PaintUtil.pointsToPath(highlighter.getPointList());
+                mCanvas.drawPath(path, PaintUtil.mPaint);
+            }
             mCanvas.restore();
         }
         return bitmap2;
     }
 
     public static Bitmap getBitmap(TopicImage topicImage) {
-        Bitmap bitmap = ImageTask.getInstance().getBitmapImage(topicImage);
-        if (bitmap != null) {
-            return bitmap;
-        }
-
-        bitmap = getBitmap(topicImage.getPath());
+        Bitmap bitmap = getBitmap(topicImage.getPath());
         if (topicImage.isOcr()) {
             return bitmap;
         }
@@ -205,13 +207,6 @@ public class BitmapUtils {
         int screen_w = MySharedPreferences.getInstance().getInt(Constants.SCREEN_WIDTH, 1080);
         screen_w = Math.min(screen_w, 1440);
         bh = screen_w*bh / bw;
-
         return resizeBitmap(bitmap, screen_w, bh);
-    }
-
-    public static Bitmap crop(Bitmap bitmap) {
-        Matrix matrix = new Matrix();
-        matrix.postScale(1, 1);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 }

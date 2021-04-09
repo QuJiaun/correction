@@ -6,6 +6,7 @@ import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.BookDao;
 import com.luckyxmobile.correction.model.DaoListener;
 import com.luckyxmobile.correction.model.bean.Topic;
+import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.utils.FilesUtils;
 
 import org.litepal.LitePal;
@@ -61,8 +62,11 @@ public class BookDaoImpl implements BookDao {
                 String.valueOf(book.getId())).find(Topic.class);
         //遍历错题集合，删除错题图片
         for (Topic topic : topicList) {
-            LitePal.deleteAll("TopicImage","topic_id=?",
-                    String.valueOf(topic.getId()));
+            List<TopicImage> topicImageList = LitePal.where("topic_id=?",
+                    String.valueOf(topic.getId())).find(TopicImage.class);
+            for (TopicImage topicImage :topicImageList) {
+                topicImage.delete();
+            }
             topic.delete();
         }
         //删除错题本

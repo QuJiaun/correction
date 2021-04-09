@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.luckyxmobile.correction.R;
-import com.luckyxmobile.correction.ui.views.CheckMenuItemView;
+import com.luckyxmobile.correction.ui.views.CheckView;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +17,8 @@ public class SelectHighlighterDialog implements View.OnClickListener {
     private BottomSheetDialog dialog;
     private OnDialogListener listener;
 
-    private List<CheckMenuItemView> btnList = new ArrayList<>();
-    private CheckMenuItemView curChecked;
+    private List<CheckView> btnList = new ArrayList<>();
+    private CheckView curChecked;
 
     public SelectHighlighterDialog(Context context, int type) {
         dialog = new BottomSheetDialog(context);
@@ -49,7 +49,7 @@ public class SelectHighlighterDialog implements View.OnClickListener {
         btnList.add(view.findViewById(R.id.highlighter_white));
         btnList.get(4).setTag(0x225);
 
-        for (CheckMenuItemView btn: btnList) {
+        for (CheckView btn: btnList) {
             btn.setOnClickListener(this);
             int tag = (int) btn.getTag();
             if (type == tag) {
@@ -64,11 +64,11 @@ public class SelectHighlighterDialog implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         checkBtn(view.getId());
-        curChecked = (CheckMenuItemView) view;
+        curChecked = (CheckView) view;
     }
 
     private void checkBtn(int id) {
-        for (CheckMenuItemView view: btnList) {
+        for (CheckView view: btnList) {
             view.setChecked(id == view.getId());
         }
     }

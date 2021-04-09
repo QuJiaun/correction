@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.Window;
@@ -114,25 +113,38 @@ public class CropImageActivity extends AppCompatActivity{
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (imageBitmap != null) {
+            imageBitmap.recycle();
+        }
         setResult(RESULT_CANCELED);
         finish();
     }
 
     @OnClick(R.id.next_btn)
     public void onClickNext(){
-        if(cropImageView.canRightCrop()) {//判断选区是否为凸四边形,bitmap是否为空
-            ProgressDialog.getInstance().init(this).show();
-            new Thread(()->{
+        FilesUtils filesUtils = FilesUtils.getInstance();
+        new ProgressDialog(this){
+            @Override
+            public boolean onPreExecute() {
+                if(!cropImageView.canRightCrop()) {//判断选区是否为凸四边形,bitmap是否为空
+                    onToast(getString(R.string.crop_failed));
+                    return false;
+                }
+                return true;
+            }
+            @Override
+            public boolean doInBackground() throws Exception {
                 Bitmap bitmap = cropImageView.crop();
-                FilesUtils.getInstance().saveBitmap2TmpFile(bitmap);
-                new Handler(getMainLooper()).post(()->{
-                    ProgressDialog.getInstance().dismiss();
-                    onCropImageFinished(FilesUtils.getInstance().getTmpFilePath());
-                });
-            }).start();
-        }else{
-            onToast(getString(R.string.crop_failed));
-        }
+                return filesUtils.saveBitmap2TmpFile(bitmap);
+            }
+            @Override
+            public void onPostExecute(boolean result) {
+                super.onPostExecute(result);
+                if (result) {
+                    onCropImageFinished(filesUtils.getTmpFilePath());
+                }
+            }
+        }.start();
     }
 
     @OnClick(R.id.reset_btn)
@@ -189,7 +201,7 @@ public class CropImageActivity extends AppCompatActivity{
             setResult(RESULT_OK, intent);
             finish();
         }else{
-            DestroyActivityUtil.addDestroyActivityToMap(CropImageActivity.this,TAG);
+            DestroyActivityUtil.add(this);
 //            跳转到EditPhotoActivity页面
             Intent intent = new Intent(this, EditTopicImageActivity.class);
             intent.putExtra(Constants.FROM_ACTIVITY, curIntent.getStringExtra(Constants.FROM_ACTIVITY));

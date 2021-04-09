@@ -9,6 +9,7 @@ import android.graphics.PorterDuffXfermode;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
+import com.luckyxmobile.correction.global.MyApplication;
 import com.luckyxmobile.correction.model.bean.Highlighter;
 
 import java.util.List;
@@ -36,19 +37,19 @@ public class PaintUtil {
         mPaint.setStrokeJoin(Paint.Join.BEVEL);
     }
 
-    public static void setPaintInPdf(Context context, int width) {
-        setPaint(context, width, Constants.PAINT_WHITE_OUT, false);
+    public static void setPaintInPdf(int width) {
+        setPaint(width, Constants.PAINT_WHITE_OUT, false);
     }
 
-    public static void setRectPaint(Context context, boolean isShow) {
-        setPaint(context, 0, Constants.PAINT_OCR, isShow);
+    public static void setRectPaint(boolean isShow) {
+        setPaint(0, Constants.PAINT_OCR, isShow);
     }
 
-    public static void setErasePaint(Context context, int width) {
-        setPaint(context, width, Constants.PAINT_ERASE, true);
+    public static void setErasePaint(int width) {
+        setPaint(width, Constants.PAINT_ERASE, true);
     }
 
-    private static void setPaint(Context context, int width, @Constants.HighlighterType int type, boolean isShow) {
+    private static void setPaint(int width, @Constants.HighlighterType int type, boolean isShow) {
 
         if (type == Constants.PAINT_OCR) {
             mPaint.setStyle(Paint.Style.FILL);
@@ -57,13 +58,12 @@ public class PaintUtil {
             mPaint.setStrokeWidth(width);
         }
 
-        int color = type2Color(type);
-        mPaint.setColor(context.getColor(color));
+        mPaint.setColor(type2Color(type));
 
-        if (color == Constants.PAINT_ERASE) {
+        if (type == Constants.PAINT_ERASE) {
             mPaint.setXfermode(mode[DST_OUT]);
             mPaint.setAlpha(150);
-        } else if (color == Constants.PAINT_WHITE_OUT) {
+        } else if (type == Constants.PAINT_WHITE_OUT) {
             mPaint.setXfermode(mode[DARKEN]);
             mPaint.setAlpha(255);
         } else {
@@ -72,8 +72,8 @@ public class PaintUtil {
         }
     }
 
-    public static void setPaint(Context context, Highlighter highlighter, boolean isShow) {
-       setPaint(context, highlighter.getWidth(), highlighter.getType(), isShow);
+    public static void setPaint(Highlighter highlighter, boolean isShow) {
+       setPaint(highlighter.getWidth(), highlighter.getType(), isShow);
     }
 
     public static Path pointsToPath(List<Point> points){
@@ -103,21 +103,22 @@ public class PaintUtil {
     }
 
     private static int type2Color(@Constants.HighlighterType int type) {
+        Context context = MyApplication.getContext();
         switch (type) {
             case Constants.PAINT_BLUE:
-                return R.color.highlighter_blue;
+                return context.getColor(R.color.highlighter_blue);
             case Constants.PAINT_RED:
-                return R.color.highlighter_red;
+                return context.getColor(R.color.highlighter_red);
             case Constants.PAINT_YELLOW:
-                return R.color.highlighter_yellow;
+                return context.getColor(R.color.highlighter_yellow);
             case Constants.PAINT_GREEN:
                 return R.color.highlighter_green;
             case Constants.PAINT_ERASE:
-                return R.color.highlighter_erase;
+                return context.getColor(R.color.highlighter_erase);
             case Constants.PAINT_WHITE_OUT:
-                return R.color.highlighter_white_out;
+                return context.getColor(R.color.highlighter_white_out);
             case Constants.PAINT_OCR:
-                return R.color.highlighter_OCR;
+                return context.getColor(R.color.highlighter_OCR);
             default:
                 throw new RuntimeException("getHighlighter : type is null");
         }

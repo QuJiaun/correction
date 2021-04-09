@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.Bundle;
+import android.print.PrintAttributes;
+import android.print.PrintManager;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -19,23 +21,22 @@ import android.widget.Toast;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.PaperAdapter;
+import com.luckyxmobile.correction.adapter.PrintPreviewAdapter;
 import com.luckyxmobile.correction.global.Constants;
-import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.ui.dialog.PaperInfoDialog;
+import com.luckyxmobile.correction.ui.dialog.ProgressDialog;
 import com.luckyxmobile.correction.utils.FilesUtils;
 import com.luckyxmobile.correction.utils.PdfUtils;
 
 import org.litepal.LitePal;
 
-import java.lang.annotation.Annotation;
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static android.widget.NumberPicker.OnScrollListener.SCROLL_STATE_IDLE;
 
 public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnItemListener {
 
@@ -127,7 +128,6 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
                 intent.putExtra(Constants.PAPER_ID, tmp.getId());
                 startActivity(intent);
             }
-
             setPaperNothing(paperAdapter.isEmpty());
         });
         paperInfoDialog.setPositiveButton(R.string.ensure, (dialogInterface, i) -> {
@@ -183,13 +183,7 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
                     break;
 
                 case R.id.share:
-                    try {
-                        PdfUtils.getInstance().init(this, paper).share();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        FilesUtils.getInstance().deletePaperPdf(paper);
-                        onToast("error...");
-                    }
+                    sharePaperPdf(paper);
                     break;
 
                 case R.id.rename:
@@ -197,14 +191,7 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
                     break;
 
                 case R.id.print:
-                    try {
-                        PdfUtils.getInstance().init(this, paper).previewWindow();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        FilesUtils.getInstance().deletePaperPdf(paper);
-                        onToast("error...");
-                    }
-
+                    previewWindow(paper);
                     break;
 
                 default: break;
@@ -214,6 +201,86 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
         });
         paperAdapter.notifyDataSetChanged();
         popupMenu.show();
+    }
+
+    private void previewWindow(Paper paper) {
+
+        String path = FilesUtils.getInstance().getPdfPath(paper);
+        PdfUtils pdfUtils = PdfUtils.getInstance();
+
+        new ProgressDialog(this) {
+            @Override
+            public boolean onPreExecute() {
+                if (paper.getTopicSet() == null || paper.getTopicSet().isEmpty()) {
+                    onToast("还没有添加题目哟...");
+                    return false;
+                } else {
+                    if (FilesUtils.getInstance().exists(path)) {
+                        onPostExecute(true);
+                        return false;
+                    }
+                    return true;
+                }
+            }
+            @Override
+            public boolean doInBackground() throws Exception {
+                pdfUtils.init(paper);
+                return pdfUtils.start();
+            }
+            @Override
+            public void onPostExecute(boolean result) {
+                super.onPostExecute(result);
+                if (!result) {
+                    onToast("发生了点错误...");
+                } else {
+                    PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+                    PrintAttributes.Builder builder = new PrintAttributes.Builder();
+                    builder.setColorMode(PrintAttributes.COLOR_MODE_COLOR);
+                    PrintPreviewAdapter adapter = new PrintPreviewAdapter(PaperActivity.this, path);
+                    printManager.print(getString(R.string.app_name), adapter, builder.build());
+                }
+            }
+        }.start();
+    }
+
+    private void sharePaperPdf(Paper paper) {
+        String path = FilesUtils.getInstance().getPdfPath(paper);
+        PdfUtils pdfUtils = PdfUtils.getInstance();
+
+        new ProgressDialog(this) {
+            @Override
+            public boolean onPreExecute() {
+                if (paper.getTopicSet() == null || paper.getTopicSet().isEmpty()) {
+                    onToast("还没有添加题目哟...");
+                    return false;
+                } else {
+                    if (FilesUtils.getInstance().exists(path)) {
+                        onPostExecute(true);
+                        return false;
+                    }
+                    return true;
+                }
+            }
+            @Override
+            public boolean doInBackground() throws Exception {
+                pdfUtils.init(paper);
+                return pdfUtils.start();
+            }
+            @Override
+            public void onPostExecute(boolean result) {
+                super.onPostExecute(result);
+                if (!result) {
+                    onToast("发生了点错误...");
+                } else {
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, FilesUtils.getInstance().getUri(new File(path)));
+                    shareIntent.setType("application/pdf");
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    startActivity(Intent.createChooser(shareIntent, "分享到"));
+                }
+            }
+        }.start();
     }
 
     public void onToast(String log) {

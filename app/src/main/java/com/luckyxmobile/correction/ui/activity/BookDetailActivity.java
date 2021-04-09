@@ -223,7 +223,7 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
 
     @Override
     public void addTopicFrom(boolean album) {
-        DestroyActivityUtil.addDestroyActivityToMap(this,TAG);
+        DestroyActivityUtil.add(this);
         Intent intent = CropImageActivity.getIntent(this, album, true);
         intent.putExtra(Constants.FROM_ACTIVITY, TAG);
         intent.putExtra(Constants.BOOK_ID, book_id == 1?-1:book_id);

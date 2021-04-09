@@ -16,6 +16,7 @@ import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
+import com.luckyxmobile.correction.utils.ImageTask;
 import com.zj.myfilter.FiltrateBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ public class SelectTopicAdapter extends RecyclerView.Adapter<SelectTopicAdapter.
     public SelectTopicAdapter(Paper paper) {
         this.paper = paper;
         filterTopicList = LitePal.findAll(Topic.class);
-        topicList = new ArrayList<>(filterTopicList);
+        topicList = LitePal.findAll(Topic.class);
     }
 
 
@@ -132,7 +133,7 @@ public class SelectTopicAdapter extends RecyclerView.Adapter<SelectTopicAdapter.
     }
 
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView checkedIv;
         ImageView imageView;

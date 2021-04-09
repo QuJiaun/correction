@@ -24,11 +24,12 @@ import com.luckyxmobile.correction.ui.dialog.SelectBookDialog;
 import com.luckyxmobile.correction.ui.dialog.setImageParamDialog;
 import com.luckyxmobile.correction.ui.dialog.SelectHighlighterDialog;
 import com.luckyxmobile.correction.ui.dialog.SelectWidthDialog;
-import com.luckyxmobile.correction.ui.views.CheckMenuItemView;
+import com.luckyxmobile.correction.ui.views.CheckView;
 import com.luckyxmobile.correction.ui.views.DrawingView;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
 import com.luckyxmobile.correction.utils.GsonUtils;
+import com.luckyxmobile.correction.utils.ImageTask;
 
 import org.litepal.LitePal;
 
@@ -48,22 +49,22 @@ public class EditTopicImageActivity extends AppCompatActivity implements
         SelectBookDialog.OnClickListener, SelectHighlighterDialog.OnDialogListener,
         SelectWidthDialog.OnDialogListener, setImageParamDialog.OnDialogListener{
 
-    public static final String TAG = "EditPhotoActivity";
+    private final String TAG = "EditPhotoActivity";
 
     @BindView(R.id.drawing_view)
     DrawingView drawingView;
     @BindView(R.id.drawing_view_undo)
-    CheckMenuItemView undoBtn;
+    CheckView undoBtn;
     @BindView(R.id.drawing_view_redo)
-    CheckMenuItemView redoBtn;
+    CheckView redoBtn;
     @BindView(R.id.drawing_view_tool_highlighter)
-    CheckMenuItemView highlighterBtn;
+    CheckView highlighterBtn;
     @BindView(R.id.drawing_view_tool_erase)
-    CheckMenuItemView eraseBtn;
+    CheckView eraseBtn;
     @BindView(R.id.drawing_view_tool_image_param)
-    CheckMenuItemView imageParamBtn;
+    CheckView imageParamBtn;
     @BindView(R.id.drawing_view_tool_ocr)
-    CheckMenuItemView ocrBtn;
+    CheckView ocrBtn;
 
     private SelectBookDialog selectBookDialog;
 
@@ -95,7 +96,7 @@ public class EditTopicImageActivity extends AppCompatActivity implements
 
     private void initViewDate() {
 
-        DestroyActivityUtil.addDestroyActivityToMap(EditTopicImageActivity.this,TAG);
+        DestroyActivityUtil.add(this);
 
         String imagePath = getIntent().getStringExtra(Constants.IMAGE_PATH);
         fromActivity = getIntent().getStringExtra(Constants.FROM_ACTIVITY);
@@ -178,7 +179,14 @@ public class EditTopicImageActivity extends AppCompatActivity implements
 
     @OnClick(R.id.drawing_view_return)
     public void onClickReturnBtn() {
-        DestroyActivityUtil.destroyActivity(TAG);
+       onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        drawingView.recycle();
+        DestroyActivityUtil.destroy(this);
     }
 
     @OnClick(R.id.drawing_view_ok)
@@ -188,7 +196,7 @@ public class EditTopicImageActivity extends AppCompatActivity implements
             List<String> highlighterList = BeanUtils.obj2Strings(drawingView.getHighlighterList());
             curTopicImage.setHighlighterList(highlighterList);
             curTopicImage.save();
-            DestroyActivityUtil.destroyActivityALL();
+            DestroyActivityUtil.clear();
             return;
         }
 
@@ -230,7 +238,7 @@ public class EditTopicImageActivity extends AppCompatActivity implements
             startActivity(intent);
         }
 
-        DestroyActivityUtil.destroyActivityALL();
+        DestroyActivityUtil.clear();
     }
 
 

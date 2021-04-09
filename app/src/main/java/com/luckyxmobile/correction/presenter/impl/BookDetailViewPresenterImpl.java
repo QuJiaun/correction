@@ -51,7 +51,6 @@ public class BookDetailViewPresenterImpl implements BookDetailViewPresenter, Dao
 
         if (curBook.getId() == 1 || curBook.getName().equals(context.getString(R.string.favorites))) {
             topicList = topicDao.getTopicListByCollection(true);
-            Log.d("123456", "init: " + Arrays.toString(topicList.toArray()));
         } else {
             topicList = topicDao.getTopicListByBookId(bookId);
         }

@@ -1,32 +1,21 @@
 package com.luckyxmobile.correction.ui.dialog;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.ImageParam;
 import com.luckyxmobile.correction.model.bean.TopicImage;
-import com.luckyxmobile.correction.ui.views.CheckMenuItemView;
-import com.luckyxmobile.correction.utils.BitmapUtils;
 import com.luckyxmobile.correction.utils.GsonUtils;
 import com.luckyxmobile.correction.utils.OpenCVUtil;
 
-import org.w3c.dom.Text;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 public class setImageParamDialog {
 

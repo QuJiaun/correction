@@ -94,10 +94,8 @@ public class BeanUtils {
         List<String> tmp = topicImage.getHighlighterList();
 
         for (String s: tmp) {
-            Log.d("123456", "findAll: " + s);
             Highlighter highlighter = GsonUtils.json2Obj(s, Highlighter.class);
             if (highlighter != null) {
-                Log.d("123456", "highlighter: " + highlighter);
                 result.add(highlighter);
             }
         }

@@ -1,7 +1,6 @@
 package com.luckyxmobile.correction.ui.dialog;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -10,10 +9,6 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.luckyxmobile.correction.R;
-import com.luckyxmobile.correction.ui.views.CheckMenuItemView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SelectWidthDialog{
 

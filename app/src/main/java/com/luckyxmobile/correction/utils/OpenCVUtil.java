@@ -21,7 +21,6 @@ import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +68,7 @@ public class OpenCVUtil {
 
     public Bitmap get() {
         Utils.matToBitmap(src, bitmap);
+        src.release();
         return bitmap;
     }
 
@@ -138,6 +138,7 @@ public class OpenCVUtil {
             }
         }
 
+        contours.clear();
         rgbMat.release();
         hsvMat.release();
         des.release();
@@ -208,6 +209,7 @@ public class OpenCVUtil {
 
         Log.i("ImageUtil","轮廓 众数 "+Height);
 
+        contours.clear();
         return imageWordSize;
 
     }

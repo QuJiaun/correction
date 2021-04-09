@@ -145,9 +145,9 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             if (isShowOriginalImage) {
                 Glide.with(context).load(topicImage.getPath()).into(viewHolder.topicIv);
             } else {
-                Glide.with(context).load(
-                        BitmapUtils.getBitmapInTopicInfo(context, topicImage)
-                ).into(viewHolder.topicIv);
+                Glide.with(context)
+                        .load(BitmapUtils.getBitmapInTopicInfo(topicImage))
+                        .into(viewHolder.topicIv);
             }
 
             viewHolder.editTopicBtn.setVisibility(removeMode?View.VISIBLE:View.INVISIBLE);

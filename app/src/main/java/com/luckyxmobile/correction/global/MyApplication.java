@@ -1,7 +1,9 @@
 package com.luckyxmobile.correction.global;
 
+import android.graphics.Color;
 import android.util.DisplayMetrics;
 
+import androidx.annotation.ColorRes;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.luckyxmobile.correction.R;
@@ -54,9 +56,6 @@ public class MyApplication extends LitePalApplication {
             table.putBoolean(Constants.IS_FIRST_START, false);
 
             new Book(getString(R.string.favorites), "R.mipmap.favorite").save();
-            new Book("数学", "default").save();
-            new Book("语文", "default").save();
-            new Book("英语", "default").save();
 
             new Tag("重要❤").save();
             new Tag("掌握👌").save();

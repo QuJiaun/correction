@@ -222,12 +222,12 @@ public class TagManagerActivity extends AppCompatActivity {
                 chooseTagList.add(0, tagInfoDialog.getTag());
                 tagLayoutChoose.onChanged();
             }
-            tagInfoDialog.getTag().save();
+
             if (tagInfoDialog.getTag().getId() <= 0) {
                 allTagList.add(0, tagInfoDialog.getTag());
             }
             tagLayoutAll.onChanged();
-
+            tagInfoDialog.getTag().save();
         });
 
         tagInfoDialog.create().show();

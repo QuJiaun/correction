@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,7 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.luckyxmobile.correction.R;
 
-public class CheckMenuItemView extends LinearLayout{
+public class CheckView extends LinearLayout {
 
     private boolean isChecked;
     Drawable checkedImg, uncheckedImg;
@@ -22,11 +23,11 @@ public class CheckMenuItemView extends LinearLayout{
     ImageView iconIv;
     TextView menuTv;
 
-    public CheckMenuItemView(Context context) {
+    public CheckView(Context context) {
         super(context);
     }
 
-    public CheckMenuItemView(Context context, AttributeSet attrs) {
+    public CheckView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         View view = LayoutInflater.from(context).inflate(R.layout.view_check_menu,this);

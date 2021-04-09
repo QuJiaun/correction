@@ -32,11 +32,8 @@ public class SelectTopicActivity extends AppCompatActivity implements FlowPopWin
 
 
     private FlowPopWindow flowPopWindow;
-
     private List<FiltrateBean> filterList = new ArrayList<>();
-
     private SelectTopicAdapter selectTopicListAdapter;
-
     private Paper paper;
 
     @Override

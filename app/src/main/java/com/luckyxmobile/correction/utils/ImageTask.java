@@ -2,7 +2,6 @@ package com.luckyxmobile.correction.utils;
 
 import android.graphics.Bitmap;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.LruCache;
 import android.widget.ImageView;
 
@@ -10,7 +9,6 @@ import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ImageTask {
 
@@ -31,8 +29,8 @@ public class ImageTask {
             }
         };
 
-        service = Executors.newCachedThreadPool();
-        handler = new Handler(Looper.getMainLooper());
+        service = ThreadUtils.getInstance().getService();
+        handler = ThreadUtils.getInstance().getHandler();
     }
 
     public static ImageTask getInstance() {
@@ -43,10 +41,10 @@ public class ImageTask {
         return getImageCache(topicImage.getId());
     }
 
-    public void loadTopicImage(ImageView view, TopicImage topicImage) {
+    public synchronized void loadTopicImage(ImageView view, TopicImage topicImage) {
         Bitmap bitmap = getImageCache(topicImage.getId()); //通过id获取缓存
-        if (bitmap != null) { //存在，直接加载
-            Glide.with(view.getContext()).load(bitmap).thumbnail(0.1f).into(view);
+        if (bitmap != null && !bitmap.isRecycled()) { //存在，直接加载
+            Glide.with(view.getContext()).load(bitmap).into(view);
         } else if (FilesUtils.getInstance().existsCache(topicImage)) { //本地缓存存在，加载本地
             Glide.with(view.getContext())
                     .load(FilesUtils.getInstance().getTopicImageCachePath(topicImage))
@@ -64,8 +62,12 @@ public class ImageTask {
     }
 
     public void clearTopicImage(TopicImage topicImage) {
-        imageCache.remove(topicImage.getId());
         FilesUtils.getInstance().deleteCacheTopicImage(topicImage);
+        Bitmap bitmap = getImageCache(topicImage.getId());
+        if (bitmap != null) {
+            bitmap.recycle();
+            imageCache.remove(topicImage.getId());
+        }
     }
 
     private Bitmap getImageCache(int id) {
