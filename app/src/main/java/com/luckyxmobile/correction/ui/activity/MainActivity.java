@@ -185,19 +185,22 @@ public class MainActivity extends AppCompatActivity implements MainView,
             bookDialog = new BookDialog(this);
             bookDialog.create();
             bookDialog.setPositiveButton(R.string.ensure, () -> {
-                Book result = bookDialog.getBook();
-                String bookName = result.getName();
+                Book tmpBook = bookDialog.getBook();
+                String bookName = tmpBook.getName();
                 if (TextUtils.isEmpty(bookName)) {
                     bookDialog.onError(R.string.empty_input);
                 } else if (bookName.length() > 15) {
                     bookDialog.onError(R.string.input_error);
                 } else {
-                    if (result.getId() > 0) {
-                        mainViewPresenter.alterBookInfo(result);
+                    boolean result;
+                    if (tmpBook.getId() > 0) {
+                        result = mainViewPresenter.alterBookInfo(tmpBook);
                     } else {
-                        mainViewPresenter.saveBook(result);
+                        result = mainViewPresenter.saveBook(tmpBook);
                     }
-                    bookDialog.dismiss();
+                    if (result) {
+                        bookDialog.dismiss();
+                    }
                 }
             });
 
@@ -279,9 +282,7 @@ public class MainActivity extends AppCompatActivity implements MainView,
     public void onBookLongClickListener(View view, Book book) {
         PopupMenu popupMenu = new PopupMenu(this, view);
         getMenuInflater().inflate(R.menu.menu_long_click_book ,popupMenu.getMenu());
-
         popupMenu.setOnMenuItemClickListener(item -> {
-
             if (item.getItemId() == R.id.item_book_info) {
                 showBookDialog(book);
             } else if (item.getItemId() == R.id.item_delete_book) {
@@ -290,7 +291,6 @@ public class MainActivity extends AppCompatActivity implements MainView,
             popupMenu.dismiss();
             return true;
         });
-
         popupMenu.show();
     }
 
@@ -344,6 +344,10 @@ public class MainActivity extends AppCompatActivity implements MainView,
 
     @Override
     public void onToast(String showLog) {
-        Toast.makeText(this, showLog, Toast.LENGTH_SHORT).show();
+        if (bookDialog != null && bookDialog.isShowing()) {
+            bookDialog.onError(showLog);
+        } else {
+            Toast.makeText(this, showLog, Toast.LENGTH_SHORT).show();
+        }
     }
 }

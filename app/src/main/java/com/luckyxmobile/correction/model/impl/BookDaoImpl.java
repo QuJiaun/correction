@@ -30,15 +30,14 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public void saveBook(Book book) {
+    public boolean saveBook(Book book) {
 
-        if (book.getId() > 0) updateBook(book);
+        if (book.getId() > 0) return updateBook(book);
 
         //判断 命名是否重复
-        List<Book> books = LitePal.where("name=?", book.getName()).find(Book.class);
-        if (books != null && !books.isEmpty()) {
-            listener.onToast(book.getName() + " 已存在");
-            return;
+        if (existBookName(book.getName(), false)) {
+            listener.onToast(book.getName() + " 已存在！");
+            return false;
         }
 
         book.save();
@@ -52,6 +51,8 @@ public class BookDaoImpl implements BookDao {
             book.setCover(newPath);
             book.save();
         }
+
+        return true;
     }
 
     @Override
@@ -73,9 +74,14 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public void updateBook(Book book) {
+    public boolean updateBook(Book book) {
 
-        if (book.getId() <= 0) saveBook(book);
+        if (book.getId() <= 0) return saveBook(book);
+
+        if (existBookName(book.getName(), true)) {
+            listener.onToast(book.getName() + " 已存在！");
+            return false;
+        }
 
         if (TextUtils.isEmpty(book.getCover())) {
             book.setToDefault("cover");
@@ -88,5 +94,17 @@ public class BookDaoImpl implements BookDao {
         }
 
         book.update(book.getId());
+        return true;
+    }
+
+    private boolean existBookName(String name, boolean isSave) {
+        List<Book> books = LitePal.where("name=?", name).find(Book.class);
+        if (books != null && !books.isEmpty()) {
+            if (isSave) {
+                return books.size() > 1;
+            }
+            return true;
+        }
+        return false;
     }
 }

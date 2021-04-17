@@ -9,9 +9,9 @@ import com.luckyxmobile.correction.model.bean.Book;
  */
 public interface BookDao {
 
-    void saveBook(Book book);
+    boolean saveBook(Book book);
 
-    void updateBook(Book book);
+    boolean updateBook(Book book);
 
     void removeBook(Book book);
 }

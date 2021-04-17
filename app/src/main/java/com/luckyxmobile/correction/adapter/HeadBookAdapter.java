@@ -83,7 +83,7 @@ public class HeadBookAdapter extends RecyclerView.Adapter<HeadBookAdapter.ViewHo
                 listener.onBookClickListener(book));
 
         holder.bookLayout.setOnLongClickListener(v -> {
-            if (book.getId() == 1) return true;
+            if (book.getId() == 1) return false;
             listener.onBookLongClickListener(holder.bookLayout, book);
             holder.bookLayout.startAnimation(onLongClickAnim);
             return true;

@@ -34,15 +34,21 @@ public class MainViewPresenterImpl implements  MainViewPresenter, DaoListener {
     }
 
     @Override
-    public void saveBook(Book book) {
-        bookDao.saveBook(book);
-        mainView.saveBookFinished(book);
+    public boolean saveBook(Book book) {
+        if (bookDao.saveBook(book)) {
+            mainView.saveBookFinished(book);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void alterBookInfo(Book book) {
-        bookDao.updateBook(book);
-        mainView.updateBookFinished(book);
+    public boolean alterBookInfo(Book book) {
+        if (bookDao.updateBook(book)) {
+            mainView.updateBookFinished(book);
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -6,9 +6,9 @@ public interface MainViewPresenter {
 
     void init();
 
-    void saveBook(Book book);
+    boolean saveBook(Book book);
 
-    void alterBookInfo(Book book);
+    boolean alterBookInfo(Book book);
 
     void removeBook(Book book);
 
