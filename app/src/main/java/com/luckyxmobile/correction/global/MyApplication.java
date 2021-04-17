@@ -1,9 +1,7 @@
 package com.luckyxmobile.correction.global;
 
-import android.graphics.Color;
 import android.util.DisplayMetrics;
 
-import androidx.annotation.ColorRes;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.luckyxmobile.correction.R;
@@ -22,26 +20,16 @@ public class MyApplication extends LitePalApplication {
 
         LitePal.initialize(this);
         FilesUtils.getInstance().init(this);
-        MySharedPreferences.getInstance().init(this);
+        MyPreferences.getInstance().init(this);
 
-        setTheme(MySharedPreferences.getInstance().getString(Constants.TABLE_APP_THEME,"0"));
+        int theme = MyPreferences.getInstance().getInt(Constants.TABLE_APP_THEME,
+                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        setMyTheme(theme);
         initSQLFirst();
     }
 
-    public static void setTheme(String them) {
-        switch (them) {
-            case "0":
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-                break;
-
-            case "1":
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                break;
-
-            case "2":
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                break;
-        }
+    public static void setMyTheme(int them) {
+        AppCompatDelegate.setDefaultNightMode(them);
     }
 
     /**
@@ -49,7 +37,7 @@ public class MyApplication extends LitePalApplication {
      */
     private void initSQLFirst(){
 
-        MySharedPreferences table = MySharedPreferences.getInstance();
+        MyPreferences table = MyPreferences.getInstance();
 
         if (table.getBoolean(Constants.IS_FIRST_START, true)) {
             table.clearAll();

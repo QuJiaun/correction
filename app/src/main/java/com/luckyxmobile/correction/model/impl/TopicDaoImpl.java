@@ -1,9 +1,11 @@
 package com.luckyxmobile.correction.model.impl;
 
+import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.TopicDao;
 import com.luckyxmobile.correction.model.DaoListener;
+import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.utils.FilesUtils;
 
 import org.litepal.LitePal;
@@ -86,18 +88,24 @@ public class TopicDaoImpl implements TopicDao {
     @Override
     public void removeTopic(Topic topic) {
         filesUtils.deleteTopicDir(topic, daoListener);
-
-        LitePal.deleteAll("TopicImage", "topic_id=?", String.valueOf(topic.getId()));
-        LitePal.delete(Topic.class, topic.getId());
+        List<TopicImage> topicImageList = BeanUtils.findTopicAll(topic);
+        BeanUtils.removeTopicImageList(topicImageList);
+        topic.delete();
     }
 
     @Override
     public void removeTopicList(List<Topic> topicList) {
-
         filesUtils.deleteTopicDirList(topicList, daoListener);
         //删除级联表
         for (Topic topic : topicList) {
-            LitePal.delete(Topic.class, topic.getId());
+            remove(topic);
+            topic.delete();
         }
+    }
+
+    private void remove(Topic topic) {
+        BeanUtils.removeTopicInTag(topic);
+        List<TopicImage> topicImageList = BeanUtils.findTopicAll(topic);
+        BeanUtils.removeTopicImageList(topicImageList);
     }
 }

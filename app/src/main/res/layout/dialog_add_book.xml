@@ -18,9 +18,9 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageButton
-            android:id="@+id/alter_cover_image"
             android:layout_margin="8dp"
             android:src="@drawable/ic_album"
+            android:visibility="gone"
             android:background="@drawable/shape_box_fillet_shadow_view"
             style="@style/normal_icon_button"
             app:layout_constraintBottom_toBottomOf="@id/coverImg"
@@ -29,7 +29,7 @@
         <ImageButton
             android:id="@+id/delete_book_cover"
             android:layout_margin="8dp"
-            android:src="@drawable/delete_book"
+            android:src="@drawable/ic_delete"
             android:background="@drawable/shape_box_fillet_shadow_view"
             android:visibility="invisible"
             style="@style/normal_icon_button"

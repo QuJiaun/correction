@@ -3,6 +3,7 @@ package com.luckyxmobile.correction.ui.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,7 +13,6 @@ import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -24,12 +24,14 @@ import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.HeadBookAdapter;
 import com.luckyxmobile.correction.adapter.RecentTopicAdapter;
 import com.luckyxmobile.correction.model.bean.Book;
+import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.presenter.MainViewPresenter;
 import com.luckyxmobile.correction.presenter.impl.MainViewPresenterImpl;
 import com.luckyxmobile.correction.global.Constants;
-import com.luckyxmobile.correction.ui.dialog.AddTopicImageDialog;
-import com.luckyxmobile.correction.ui.dialog.BookInfoDialog;
+import com.luckyxmobile.correction.ui.dialog.AddTopicDialog;
+import com.luckyxmobile.correction.ui.dialog.AlertDialog;
+import com.luckyxmobile.correction.ui.dialog.BookDialog;
 import com.luckyxmobile.correction.utils.PermissionsUtil;
 import com.luckyxmobile.correction.view.MainView;
 
@@ -45,9 +47,7 @@ import butterknife.BindAnim;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.pqpo.smartcropperlib.SmartCropper;
 import sakura.particle.Factory.ExplodeParticleFactory;
-import sakura.particle.Factory.ParticleFactory;
 import sakura.particle.Main.ExplosionSite;
 
 
@@ -56,9 +56,7 @@ import sakura.particle.Main.ExplosionSite;
  */
 @SuppressLint("NonConstantResourceId")
 public class MainActivity extends AppCompatActivity implements MainView,
-        HeadBookAdapter.OnHeadBookAdapterListener,
-        BookInfoDialog.OnBtnClickListener,
-        AddTopicImageDialog.OnClickListener {
+        HeadBookAdapter.OnHeadBookAdapterListener{
 
     public static final String TAG = MainActivity.class.getSimpleName();
     private long lastClickTime = 0L;
@@ -67,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements MainView,
     TextView recentTopicTv;
     @BindView(R.id.rv_head_book)
     RecyclerView headBookRv;
+    @BindView(R.id.main_recycler_recent_topic)
+    RecyclerView recentTopicRv;
     @BindView(R.id.floating_button_add_topic)
     FloatingActionButton floatingActionButton;
     @BindAnim(R.anim.layout_in_below)
@@ -74,10 +74,14 @@ public class MainActivity extends AppCompatActivity implements MainView,
     @BindAnim(R.anim.layout_out_below)
     Animation hideAnim;
 
+    private RecentTopicAdapter recentTopicAdapter;
     private HeadBookAdapter headBookAdapter;
-    private BookInfoDialog bookInfoDialog;
     private MainViewPresenter mainViewPresenter;
     private ExplosionSite explosionSite;
+
+    private BookDialog bookDialog;
+    private AlertDialog alertDialog;
+    private AddTopicDialog addTopicDialog;
 
     private final BaseLoaderCallback mOpenCVCallBack = new BaseLoaderCallback(this) {
         @Override
@@ -106,8 +110,6 @@ public class MainActivity extends AppCompatActivity implements MainView,
         explosionSite = new ExplosionSite(this, new ExplodeParticleFactory());
         //初始化openCV
         initOpenCV();
-        //初始化裁剪框
-        SmartCropper.buildImageDetector(this);
     }
 
     @Override
@@ -131,27 +133,31 @@ public class MainActivity extends AppCompatActivity implements MainView,
 
     @Override
     public void setHeadBookRv(List<Book> headBookList) {
-
-        GridLayoutManager mLayoutManager = new GridLayoutManager(this,4);
-        headBookAdapter = new HeadBookAdapter(this, headBookList);
-        headBookRv.setLayoutManager(mLayoutManager);
-        headBookRv.setItemAnimator(new DefaultItemAnimator());
-        headBookRv.setNestedScrollingEnabled(false);//解决卡顿
-        headBookRv.setAdapter(headBookAdapter);
+        if (headBookAdapter == null) {
+            headBookAdapter = new HeadBookAdapter(this);
+            GridLayoutManager mLayoutManager = new GridLayoutManager(this,4);
+            headBookRv.setLayoutManager(mLayoutManager);
+            headBookRv.setItemAnimator(new DefaultItemAnimator());
+            headBookRv.setNestedScrollingEnabled(false);//解决卡顿
+            headBookRv.setAdapter(headBookAdapter);
+        }
+        headBookAdapter.setBookList(headBookList);
+        headBookAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void setRecentTopicRv(List<Topic> topicList) {
-
-        RecyclerView recentTopicRv = findViewById(R.id.main_recycler_recent_topic);
         recentTopicTv.setVisibility(topicList.isEmpty()?View.GONE:View.VISIBLE);
-
-        RecentTopicAdapter recentTopicAdapter = new RecentTopicAdapter(this, topicList);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recentTopicRv.setLayoutManager(mLayoutManager);
-        recentTopicRv.setItemAnimator(new DefaultItemAnimator());
-        recentTopicRv.setNestedScrollingEnabled(false);//解决卡顿
-        recentTopicRv.setAdapter(recentTopicAdapter);
+        if (recentTopicAdapter == null) {
+            recentTopicAdapter = new RecentTopicAdapter(this);
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+            recentTopicRv.setLayoutManager(mLayoutManager);
+            recentTopicRv.setItemAnimator(new DefaultItemAnimator());
+            recentTopicRv.setNestedScrollingEnabled(false);//解决卡顿
+            recentTopicRv.setAdapter(recentTopicAdapter);
+        }
+        recentTopicAdapter.setTopics(topicList);
+        recentTopicAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -161,29 +167,56 @@ public class MainActivity extends AppCompatActivity implements MainView,
         if (resultCode == RESULT_OK) {
             if (requestCode == Constants.REQUEST_CODE_BOOK_COVER_IMAGE) {
                 String imagePath = data.getStringExtra(Constants.IMAGE_PATH);
-                if (bookInfoDialog == null) {
-                    showBookInfoDialog(null);
+                if (bookDialog == null) {
+                    showBookDialog(null);
                 }
-                bookInfoDialog.alterBookCover(imagePath);
+                bookDialog.alterBookCover(imagePath);
             }
         }
     }
 
     @OnClick(R.id.add_book_main)
     public void onClickAddBook(){
-        showBookInfoDialog(null);
+        showBookDialog(null);
     }
 
-    private void showBookInfoDialog(Book book) {
-        bookInfoDialog = new BookInfoDialog(this);
-        bookInfoDialog.setBook(book);
-        bookInfoDialog.create().show();
+    private void showBookDialog(Book book) {
+        if (bookDialog == null) {
+            bookDialog = new BookDialog(this);
+            bookDialog.create();
+            bookDialog.setPositiveButton(R.string.ensure, () -> {
+                Book result = bookDialog.getBook();
+                String bookName = result.getName();
+                if (TextUtils.isEmpty(bookName)) {
+                    bookDialog.onError(R.string.empty_input);
+                } else if (bookName.length() > 15) {
+                    bookDialog.onError(R.string.input_error);
+                } else {
+                    if (result.getId() > 0) {
+                        mainViewPresenter.alterBookInfo(result);
+                    } else {
+                        mainViewPresenter.saveBook(result);
+                    }
+                    bookDialog.dismiss();
+                }
+            });
+
+            bookDialog.setNeutralButton(R.string.edit_cover, () -> {
+                Intent intent =  CropImageActivity.getIntent(this, true, false);
+                intent.putExtra(Constants.FROM_ACTIVITY, MainActivity.TAG);
+                startActivityForResult(intent, Constants.REQUEST_CODE_BOOK_COVER_IMAGE);
+            });
+        }
+        bookDialog.setBook(book);
+        if (!bookDialog.isShowing()) {
+            bookDialog.show();
+        }
     }
 
     @OnClick(R.id.floating_button_add_topic)
     public void onClickAddTopic(){
         if (headBookAdapter.getBookList().size() > 1) {
-            AddTopicImageDialog.show(this);
+            showAddTopicDialog();
         } else {
             onToast("请先添加错题本");
         }
@@ -250,21 +283,10 @@ public class MainActivity extends AppCompatActivity implements MainView,
         popupMenu.setOnMenuItemClickListener(item -> {
 
             if (item.getItemId() == R.id.item_book_info) {
-                showBookInfoDialog(book);
+                showBookDialog(book);
             } else if (item.getItemId() == R.id.item_delete_book) {
-
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle(R.string.confirm_delete)
-                        .setIcon(R.drawable.ic_delete_red_24dp)
-                        .setMessage(R.string.confirm_delete_notebook_hint)
-                        .setPositiveButton(R.string.ensure, (dialog, which) ->{
-                            explosionSite.addListener(view);
-                            mainViewPresenter.removeBook(book);
-                            explosionSite.explode(view);
-                        } )
-                        .setNegativeButton(R.string.cancel,null).show();
+                showAlertDialog(book, view);
             }
-
             popupMenu.dismiss();
             return true;
         });
@@ -272,35 +294,56 @@ public class MainActivity extends AppCompatActivity implements MainView,
         popupMenu.show();
     }
 
-    @Override
-    public void onBookInfoDialogEnsure(Book book) {
-        if (book.getName().length() > 15) {
-            showBookInfoDialog(book);
-            return;
+    private void showAlertDialog(Book book, View view) {
+        if (alertDialog == null) {
+            alertDialog = new AlertDialog(this);
+            alertDialog.create();
+            alertDialog.setTitle(R.string.delete);
+            alertDialog.setMessage(R.string.confirm_delete_notebook_hint);
         }
 
-        if (book.getName() == null || book.getName().isEmpty()) {
-            showBookInfoDialog(book);
-            onToast(getString(R.string.empty_input));
-            return;
-        }
+        alertDialog.setPositiveButton(R.string.ensure, () -> {
+            explosionSite.addListener(view);
+            mainViewPresenter.removeBook(book);
+            alertDialog.dismiss();
+            explosionSite.explode(view);
+        });
 
-        if (book.getId() == 0) {
-            mainViewPresenter.saveBook(book);
-        }else {
-            mainViewPresenter.alterBookInfo(book);
+        if (!alertDialog.isShowing()) {
+            alertDialog.show();
         }
     }
 
-    @Override
+    private void showAddTopicDialog() {
+        if (addTopicDialog == null) {
+            addTopicDialog = new AddTopicDialog(this);
+            addTopicDialog.create();
+            addTopicDialog.setFromAlbum(() -> addTopicFrom(true));
+            addTopicDialog.setFromCamera(() -> addTopicFrom(false));
+            addTopicDialog.setOnShowListener(dialogInterface -> {
+                floatingActionButton.startAnimation(hideAnim);
+            });
+            addTopicDialog.setOnDismissListener(dialogInterface -> {
+                floatingActionButton.startAnimation(showAnim);
+            });
+        }
+
+        if (!addTopicDialog.isShowing()) {
+            addTopicDialog.show();
+        }
+    }
+
     public void addTopicFrom(boolean album) {
         Intent intent = CropImageActivity.getIntent(this, album, true);
         intent.putExtra(Constants.FROM_ACTIVITY, TAG);
         startActivity(intent);
+        if (addTopicDialog.isShowing()) {
+            addTopicDialog.dismiss();
+        }
     }
 
     @Override
     public void onToast(String showLog) {
-        Toast.makeText(getApplication(), showLog, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, showLog, Toast.LENGTH_SHORT).show();
     }
 }

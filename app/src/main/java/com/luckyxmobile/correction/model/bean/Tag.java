@@ -4,6 +4,7 @@ import org.litepal.crud.LitePalSupport;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -84,5 +85,18 @@ public class Tag extends LitePalSupport {
             ", tag_name='" + tag_name + '\'' +
             ", tag_create_time=" + tag_create_time +
             '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tag tag = (Tag) o;
+        return id == tag.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

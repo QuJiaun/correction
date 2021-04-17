@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import java.util.List;
 public class SelectTopicActivity extends AppCompatActivity implements FlowPopWindow.OnConfirmClickListener {
 
 
+    private ImageView nothingHint;
     private FlowPopWindow flowPopWindow;
     private List<FiltrateBean> filterList = new ArrayList<>();
     private SelectTopicAdapter selectTopicListAdapter;
@@ -49,6 +51,7 @@ public class SelectTopicActivity extends AppCompatActivity implements FlowPopWin
         toolbar.setTitle(R.string.select_topics);
         toolbar.setTitle(toolbar.getTitle() + " - " + paper.getPaperName());
         setSupportActionBar(toolbar);
+        nothingHint = findViewById(R.id.nothing_hint);
 
         findViewById(R.id.select_topic_finish_btn).setOnClickListener(view -> {
             paper.save();
@@ -58,6 +61,11 @@ public class SelectTopicActivity extends AppCompatActivity implements FlowPopWin
         selectTopicRv.setLayoutManager(new LinearLayoutManager(this));
         selectTopicListAdapter = new SelectTopicAdapter(paper);
         selectTopicRv.setAdapter(selectTopicListAdapter);
+        if (selectTopicListAdapter.isEmpty()) {
+            nothingHint.setVisibility(View.VISIBLE);
+        } else {
+            nothingHint.setVisibility(View.GONE);
+        }
     }
 
     private void setFlowPopWindow() {

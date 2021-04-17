@@ -29,16 +29,11 @@ public class Constants {
 
     //多少秒点击一次 默认1秒
     public static final int MIN_CLICK_DELAY_TIME = 1000;
-    public static final int MIN_CLICK_TOW_TIME = 500;
 
     public static final int REQUEST_PERMISSION = 0x100;
     public static final int REQUEST_CODE_TAKE_PHOTO = 0x101;
     public static final int REQUEST_CODE_SELECT_ALBUM = 0x102;
     public static final int REQUEST_CODE_BOOK_COVER_IMAGE = 0x103;
-    public static final int FINISH_CROP_IMAGE = 0x104;
-
-    public static final int FROM_TOPIC_INFO_ACTIVITY = 0x110;
-    public static final int FROM_MAIN_ACTIVITY = 0x111;
 
     //intent参数
     public static final String FROM_ACTIVITY = "from_activity";

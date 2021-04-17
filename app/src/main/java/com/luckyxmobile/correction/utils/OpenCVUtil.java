@@ -1,7 +1,6 @@
 package com.luckyxmobile.correction.utils;
 
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.util.Log;
 
 import com.luckyxmobile.correction.global.Constants;
@@ -10,9 +9,11 @@ import com.luckyxmobile.correction.model.bean.ImageParam;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
@@ -23,6 +24,8 @@ import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.pqpo.smartcropperlib.utils.CropUtils;
 
 import static org.opencv.imgproc.Imgproc.COLOR_RGB2HSV;
 
@@ -111,6 +114,61 @@ public class OpenCVUtil {
         }
         return this;
     }
+
+//    private static double getSpacePointToPoint(Point p1, Point p2) {
+//        double a = p1.x - p2.x;
+//        double b = p1.y - p2.y;
+//        return Math.sqrt(a * a + b * b);
+//    }
+//
+//    public static Bitmap crop(Bitmap bitmap, Point[] points) {
+//
+//        Point p0 = points[0];
+//        Point p1 = points[1];
+//        Point p2 = points[2];
+//        Point p3 = points[3];
+//
+//        double space0 = getSpacePointToPoint(p0, p1);
+//        double space1 = getSpacePointToPoint(p1, p2);
+//        double space2 = getSpacePointToPoint(p2, p3);
+//        double space3 = getSpacePointToPoint(p3, p0);
+//
+//        double imgWidth = (space0 + space2)/2;
+//        double imgHeight = (space1 + space3)/2;
+//
+//        Mat result = new Mat();
+//        Utils.bitmapToMat(bitmap, result);
+//
+//        Mat quad = Mat.zeros((int)imgWidth, (int)imgHeight, CvType.CV_8UC3);
+//        MatOfPoint2f cornerMat = new MatOfPoint2f(p0, p1, p2, p3);
+//        MatOfPoint2f quadMat = new MatOfPoint2f(new Point(imgWidth*0.4, imgHeight*1.6),
+//                new Point(imgWidth*0.4, imgHeight*0.4),
+//                new Point(imgWidth*1.6, imgHeight*0.4),
+//                new Point(imgWidth*1.6, imgHeight*1.6));
+//
+//        Mat transmtx = Imgproc.getPerspectiveTransform(cornerMat, quadMat);
+//        Imgproc.warpPerspective(result, quad, transmtx, quad.size());
+//        Utils.matToBitmap(quad, bitmap);
+//        result.release();
+//        quad.release();
+//        transmtx.release();
+//        return bitmap;
+//    }
+//
+//    public static Bitmap setRotate(Bitmap bitmap, int flip) {
+//        Mat src = new Mat();
+//        Mat tmp = new Mat();
+//        Mat dst = new Mat();
+//        Utils.bitmapToMat(bitmap, src);
+//        Core.transpose(src, tmp);
+//        Core.flip(src, dst, flip);
+//        Utils.matToBitmap(dst, bitmap);
+//
+//        src.release();
+//        tmp.release();
+//        dst.release();
+//        return bitmap;
+//    }
 
     public List<Highlighter> HSV(String path, int wordSize) {
 
@@ -210,6 +268,8 @@ public class OpenCVUtil {
         Log.i("ImageUtil","轮廓 众数 "+Height);
 
         contours.clear();
+        wordHeights.clear();
+
         return imageWordSize;
 
     }

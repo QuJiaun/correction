@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.ui.dialog.ProgressDialog;
+import com.luckyxmobile.correction.ui.views.CropImageView;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
 import com.luckyxmobile.correction.utils.BitmapUtils;
 import com.luckyxmobile.correction.utils.FilesUtils;
@@ -23,16 +24,11 @@ import com.luckyxmobile.correction.utils.FilesUtils;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.BindView;
-import me.pqpo.smartcropperlib.view.CropImageView;
 
-/**
- * @author zc
- */
+
 public class CropImageActivity extends AppCompatActivity{
 
-    public static final String TAG = "CropActivity";
-
-    @BindView(R.id.crop_image_view)
+    @BindView(R.id.cropImageView)
     CropImageView cropImageView;
 
     @BindView(R.id.next_btn)
@@ -40,7 +36,9 @@ public class CropImageActivity extends AppCompatActivity{
 
     private Intent curIntent;
     private boolean isEdit = true;
+    private FilesUtils filesUtils = FilesUtils.getInstance();
     private Bitmap imageBitmap = null;
+    private ProgressDialog progressDialog;
 
     public static Intent getIntent(Activity activity, boolean fromAlbum, boolean isEdit){
         Intent intent = new Intent(activity, CropImageActivity.class);
@@ -58,6 +56,8 @@ public class CropImageActivity extends AppCompatActivity{
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_crop_activity);
         ButterKnife.bind(this);
+
+        cropImageView.setDragLimit(true);
 
         // 得到传入的action和type
         curIntent = getIntent();
@@ -82,7 +82,7 @@ public class CropImageActivity extends AppCompatActivity{
             imageBitmap = BitmapUtils.getImage(exterUri, getContentResolver());
 
             if (imageBitmap != null) {
-                cropImageView.setImageBitmap(imageBitmap);
+                cropImageView.setImageToCrop(imageBitmap);
             }else {
                 onToast("分享失败");
                 onBackPressed();
@@ -102,11 +102,15 @@ public class CropImageActivity extends AppCompatActivity{
             }
         }
 
-        cropImageView.setDragLimit(true);
-
         if (!isEdit){
             nextBtn.setText(getString(R.string.finish));
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cropImageView.destroy();
     }
 
     @OnClick(R.id.exit_btn)
@@ -122,29 +126,31 @@ public class CropImageActivity extends AppCompatActivity{
 
     @OnClick(R.id.next_btn)
     public void onClickNext(){
-        FilesUtils filesUtils = FilesUtils.getInstance();
-        new ProgressDialog(this){
-            @Override
-            public boolean onPreExecute() {
-                if(!cropImageView.canRightCrop()) {//判断选区是否为凸四边形,bitmap是否为空
-                    onToast(getString(R.string.crop_failed));
-                    return false;
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this) {
+                @Override
+                public boolean onPreExecute() {
+                    if(!cropImageView.canRightCrop()) {//判断选区是否为凸四边形,bitmap是否为空
+                        onToast(getString(R.string.crop_failed));
+                        return false;
+                    }
+                    return true;
                 }
-                return true;
-            }
-            @Override
-            public boolean doInBackground() throws Exception {
-                Bitmap bitmap = cropImageView.crop();
-                return filesUtils.saveBitmap2TmpFile(bitmap);
-            }
-            @Override
-            public void onPostExecute(boolean result) {
-                super.onPostExecute(result);
-                if (result) {
-                    onCropImageFinished(filesUtils.getTmpFilePath());
+                @Override
+                public boolean doInBackground() throws Exception {
+                    Bitmap bitmap = cropImageView.crop();
+                    return filesUtils.saveBitmap2TmpFile(bitmap);
                 }
-            }
-        }.start();
+                @Override
+                public void onPostExecute(boolean result) {
+                    super.onPostExecute(result);
+                    if (result) {
+                        onCropImageFinished(filesUtils.getTmpFilePath());
+                    }
+                }
+            };
+        }
+        progressDialog.start();
     }
 
     @OnClick(R.id.reset_btn)
@@ -154,10 +160,13 @@ public class CropImageActivity extends AppCompatActivity{
 
     @OnClick(R.id.rotate_btn)
     public void onClickRotate(){
-        imageBitmap = BitmapUtils.rotateBitmap(imageBitmap,-90);
-        cropImageView.setImageToCrop(imageBitmap);
+        cropImageView.setImageRotate(-90);
     }
 
+    @OnClick(R.id.autoScan)
+    public void onClickScan() {
+        cropImageView.autoScan();
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -173,7 +182,7 @@ public class CropImageActivity extends AppCompatActivity{
         if (resultCode == RESULT_OK) {
             //获取图片（来自拍照或图），传给imageBitmap
             if (requestCode == Constants.REQUEST_CODE_TAKE_PHOTO) {
-                imageBitmap = BitmapUtils.getBitmap(FilesUtils.getInstance().getTmpFilePath());
+                imageBitmap = BitmapUtils.getBitmapToSize(FilesUtils.getInstance().getTmpFilePath());
             } else if (requestCode == Constants.REQUEST_CODE_SELECT_ALBUM) {
                 if (data.getData() != null) {
                     imageBitmap = BitmapUtils.getImage(data.getData(), getContentResolver());

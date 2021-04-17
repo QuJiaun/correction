@@ -11,12 +11,6 @@
     android:foreground="?android:attr/selectableItemBackgroundBorderless"
     android:background="#88ffffff">
 
-<!--    <com.youth.banner.Banner-->
-<!--        android:id="@+id/topic_image"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:minHeight="120dp"/>-->
-
     <ImageView
         android:id="@+id/topic_image"
         android:layout_width="match_parent"
@@ -68,9 +62,9 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:visibility="gone"
-        android:src="@drawable/item_uncheck"
+        android:src="@drawable/ic_checked"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

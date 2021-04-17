@@ -1,7 +1,5 @@
 package com.luckyxmobile.correction.model;
 
-import android.util.Log;
-
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.Highlighter;
@@ -10,6 +8,7 @@ import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.utils.GsonUtils;
+import com.luckyxmobile.correction.utils.ImageTask;
 
 import org.litepal.LitePal;
 
@@ -19,6 +18,25 @@ import java.util.List;
 import java.util.Set;
 
 public class BeanUtils {
+
+    public static void removeTopicImageList(List<TopicImage> topicImages) {
+        for (TopicImage topicImage :topicImages) {
+            ImageTask.getInstance().clearTopicImage(topicImage);
+            topicImage.delete();
+        }
+    }
+
+    public static void removeTopicInTag(Topic topic) {
+        if (topic.getId() <=0) return;
+        List<Tag> tagList = LitePal.findAll(Tag.class);
+        if (tagList.isEmpty()) return;
+        for (Tag tag : tagList) {
+            if (tag.getTopicSet().contains(topic.getId())) {
+                tag.getTopicSet().remove(topic.getId());
+                tag.save();
+            }
+        }
+    }
 
     public static TopicImage findTopicImageFirst(Topic topic) {
         return LitePal.where("topic_id=?", String.valueOf(topic.getId()))

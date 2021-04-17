@@ -170,6 +170,13 @@ public class FilesUtils{
     }
 
     public boolean saveCacheTopicImage(TopicImage topicImage, Bitmap bitmap) {
+        File cache = new File(CACHE_DIR);
+        if (cache.exists()) {
+            File[] files = cache.listFiles();
+            if (files.length > 30) {
+                deleteFile(files[1]);
+            }
+         }
         return saveBitmap(getTopicImageCachePath(topicImage), bitmap);
     }
 

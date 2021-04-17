@@ -2,6 +2,7 @@ package com.luckyxmobile.correction.ui.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,14 +11,14 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Tag;
-import com.luckyxmobile.correction.ui.dialog.TagInfoDialog;
+import com.luckyxmobile.correction.ui.dialog.AlertDialog;
+import com.luckyxmobile.correction.ui.dialog.TagDialog;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -42,7 +43,8 @@ public class TagManagerActivity extends AppCompatActivity {
     /**全部标签集合*/
     private List<Tag> allTagList = new ArrayList<>();
 
-    private TagInfoDialog tagInfoDialog;
+    private TagDialog tagDialog;
+    private AlertDialog alertDialog;
 
     private int curTopicId = -1;
     private boolean isDelete = false;
@@ -104,7 +106,7 @@ public class TagManagerActivity extends AppCompatActivity {
                     isDelete = false;
                     tagLayoutAll.onChanged();
                 }
-                tagInfoDialog(null);
+                showTagDialog(null);
                 break;
             default:
         }
@@ -167,7 +169,7 @@ public class TagManagerActivity extends AppCompatActivity {
                 checkBox.setChecked(chooseTagList.contains(tag));
                 if (isDelete){
                     checkBox.setTextColor(Color.GRAY);
-                    checkBox.setButtonDrawable(R.drawable.ic_delete_red_24dp);
+                    checkBox.setButtonDrawable(R.drawable.ic_delete);
                 }
 
                 return checkBox;
@@ -189,7 +191,7 @@ public class TagManagerActivity extends AppCompatActivity {
                         chooseTagList.remove(allTagList.get(position));
                     }
                 } else {
-                    tagInfoDialog(allTagList.get(position));
+                    showTagDialog(allTagList.get(position));
                 }
             }else{
                 deleteTag(position);
@@ -201,53 +203,66 @@ public class TagManagerActivity extends AppCompatActivity {
         });
     }
 
-    private void tagInfoDialog(Tag tag) {
+    private void showTagDialog(Tag tag) {
+        if (tagDialog == null) {
+            tagDialog = new TagDialog(this);
+            tagDialog.create();
+            tagDialog.setPositiveButton(R.string.ensure, () -> {
+                Tag result = tagDialog.getTag();
+                String tagName = result.getTag_name();
+                if (TextUtils.isEmpty(tagName)) {
+                    tagDialog.onError(R.string.empty_input);
+                } else if (tagName.length() > 8) {
+                    tagDialog.onError(R.string.input_error);
+                } else if (BeanUtils.existsTag(tagName)) {
+                    tagDialog.onError(R.string.hint_repeated_tag);
+                }  else {
+                    if (curTopicId > 0) {
+                        result.getTopicSet().add(curTopicId);
+                        chooseTagList.add(0, result);
+                        tagLayoutChoose.onChanged();
+                    }
 
-        tagInfoDialog = new TagInfoDialog(this);
-        tagInfoDialog.setTitle(R.string.tag);
-        tagInfoDialog.setTag(tag);
-        tagInfoDialog.setPositiveButton(R.string.ensure, (dialogInterface, i) -> {
-            String tagName = tagInfoDialog.getTag().getTag_name();
-            if (tagName == null || tagName.isEmpty() || tagName.length() > 8) {
-                onToast(getString(R.string.input_error));
-                return;
-            }
-            if (BeanUtils.existsTag(tagName)) {
-                onToast(getString(R.string.hint_repeated_tag));
-                return;
-            }
+                    if (result.getId() <= 0) {
+                        allTagList.add(0, result);
+                    } else {
+                        int index = allTagList.indexOf(result);
+                        allTagList.remove(index);
+                        allTagList.add(index, result);
+                    }
+                    tagLayoutAll.onChanged();
+                    result.save();
+                    tagDialog.dismiss();
+                }
+            });
+        }
 
-            if (curTopicId > 0) {
-                tagInfoDialog.getTag().getTopicSet().add(curTopicId);
-                chooseTagList.add(0, tagInfoDialog.getTag());
-                tagLayoutChoose.onChanged();
-            }
-
-            if (tagInfoDialog.getTag().getId() <= 0) {
-                allTagList.add(0, tagInfoDialog.getTag());
-            }
-            tagLayoutAll.onChanged();
-            tagInfoDialog.getTag().save();
-        });
-
-        tagInfoDialog.create().show();
+        tagDialog.setTag(tag);
+        if (!tagDialog.isShowing()) {
+            tagDialog.show();
+        }
     }
 
     private void deleteTag(final int position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(TagManagerActivity.this);
-        builder.setTitle(R.string.confirm_delete);
-        builder.setMessage(getString(R.string.confirm_delete_tag));
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.ensure, (dialog, which) -> {
+        if (alertDialog == null) {
+            alertDialog = new AlertDialog(this);
+            alertDialog.create();
+            alertDialog.setMessage(R.string.confirm_delete_tag);
+        }
+        alertDialog.setTitle(allTagList.get(position).getTag_name());
+        alertDialog.setPositiveButton(R.string.ensure, () -> {
             allTagList.get(position).delete();
             chooseTagList.remove(allTagList.get(position));
             allTagList.remove(position);
             isDelete = false;
             tagLayoutChoose.onChanged();
             tagLayoutAll.onChanged();
+            alertDialog.dismiss();
         });
-        builder.setNegativeButton(R.string.cancel, null);
-        builder.create().show();
+
+        if (!alertDialog.isShowing()) {
+            alertDialog.show();
+        }
     }
 
     @Override

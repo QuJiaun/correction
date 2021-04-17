@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.DropDownPreference;
@@ -16,7 +17,7 @@ import androidx.preference.PreferenceScreen;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.global.MyApplication;
-import com.luckyxmobile.correction.global.MySharedPreferences;
+import com.luckyxmobile.correction.global.MyPreferences;
 import com.luckyxmobile.correction.utils.FilesUtils;
 
 import java.util.Objects;
@@ -43,7 +44,7 @@ public class SettingsActivity extends AppCompatActivity{
 
     public static class SettingsFragment extends PreferenceFragmentCompat{
 
-        private MySharedPreferences preferences = MySharedPreferences.getInstance();
+        private MyPreferences preferences = MyPreferences.getInstance();
 
         private PreferenceScreen setTagPre;
         private PreferenceScreen clearPre;
@@ -91,22 +92,22 @@ public class SettingsActivity extends AppCompatActivity{
             }else if (preference== hideHighlightPre){
                 preferences.putBoolean(Constants.PRINT_HIDE_HIGHLIGHTER, hideHighlightPre.isChecked());
             } else if (preference ==clearPre) {
-                FilesUtils.getInstance().deleteCache();
+                Runtime.getRuntime().gc();
             }
             return super.onPreferenceTreeClick(preference);
         }
 
         private void setThemePre() {
-            String index = preferences.getString(Constants.TABLE_APP_THEME, "0");
-            themePre.setValue(index);
+            int value = preferences.getInt(Constants.TABLE_APP_THEME, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            themePre.setValue(String.valueOf(value));
             themePre.setSummary(themePre.getEntry());
 
             themePre.setOnPreferenceChangeListener((preference, newValue) -> {
-                String choose = (String) newValue;
+                String choose = String.valueOf(newValue);
                 themePre.setValue(choose);
                 themePre.setSummary(themePre.getEntry());
-                this.preferences.putString(Constants.TABLE_APP_THEME, choose);
-                MyApplication.setTheme(choose);
+                this.preferences.putInt(Constants.TABLE_APP_THEME, Integer.parseInt(choose));
+                MyApplication.setMyTheme(Integer.parseInt(choose));
                 return true;
             });
         }

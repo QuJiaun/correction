@@ -15,7 +15,7 @@ public class TouchGesture {
     private OnTouchGestureScroll scrollListener;
     private OnTouchGestureSingleTapUp singleTapUpListener;
 
-    TouchGesture(Context context) {
+    public TouchGesture(Context context) {
         this.context = context;
         init();
     }

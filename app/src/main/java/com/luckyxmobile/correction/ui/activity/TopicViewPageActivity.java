@@ -16,7 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.TopicTagAdapter;
 import com.luckyxmobile.correction.adapter.TopicViewPageAdapter;
-import com.luckyxmobile.correction.global.MySharedPreferences;
+import com.luckyxmobile.correction.global.MyPreferences;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.presenter.TopicViewPagePresenter;
@@ -24,8 +24,6 @@ import com.luckyxmobile.correction.presenter.impl.TopicViewPagePresenterImpl;
 import com.luckyxmobile.correction.ui.views.MyPagerTransformer;
 import com.luckyxmobile.correction.view.ITopicViewPage;
 import com.zhy.view.flowlayout.TagFlowLayout;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -77,7 +75,7 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
         int curTopicId = getIntent().getIntExtra(Constants.TOPIC_ID,-1);
         presenter = new TopicViewPagePresenterImpl(this, curTopicId);
 
-        if (MySharedPreferences.getInstance().getBoolean(Constants.VIEW_PAGE_FULL_SCREEN, false)) {
+        if (MyPreferences.getInstance().getBoolean(Constants.VIEW_PAGE_FULL_SCREEN, false)) {
             topBarLayout.setVisibility(View.GONE);
         }
     }
@@ -91,6 +89,7 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
     public void setTopicTagLayout(boolean isShow, Topic topic) {
         topicTagLayout.setVisibility(isShow?View.VISIBLE:View.GONE);
         topicTagAdapter = new TopicTagAdapter();
+        topicTagAdapter.setTextColor(getColor(R.color.white));
         topicTagAdapter.setCurTopicId(topic.getId());
         topicTagAdapter.setItemClickable(false);
         topicTagAdapter.setShowUnchecked(false);
@@ -139,7 +138,7 @@ public class TopicViewPageActivity extends AppCompatActivity implements ITopicVi
         if (isCollect) {
             collectBtn.setImageDrawable(getDrawable(R.drawable.ic_collect));
         } else {
-            collectBtn.setImageDrawable(getDrawable(R.drawable.ic_uncollect));
+            collectBtn.setImageDrawable(getDrawable(R.drawable.ic_collect_un));
         }
     }
 

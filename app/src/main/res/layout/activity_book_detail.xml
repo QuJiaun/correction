@@ -23,16 +23,6 @@
         android:layout_marginBottom="8dp"
         zhy:max_select="-1"/>
 
-    <ImageView
-        android:id="@+id/book_topic_nothing"
-        android:layout_below="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:src="@drawable/nothing"
-        android:background="@color/transparent"
-        android:visibility="gone"/>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_correction"
         android:layout_below="@+id/book_detail_tag_layout"
@@ -46,5 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:visibility="gone"/>
+
+    <include layout="@layout/layout_nothing"/>
 
 </RelativeLayout>

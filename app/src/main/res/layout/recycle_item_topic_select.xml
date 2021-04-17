@@ -21,6 +21,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_margin="8dp"
-        android:src="@drawable/item_uncheck" />
+        android:src="@drawable/ic_checked"/>
 
 </RelativeLayout>

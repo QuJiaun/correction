@@ -26,7 +26,6 @@ public class TopicInfoViewPresenterImpl implements TopicInfoViewPresenter {
     public TopicInfoViewPresenterImpl(ITopicInfoView topicInfoView) {
 
         this.topicInfoView = topicInfoView;
-        TopicDao topicDao = new TopicDaoImpl(null);
         topicImageDao = new TopicImageDaoImpl(null);
     }
 

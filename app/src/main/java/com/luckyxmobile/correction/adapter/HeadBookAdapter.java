@@ -18,6 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Book;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,20 +26,19 @@ import java.util.List;
  */
 public class HeadBookAdapter extends RecyclerView.Adapter<HeadBookAdapter.ViewHolder> {
 
-    private static final String TAG = "HeadBookAdapter";
+    private List<Book> bookList = new ArrayList<>();
+    private Context context;
+    private OnHeadBookAdapterListener listener;
+    private Animation onLongClickAnim;
 
-    private final List<Book> bookList;
-    private final Context context;
-    private final OnHeadBookAdapterListener listener;
-    private final Animation onLongClickAnim;
-
-    public HeadBookAdapter(Context context,List<Book> bookList){
-
+    public HeadBookAdapter(Context context){
         this.context = context;
-        this.bookList = bookList;
         this.listener = (OnHeadBookAdapterListener) context;
+        onLongClickAnim = AnimationUtils.loadAnimation(context,R.anim.layout_long_press);
+    }
 
-        onLongClickAnim = AnimationUtils.loadAnimation(context,R.anim.layout_longpress);
+    public void setBookList(List<Book> bookList) {
+        this.bookList = bookList;
     }
 
     public List<Book> getBookList() {

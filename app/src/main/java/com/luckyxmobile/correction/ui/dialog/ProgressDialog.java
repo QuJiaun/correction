@@ -21,24 +21,17 @@ import java.util.concurrent.ExecutorService;
 
 public class ProgressDialog{
 
-
-    private Context context;
     private AlertDialog mAlertDialog;
     private TextView tvTip;
 
     private Handler handler;
     private ExecutorService service;
 
-    public ProgressDialog(Context context, String tips) {
-        init(context, tips);
-    }
-
     public ProgressDialog(Context context) {
         init(context, null);
     }
 
     private void init(Context context, String tips) {
-        this.context = context;
         View loadView = LayoutInflater.from(context).inflate(R.layout.dialog_progress, null);
         tvTip = loadView.findViewById(R.id.tvTip);
         if (TextUtils.isEmpty(tips)) {

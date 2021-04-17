@@ -1,20 +1,17 @@
 package com.luckyxmobile.correction.utils;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.util.Log;
 
 import com.luckyxmobile.correction.global.Constants;
-import com.luckyxmobile.correction.global.MySharedPreferences;
+import com.luckyxmobile.correction.global.MyPreferences;
 import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Highlighter;
 import com.luckyxmobile.correction.model.bean.ImageParam;
@@ -194,17 +191,22 @@ public class BitmapUtils {
         return quality;
     }
 
-    public static Bitmap getBitmap(String imagePath) {
+    public static Bitmap getBitmap(String path) {
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inPreferredConfig = Bitmap.Config.RGB_565;
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath, opt);
+        return BitmapFactory.decodeFile(path, opt);
+    }
+
+    public static Bitmap getBitmapToSize(String imagePath) {
+        Bitmap bitmap = getBitmap(imagePath);
         return autoSize(bitmap);
     }
 
-    private static Bitmap autoSize(Bitmap bitmap) {
+    public static Bitmap autoSize(Bitmap bitmap) {
+        if (bitmap == null) return null;
         int bw = bitmap.getWidth();
         int bh = bitmap.getHeight();
-        int screen_w = MySharedPreferences.getInstance().getInt(Constants.SCREEN_WIDTH, 1080);
+        int screen_w = MyPreferences.getInstance().getInt(Constants.SCREEN_WIDTH, 1080);
         screen_w = Math.min(screen_w, 1440);
         bh = screen_w*bh / bw;
         return resizeBitmap(bitmap, screen_w, bh);

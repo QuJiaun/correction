@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.luckyxmobile.correction.ui.views.ShowHighlighterView
+    <com.luckyxmobile.correction.ui.views.ShowDrawingView
         android:id="@+id/see_paints_click"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

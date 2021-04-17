@@ -5,6 +5,7 @@ import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.model.DaoListener;
 import com.luckyxmobile.correction.utils.FilesUtils;
+import com.luckyxmobile.correction.utils.ImageTask;
 
 import org.litepal.LitePal;
 
@@ -50,9 +51,8 @@ public class TopicImageDaoImpl implements TopicImageDao {
 
     @Override
     public void removeImageByTopic(TopicImage topicImage) {
-
         filesUtils.deleteTopicImage(topicImage, listener);
-
+        ImageTask.getInstance().clearTopicImage(topicImage);
         topicImage.delete();
     }
 }

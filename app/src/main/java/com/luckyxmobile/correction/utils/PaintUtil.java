@@ -112,7 +112,7 @@ public class PaintUtil {
             case Constants.PAINT_YELLOW:
                 return context.getColor(R.color.highlighter_yellow);
             case Constants.PAINT_GREEN:
-                return R.color.highlighter_green;
+                return context.getColor(R.color.highlighter_green);
             case Constants.PAINT_ERASE:
                 return context.getColor(R.color.highlighter_erase);
             case Constants.PAINT_WHITE_OUT:

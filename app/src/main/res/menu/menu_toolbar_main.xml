@@ -8,7 +8,7 @@
     <item
         android:id="@+id/main_set"
         android:title="@string/main_set"
-        android:icon="@drawable/ic_settings_24dp"
+        android:icon="@drawable/ic_settings"
         app:showAsAction="ifRoom" />
 
 

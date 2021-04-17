@@ -1,158 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="16dp"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
-    android:paddingBottom="8dp"
-    android:background="@drawable/shape_dialog_layout"
+    android:gravity="center"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/title"
+    <CheckBox
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="调节"
-        android:gravity="center"
-        android:textColor="@color/textLight"
-        android:textSize="@dimen/text_body_size"/>
+        android:visibility="gone"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layoutDirection="rtl"
+        android:buttonTint="@color/textLight"
+        android:padding="8dp"
+        android:text="显示原图"
+        android:gravity="center|start"
+        android:textColor="@color/textLight" />
 
+    <CheckBox
+        android:id="@+id/noise"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layoutDirection="rtl"
+        android:buttonTint="@color/textLight"
+        android:padding="8dp"
+        android:text="消除噪点"
+        android:gravity="center|start"
+        android:textColor="@color/textLight" />
+
+    <CheckBox
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layoutDirection="rtl"
+        android:buttonTint="@color/textLight"
+        android:padding="8dp"
+        android:text="消除阴影"
+        android:gravity="center|start"
+        android:textColor="@color/textLight"/>
 
     <LinearLayout
-        android:id="@+id/scrollView"
-        android:layout_below="@id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:padding="8dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <CheckBox
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layoutDirection="rtl"
-            android:buttonTint="@color/textLight"
-            android:padding="8dp"
-            android:text="显示原图"
-            android:gravity="center|start"
-            android:textColor="@color/textLight" />
+            android:textColor="@color/textLight"
+            android:text="对比度"/>
 
-        <CheckBox
-            android:id="@+id/noise"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layoutDirection="rtl"
-            android:buttonTint="@color/textLight"
-            android:padding="8dp"
-            android:text="消除噪点"
-            android:gravity="center|start"
-            android:textColor="@color/textLight" />
+        <SeekBar
+            android:id="@+id/multiply"
+            android:layout_width="0dp"
+            android:layout_height="18dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_weight="1"
+            android:progressDrawable="@drawable/progress_indeterminate_horizontal"
+            android:max="30"
+            android:progress="10"/>
 
-        <CheckBox
-            android:id="@+id/shadow"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/multiplyHint"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layoutDirection="rtl"
-            android:buttonTint="@color/textLight"
-            android:padding="8dp"
-            android:text="消除阴影"
-            android:gravity="center|start"
+            android:text="1.0"
             android:textColor="@color/textLight"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:padding="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/textLight"
-                android:text="对比度"/>
-
-            <SeekBar
-                android:id="@+id/multiply"
-                android:layout_width="0dp"
-                android:layout_height="18dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:layout_weight="1"
-                android:progressDrawable="@drawable/progress_indeterminate_horizontal"
-                android:max="30"
-                android:progress="10"/>
-
-            <TextView
-                android:id="@+id/multiplyHint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1.0"
-                android:textColor="@color/textLight"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:padding="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/textLight"
-                android:text="亮    度"/>
-
-            <SeekBar
-                android:id="@+id/brightness"
-                android:layout_width="0dp"
-                android:layout_height="18dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:layout_weight="1"
-                android:progressDrawable="@drawable/progress_indeterminate_horizontal"
-                android:max="20"
-                android:progress="10"/>
-
-            <TextView
-                android:id="@+id/brightnessHint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="@color/textLight"/>
-
-        </LinearLayout>
 
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/cancel_btn"
-        style="@style/normal_icon_button"
-        android:layout_marginTop="32dp"
-        android:layout_below="@id/scrollView"
-        android:src="@drawable/ic_cancel_white_24dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:padding="8dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <ImageButton
-        android:id="@+id/ensure_btn"
-        style="@style/normal_icon_button"
-        android:layout_marginTop="32dp"
-        android:layout_below="@id/scrollView"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_ensure"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textLight"
+            android:text="亮    度"/>
 
-</RelativeLayout>
+        <SeekBar
+            android:id="@+id/brightness"
+            android:layout_width="0dp"
+            android:layout_height="18dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_weight="1"
+            android:progressDrawable="@drawable/progress_indeterminate_horizontal"
+            android:max="20"
+            android:progress="10"/>
+
+        <TextView
+            android:id="@+id/brightnessHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/textLight"/>
+
+    </LinearLayout>
+
+</LinearLayout>

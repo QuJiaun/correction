@@ -1,58 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<SeekBar
+    android:id="@+id/seekbar_width"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_below="@id/title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="16dp"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
-    android:paddingBottom="8dp"
-    android:background="@drawable/shape_dialog_layout"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:text="选择宽度"
-        android:gravity="center"
-        android:textColor="@color/textLight"
-        android:textSize="@dimen/text_body_size"/>
-
-    <SeekBar
-        android:id="@+id/seekbar"
-        android:layout_below="@id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:max="120"
-        android:progress="40"
-        android:thumb="@drawable/ic_width_3"/>
-
-    <ImageButton
-        android:id="@+id/cancel_btn"
-        style="@style/normal_icon_button"
-        android:layout_marginTop="32dp"
-        android:layout_below="@id/seekbar"
-        android:src="@drawable/ic_cancel_white_24dp"/>
-
-    <ImageButton
-        android:id="@+id/ensure_btn"
-        style="@style/normal_icon_button"
-        android:layout_marginTop="32dp"
-        android:layout_below="@id/seekbar"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_ensure"/>
-
-    <TextView
-        android:id="@+id/seekbar_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/seekbar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
-        android:text="20"
-        android:textColor="@color/colorAccent"/>
-
-</RelativeLayout>
+    android:padding="16dp"
+    android:max="120"
+    android:progress="40"
+    android:thumb="@drawable/ic_width_3"/>

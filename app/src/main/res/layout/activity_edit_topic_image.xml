@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:drawableStart="@drawable/ic_arrow_back_24dp"
+            android:drawableStart="@drawable/ic_arrow"
             android:text="@string/last_step"
             android:textColor="@color/btn_icon"
             android:background="@color/transparent" />
@@ -46,7 +46,8 @@
 
         <ImageButton
             android:id="@+id/drawing_view_ok"
-            android:src="@drawable/ic_done"
+            android:src="@drawable/ic_ensure"
+            android:tint="@color/btn_icon"
             style="@style/normal_icon_button"/>
 
     </LinearLayout>

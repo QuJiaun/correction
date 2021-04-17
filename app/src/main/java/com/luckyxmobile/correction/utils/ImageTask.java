@@ -2,6 +2,7 @@ package com.luckyxmobile.correction.utils;
 
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.util.Log;
 import android.util.LruCache;
 import android.widget.ImageView;
 
@@ -13,8 +14,8 @@ import java.util.concurrent.ExecutorService;
 public class ImageTask {
 
     private Handler handler;
-    private final ExecutorService service;
-    private final LruCache<Integer, Bitmap> imageCache;
+    private ExecutorService service;
+    private LruCache<Integer, Bitmap> imageCache;
 
     private static final ImageTask single = new ImageTask();
 
@@ -25,7 +26,15 @@ public class ImageTask {
         imageCache = new LruCache<Integer, Bitmap>(cacheSize){
             @Override
             protected int sizeOf(Integer key, Bitmap value) {
-                return super.sizeOf(key, value);
+                return value.getRowBytes()*value.getHeight()/1024;
+            }
+
+            @Override
+            protected void entryRemoved(boolean evicted, Integer key, Bitmap oldValue, Bitmap newValue) {
+                super.entryRemoved(evicted, key, oldValue, newValue);
+                if (oldValue != null && !oldValue.isRecycled()) {
+                    oldValue.recycle();
+                }
             }
         };
 
@@ -43,19 +52,31 @@ public class ImageTask {
 
     public synchronized void loadTopicImage(ImageView view, TopicImage topicImage) {
         Bitmap bitmap = getImageCache(topicImage.getId()); //通过id获取缓存
+        FilesUtils filesUtils = FilesUtils.getInstance();
+        String cachePath = filesUtils.getTopicImageCachePath(topicImage);
         if (bitmap != null && !bitmap.isRecycled()) { //存在，直接加载
             Glide.with(view.getContext()).load(bitmap).into(view);
-        } else if (FilesUtils.getInstance().existsCache(topicImage)) { //本地缓存存在，加载本地
-            Glide.with(view.getContext())
-                    .load(FilesUtils.getInstance().getTopicImageCachePath(topicImage))
-                    .thumbnail(0.1f).into(view);
-        }else { //都不存在，让线程池中的线程异步处理图片
+            Log.d("123456", topicImage.getId() + " loadTopicImage: 1");
+        } else if (filesUtils.exists(cachePath)) {
+            bitmap = BitmapUtils.getBitmap(topicImage.getPath());
+            if (bitmap == null) {
+                filesUtils.deleteCacheTopicImage(topicImage);
+                loadTopicImage(view, topicImage);
+            } else {
+                bitmap = BitmapUtils.getBitmap(cachePath);
+                imageCache.put(topicImage.getId(), bitmap);
+                Glide.with(view.getContext()).load(bitmap).into(view);
+                Log.d("123456", topicImage.getId() + " loadTopicImage: 2");
+            }
+        } else {
             service.submit(() -> {
-                Bitmap cache1 = BitmapUtils.getBitmap(topicImage); //处理图片
-                if (cache1 != null) {
-                    imageCache.put(topicImage.getId(), cache1); //放入缓存
-                    FilesUtils.getInstance().saveCacheTopicImage(topicImage, cache1); //缓存到本地
+                Bitmap cache = null;
+                //都不存在，让线程池中的线程异步处理图片
+                cache = BitmapUtils.getBitmap(topicImage); //处理图片
+                if (cache != null) {
+                    imageCache.put(topicImage.getId(), cache); //放入缓存
                     handler.post(() -> loadTopicImage(view, topicImage)); //重新加载
+                    Log.d("123456", topicImage.getId() + " loadTopicImage: 3");
                 }
             });
         }

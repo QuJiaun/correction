@@ -53,10 +53,10 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'org.jetbrains:annotations-java5:15.0'
     testImplementation 'junit:junit:4.13.2'
-
     // 筛选框
     implementation 'com.github.haoyang7:myfilter:1.0.3'
     implementation 'com.github.1993hzw:Androids:1.3'
+    //智能裁剪
     implementation 'com.github.pqpo:SmartCropper:v2.1.3'
 
     //例子爆炸

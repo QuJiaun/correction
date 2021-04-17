@@ -1,6 +1,7 @@
 package com.luckyxmobile.correction.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,9 +23,8 @@ import java.util.List;
 
 public class BookDetailAdapter extends RecyclerView.Adapter<ViewHolderTopicItem> {
 
-    private String TAG = "BookDetailAdapter";
     private final Context mContext;
-    private List<Topic> topics;
+    private List<Topic> topics = new ArrayList<>();
     private List<Topic> filterTopics;
     private List<Topic> topicsByDelete;
 
@@ -32,12 +32,15 @@ public class BookDetailAdapter extends RecyclerView.Adapter<ViewHolderTopicItem>
     private boolean isDeleteMode = false;
     private ViewHolderTopicItem.OnItemListener listener;
 
-    public BookDetailAdapter(Context context, List<Topic> topics){
+    public BookDetailAdapter(Context context){
         this.mContext = context;
         this.listener = (ViewHolderTopicItem.OnItemListener) context;
+        this.topicsByDelete = new ArrayList<>();
+    }
+
+    public void setTopics(List<Topic> topics) {
         this.topics = topics;
         this.filterTopics = new ArrayList<>(topics);
-        this.topicsByDelete = new ArrayList<>();
     }
 
     public List<Topic> getTopicsByDelete() {
@@ -65,7 +68,9 @@ public class BookDetailAdapter extends RecyclerView.Adapter<ViewHolderTopicItem>
     public void setDeleteMode(boolean deleteMode) {
 
         isDeleteMode = deleteMode;
-        deleteMenuItem.setVisible(isDeleteMode);
+        if (deleteMenuItem != null) {
+            deleteMenuItem.setVisible(isDeleteMode);
+        }
         topicsByDelete.clear();
         notifyDataSetChanged();
     }
@@ -111,12 +116,12 @@ public class BookDetailAdapter extends RecyclerView.Adapter<ViewHolderTopicItem>
         Topic topic = topics.get(position);
         TopicImage topicImage = BeanUtils.findTopicImageFirst(topic);
 
-        ImageTask.getInstance().loadTopicImage(holder.topicImage, topicImage);
+        ImageTask.getInstance().loadTopicImage(holder.topicImageView, topicImage);
 
         holder.topicDate.setText(FilesUtils.getTimeByDate(topic.getCreate_date()));
         holder.collectBtn.setVisibility(topic.isCollection()? View.VISIBLE:View.GONE);
         holder.tagTv.setText(BeanUtils.tagsToString(topic.getId()));
-        holder.tagTv.setTextColor(mContext.getColor(R.color.text_checked));
+        holder.tagTv.setTextColor(mContext.getColor(R.color.item_checked));
 
         if (isDeleteMode) {
             holder.checkBtn.setVisibility(View.VISIBLE);
@@ -152,13 +157,15 @@ public class BookDetailAdapter extends RecyclerView.Adapter<ViewHolderTopicItem>
     }
 
     private void setLayoutView(Topic topic, ViewHolderTopicItem holder) {
+        Drawable drawable = mContext.getDrawable(R.drawable.ic_checked);
         if (topicsByDelete.contains(topic)) {
-            holder.checkBtn.setImageDrawable(mContext.getDrawable(R.drawable.topic_delete_check));
+            drawable.setTint(mContext.getColor(R.color.item_checked_2));
             holder.layout.setBackgroundResource(R.drawable.shape_box_check_delete_bg);
         }else{
-            holder.checkBtn.setImageDrawable(mContext.getDrawable(R.drawable.item_uncheck));
+            drawable.setTint(mContext.getColor(R.color.item_checked_un));
             holder.layout.setBackgroundResource(R.drawable.shape_box_view);
         }
+        holder.checkBtn.setImageDrawable(drawable);
     }
 
     @Override

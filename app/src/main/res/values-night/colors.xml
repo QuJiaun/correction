@@ -8,6 +8,10 @@
     <color name="layout_background2">#2B2B2B</color>
     <color name="layout_background_dark">#1A1A1A</color>
 
+    <color name="textDark">#f2f2f2</color>
+
     <color name="btn_icon">#f57c00</color>
+
+    <color name="shape_view_stroke">#1A1A1A</color>
 
 </resources>

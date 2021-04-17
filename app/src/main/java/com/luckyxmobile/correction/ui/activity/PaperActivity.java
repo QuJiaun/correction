@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -24,7 +25,7 @@ import com.luckyxmobile.correction.adapter.PaperAdapter;
 import com.luckyxmobile.correction.adapter.PrintPreviewAdapter;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.Paper;
-import com.luckyxmobile.correction.ui.dialog.PaperInfoDialog;
+import com.luckyxmobile.correction.ui.dialog.PaperDialog;
 import com.luckyxmobile.correction.ui.dialog.ProgressDialog;
 import com.luckyxmobile.correction.utils.FilesUtils;
 import com.luckyxmobile.correction.utils.PdfUtils;
@@ -44,13 +45,12 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
     private PaperAdapter paperAdapter;
     @BindView(R.id.paper_recyclerview)
     RecyclerView paperRv;
-    @BindView(R.id.paper_nothing)
+    @BindView(R.id.nothing_hint)
     ImageView paperNothing;
     @BindView(R.id.new_paper_btn)
     Button newPaperBtn;
 
-    PaperInfoDialog paperInfoDialog;
-
+    private PaperDialog paperDialog;
     private Animation showAnim, hideAnim;
 
     @Override
@@ -79,7 +79,6 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
     }
 
     public void setPaperListRv(List<Paper> paperList) {
-
         setPaperNothing(paperList.isEmpty());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -107,56 +106,59 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
 
     @OnClick(R.id.new_paper_btn)
     public void onClickAddPaperBtn() {
-        showPaperInfoDialog(null);
+        showPaperDialog(null);
     }
 
-    private void showPaperInfoDialog(Paper paper) {
-        paperInfoDialog = new PaperInfoDialog(this);
-        paperInfoDialog.setTitle(R.string.test_page);
-        paperInfoDialog.setPaper(paper);
-        paperInfoDialog.setNeutralButton(R.string.select_topics, (dialogInterface, i) -> {
-            Paper tmp = paperInfoDialog.getPaper();
-            String name = tmp.getPaperName();
-            if (checkPaperName(name)) {
-                if (tmp.getId() > 0) {
-                    paperAdapter.refresh(paper);
-                } else {
-                    paperAdapter.addPaper(tmp);
+    private void showPaperDialog(Paper paper) {
+        if (paperDialog == null) {
+            paperDialog = new PaperDialog(this);
+            paperDialog.create();
+            paperDialog.setPositiveButton(R.string.ensure, () -> {
+                Paper result = paperDialog.getPaper();
+                if (checkPaperName(result)) {
+                    if (result.getId() > 0) {
+                        paperAdapter.refresh(result);
+                    } else {
+                        paperAdapter.addPaper(result);
+                    }
+                    result.save();
+                    setPaperNothing(paperAdapter.isEmpty());
+                    paperDialog.dismiss();
                 }
-                tmp.save();
-                Intent intent = new Intent(this, SelectTopicActivity.class);
-                intent.putExtra(Constants.PAPER_ID, tmp.getId());
-                startActivity(intent);
-            }
-            setPaperNothing(paperAdapter.isEmpty());
-        });
-        paperInfoDialog.setPositiveButton(R.string.ensure, (dialogInterface, i) -> {
-            Paper tmp = paperInfoDialog.getPaper();
-            String name = tmp.getPaperName();
-            if (checkPaperName(name)) {
-                if (tmp.getId() > 0) {
-                    paperAdapter.refresh(paper);
-                } else {
-                    paperAdapter.addPaper(tmp);
+            });
+
+            paperDialog.setNeutralButton(R.string.select_topics, () -> {
+                Paper result = paperDialog.getPaper();
+                if (checkPaperName(result)) {
+                    if (result.getId() > 0) {
+                        paperAdapter.refresh(result);
+                    } else {
+                        paperAdapter.addPaper(result);
+                    }
+                    result.save();
+                    setPaperNothing(paperAdapter.isEmpty());
+                    paperDialog.dismiss();
+                    Intent intent = new Intent(this, SelectTopicActivity.class);
+                    intent.putExtra(Constants.PAPER_ID, result.getId());
+                    startActivity(intent);
                 }
-                tmp.save();
-            }
-            setPaperNothing(paperAdapter.isEmpty());
-        });
-        paperInfoDialog.show();
+            });
+        }
+        paperDialog.setPaper(paper);
+        if (!paperDialog.isShowing()) {
+            paperDialog.show();
+        }
     }
 
-    private boolean checkPaperName(String name) {
-        if (name == null || name.length() <= 0) {
-            onToast(getString(R.string.empty_input));
+    private boolean checkPaperName(Paper paper) {
+        String paperName = paper.getPaperName();
+        if (TextUtils.isEmpty(paperName)) {
+            paperDialog.onError(R.string.empty_input);
+            return false;
+        } else if (paperName.length() > 15) {
+            paperDialog.onError(R.string.input_error);
             return false;
         }
-
-        if (name.length() > 15) {
-            onToast(getString(R.string.input_error));
-            return false;
-        }
-
         return true;
     }
 
@@ -187,7 +189,7 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
                     break;
 
                 case R.id.rename:
-                    showPaperInfoDialog(paper);
+                    showPaperDialog(paper);
                     break;
 
                 case R.id.print:

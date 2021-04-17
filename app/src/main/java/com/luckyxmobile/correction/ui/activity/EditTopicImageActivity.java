@@ -1,7 +1,6 @@
 package com.luckyxmobile.correction.ui.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,23 +12,21 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.luckyxmobile.correction.R;
-import com.luckyxmobile.correction.global.MySharedPreferences;
 import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.bean.ImageParam;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.presenter.EditTopicImagePresenter;
 import com.luckyxmobile.correction.presenter.impl.EditTopicImagePresenterImpl;
-import com.luckyxmobile.correction.ui.dialog.SelectBookDialog;
-import com.luckyxmobile.correction.ui.dialog.setImageParamDialog;
-import com.luckyxmobile.correction.ui.dialog.SelectHighlighterDialog;
-import com.luckyxmobile.correction.ui.dialog.SelectWidthDialog;
+import com.luckyxmobile.correction.ui.dialog.ChooseBookDialog;
+import com.luckyxmobile.correction.ui.dialog.HighlighterTypeDialog;
+import com.luckyxmobile.correction.ui.dialog.HighlighterWidthDialog;
+import com.luckyxmobile.correction.ui.dialog.ImageParamDialog;
 import com.luckyxmobile.correction.ui.views.CheckView;
 import com.luckyxmobile.correction.ui.views.DrawingView;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
 import com.luckyxmobile.correction.utils.GsonUtils;
-import com.luckyxmobile.correction.utils.ImageTask;
 
 import org.litepal.LitePal;
 
@@ -45,9 +42,7 @@ import butterknife.OnClick;
  * @author qjj、
  * @date 2019/08/03
  */
-public class EditTopicImageActivity extends AppCompatActivity implements
-        SelectBookDialog.OnClickListener, SelectHighlighterDialog.OnDialogListener,
-        SelectWidthDialog.OnDialogListener, setImageParamDialog.OnDialogListener{
+public class EditTopicImageActivity extends AppCompatActivity{
 
     private final String TAG = "EditPhotoActivity";
 
@@ -66,16 +61,21 @@ public class EditTopicImageActivity extends AppCompatActivity implements
     @BindView(R.id.drawing_view_tool_ocr)
     CheckView ocrBtn;
 
-    private SelectBookDialog selectBookDialog;
+    private ChooseBookDialog chooseBookDialog;
+    private ImageParamDialog imageParamDialog;
+    private HighlighterTypeDialog highlighterTypeDialog;
+    private HighlighterWidthDialog highlighterWidthDialog;
 
     private EditTopicImagePresenter presenter;
 
     private TopicImage curTopicImage;
 
-    private MySharedPreferences sharedPreferences;
     private String fromActivity;
     private int curBookId = -1;
     private int curTopicId = -1;
+
+    public EditTopicImageActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,14 +137,11 @@ public class EditTopicImageActivity extends AppCompatActivity implements
     public void onClickTools(View view) {
         switch (view.getId()) {
             case R.id.drawing_view_tool_highlighter:
-                new SelectHighlighterDialog(this, drawingView.getCurType())
-                        .getDialog().show();
-                eraseBtn.setChecked(false);
+                showHighlighterTypeDialog();
                 break;
 
             case R.id.drawing_view_tool_width:
-                new SelectWidthDialog(this, drawingView.getCurWidth())
-                        .getDialog().show();
+                showHighlighterWidthDialog();
                 break;
 
             case R.id.drawing_view_tool_erase:
@@ -155,8 +152,7 @@ public class EditTopicImageActivity extends AppCompatActivity implements
 
             case R.id.drawing_view_tool_image_param:
                 if (imageParamBtn.isChecked()) {
-                    new setImageParamDialog(this, curTopicImage)
-                            .getDialog().show();
+                    showImageParamDialog();
                 } else {
                     Toast.makeText(this, "必须先关闭OCR", Toast.LENGTH_SHORT).show();
                 }
@@ -196,14 +192,24 @@ public class EditTopicImageActivity extends AppCompatActivity implements
             List<String> highlighterList = BeanUtils.obj2Strings(drawingView.getHighlighterList());
             curTopicImage.setHighlighterList(highlighterList);
             curTopicImage.save();
+            drawingView.saveDrawingImage();
             DestroyActivityUtil.clear();
             return;
         }
 
-        //添加TopicImage
-        selectBookDialog = new SelectBookDialog(this);
-        selectBookDialog.initBookAll(curBookId);
-        selectBookDialog.getDialog().show();
+        if (chooseBookDialog == null) {
+            chooseBookDialog = new ChooseBookDialog(this);
+            chooseBookDialog.create();
+            chooseBookDialog.setEnsureBtn(() ->
+                    onFinished(chooseBookDialog.getCurBook(),
+                    chooseBookDialog.getCurImageType())
+            );
+        }
+
+        chooseBookDialog.setCurBook(curBookId);
+        if (!chooseBookDialog.isShowing()) {
+            chooseBookDialog.show();
+        }
     }
 
     @OnClick(R.id.drawing_view_undo)
@@ -218,11 +224,65 @@ public class EditTopicImageActivity extends AppCompatActivity implements
         undoBtn.setChecked(drawingView.undoAble());
     }
 
+    private void showHighlighterWidthDialog() {
+        if (highlighterWidthDialog == null) {
+            highlighterWidthDialog = new HighlighterWidthDialog(this);
+            highlighterWidthDialog.create();
+            highlighterWidthDialog.setPositiveButton(() -> {
+                int width = highlighterWidthDialog.getCurWidth();
+                drawingView.setCurPaintWidth(width);
+                Toast.makeText(EditTopicImageActivity.this,
+                        "宽度设置为" + width +" px", Toast.LENGTH_SHORT).show();
+                highlighterWidthDialog.dismiss();
+            });
+        }
 
-    @Override
-    public void onSelectBookFinished(Book book, int imageType) {
+        if (!highlighterWidthDialog.isShowing()){
+            highlighterWidthDialog.setCurWidth(drawingView.getCurWidth());
+            highlighterWidthDialog.show();
+        }
+    }
 
-        selectBookDialog.getDialog().dismiss();
+    private void showHighlighterTypeDialog() {
+        if (highlighterTypeDialog == null) {
+            highlighterTypeDialog = new HighlighterTypeDialog(this);
+            highlighterTypeDialog.create();
+            highlighterTypeDialog.setPositiveButton(() -> {
+                drawingView.setCurType(highlighterTypeDialog.getType());
+                highlighterBtn.setCheckedImg(highlighterTypeDialog.getIcon());
+                highlighterBtn.setChecked(true);
+                eraseBtn.setChecked(false);
+                highlighterTypeDialog.dismiss();
+            });
+        }
+
+        if (!highlighterTypeDialog.isShowing()) {
+            highlighterTypeDialog.setType(drawingView.getCurType());
+            highlighterTypeDialog.show();
+        }
+    }
+
+
+    private void showImageParamDialog() {
+        if (imageParamDialog == null) {
+            imageParamDialog = new ImageParamDialog(this);
+            imageParamDialog.create();
+            imageParamDialog.setPositiveButton(() -> {
+                drawingView.setImageParam(imageParamDialog.getImageParam());
+                imageParamDialog.dismiss();
+            });
+        }
+
+        if (!imageParamDialog.isShowing()) {
+            ImageParam imageParam = GsonUtils.json2Obj(curTopicImage.getImageParam(), ImageParam.class);
+            if (imageParam == null) imageParam = new ImageParam();
+            imageParamDialog.setImageParam(imageParam);
+            imageParamDialog.show();
+        }
+    }
+
+    private void onFinished(Book book, int imageType) {
+
         List<String> highlighterList = BeanUtils.obj2Strings(drawingView.getHighlighterList());
         curTopicImage.setHighlighterList(highlighterList);
         curTopicImage.setType(imageType);
@@ -237,27 +297,8 @@ public class EditTopicImageActivity extends AppCompatActivity implements
             intent.putExtra(Constants.BOOK_ID, book.getId());
             startActivity(intent);
         }
-
+        drawingView.saveDrawingImage();
         DestroyActivityUtil.clear();
     }
 
-
-    @Override
-    public void onEnsure(int curType, Drawable res) {
-        drawingView.setCurType(curType);
-        highlighterBtn.setCheckedImg(res);
-        highlighterBtn.setChecked(true);
-    }
-
-    @Override
-    public void onEnsure(int width) {
-        drawingView.setCurPaintWidth(width);
-        Toast.makeText(this, "宽度设置为" + width +" px", Toast.LENGTH_SHORT).show();
-    }
-
-
-    @Override
-    public void onEnsure(ImageParam param) {
-        drawingView.setImageParam(param);
-    }
 }

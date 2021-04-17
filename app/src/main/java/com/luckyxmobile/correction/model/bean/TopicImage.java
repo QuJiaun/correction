@@ -5,6 +5,7 @@ import org.litepal.crud.LitePalSupport;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 数据库表 TopicImage 题目图片信息
@@ -154,4 +155,8 @@ public class TopicImage extends LitePalSupport {
         return id == that.id && path.equals(that.getPath());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, path);
+    }
 }

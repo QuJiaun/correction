@@ -20,6 +20,22 @@
         app:iconSpaceReserved="false"/>
 
     <PreferenceCategory
+        app:title="日志"
+        app:isPreferenceVisible="false"
+        app:iconSpaceReserved="false">
+
+        <EditTextPreference
+            app:title="浏览有效时间"
+            app:summary="60 s"
+            app:iconSpaceReserved="false"/>
+
+        <PreferenceScreen
+            android:title="操作记录"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         app:title="荧光笔颜色矫正"
         app:isPreferenceVisible="false"
         app:iconSpaceReserved="false">

@@ -1,6 +1,7 @@
 package com.luckyxmobile.correction.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,6 @@ import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
-import com.luckyxmobile.correction.utils.ImageTask;
 import com.zj.myfilter.FiltrateBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +38,9 @@ public class SelectTopicAdapter extends RecyclerView.Adapter<SelectTopicAdapter.
         topicList = LitePal.findAll(Topic.class);
     }
 
+    public boolean isEmpty() {
+        return filterTopicList.isEmpty();
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -74,13 +77,15 @@ public class SelectTopicAdapter extends RecyclerView.Adapter<SelectTopicAdapter.
 
     private void setViewChecked(ViewHolder viewHolder, boolean isChecked) {
         Context context = viewHolder.itemView.getContext();
+        Drawable drawable = context.getDrawable(R.drawable.ic_checked);
         if (isChecked) {
-            viewHolder.checkedIv.setImageDrawable(context.getDrawable(R.drawable.item_checked));
+            drawable.setTint(context.getColor(R.color.item_checked));
             viewHolder.itemView.setBackgroundResource(R.drawable.shape_box_check_bg);
         } else {
-            viewHolder.checkedIv.setImageDrawable(context.getDrawable(R.drawable.item_uncheck));
+            drawable.setTint(context.getColor(R.color.item_checked_un));
             viewHolder.itemView.setBackgroundResource(R.drawable.shape_box_view);
         }
+        viewHolder.checkedIv.setImageDrawable(drawable);
     }
 
     @Override

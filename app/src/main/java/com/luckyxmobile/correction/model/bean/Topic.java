@@ -1,8 +1,5 @@
 package com.luckyxmobile.correction.model.bean;
 
-
-import androidx.annotation.NonNull;
-
 import org.litepal.crud.LitePalSupport;
 
 /**

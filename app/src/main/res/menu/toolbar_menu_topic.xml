@@ -16,17 +16,17 @@
 
     <item android:id="@+id/topic_menu_add_text"
         android:title="@string/add_text"
-        android:icon="@drawable/ic_text_fields_24"
+        android:icon="@drawable/ic_text_fields"
         app:showAsAction="never"/>
 
     <item android:id="@+id/topic_menu_add_camera"
         android:title="@string/add_picture_camera"
-        android:icon="@drawable/ic_camera_orange_24dp"
+        android:icon="@drawable/ic_camera"
         app:showAsAction="never"/>
 
     <item android:id="@+id/topic_menu_add_album"
         android:title="@string/add_picture_album"
-        android:icon="@drawable/ic_album_orange_24dp"
+        android:icon="@drawable/ic_album"
         app:showAsAction="never"/>
 
 

@@ -9,11 +9,12 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.BookDetailAdapter;
 import com.luckyxmobile.correction.adapter.TopicTagAdapter;
@@ -23,7 +24,8 @@ import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.presenter.BookDetailViewPresenter;
 import com.luckyxmobile.correction.presenter.impl.BookDetailViewPresenterImpl;
-import com.luckyxmobile.correction.ui.dialog.AddTopicImageDialog;
+import com.luckyxmobile.correction.ui.dialog.AddTopicDialog;
+import com.luckyxmobile.correction.ui.dialog.AlertDialog;
 import com.luckyxmobile.correction.utils.DestroyActivityUtil;
 import com.luckyxmobile.correction.view.IBookDetailView;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -37,8 +39,7 @@ import butterknife.ButterKnife;
 
 
 public class BookDetailActivity extends AppCompatActivity implements IBookDetailView
-        , ViewHolderTopicItem.OnItemListener
-        , AddTopicImageDialog.OnClickListener{
+        , ViewHolderTopicItem.OnItemListener{
 
     public static final String TAG = "BookDetailActivity";
 
@@ -48,7 +49,7 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
     TagFlowLayout tagFlowLayout;
     @BindView(R.id.recycler_correction)
     RecyclerView recyclerView;
-    @BindView(R.id.book_topic_nothing)
+    @BindView(R.id.nothing_hint)
     ImageView topicNothingImage;
     @BindView(R.id.loadBar)
     ProgressBar loadBar;
@@ -57,6 +58,9 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
     private BookDetailAdapter adapter;
     private BookDetailViewPresenter presenter;
     private TopicTagAdapter topicTagAdapter;
+
+    private AlertDialog alertDialog;
+    private AddTopicDialog addTopicDialog;
 
     private MenuItem topicSortMenuItem;
 
@@ -90,6 +94,7 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
     public void setTagLayout() {
         topicTagAdapter = new TopicTagAdapter();
         topicTagAdapter.setCurTopicId(-1);
+        topicTagAdapter.setTextColor(getColor(R.color.white));
         topicTagAdapter.setTopicIdList(adapter.getTopics());
         topicTagAdapter.setItemClickable(true);
         topicTagAdapter.setShowUnchecked(true);
@@ -118,11 +123,14 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
         } else {
             topicNothingImage.setVisibility(View.GONE);
         }
-
-        adapter = new BookDetailAdapter(this, topicList);
-        LinearLayoutManager manager = new LinearLayoutManager(BookDetailActivity.this);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
+        if (adapter == null) {
+            adapter = new BookDetailAdapter(this);
+            LinearLayoutManager manager = new LinearLayoutManager(BookDetailActivity.this);
+            recyclerView.setLayoutManager(manager);
+            recyclerView.setAdapter(adapter);
+        }
+        adapter.setTopics(topicList);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -170,7 +178,7 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
                 if (adapter.isDeleteMode()) {
                     adapter.setDeleteMode(false);
                 }
-                AddTopicImageDialog.show(this);
+                showAddTopicDialog();
                 break;
             default:
                 break;
@@ -188,14 +196,25 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
     }
 
     private void deleteSelectedTopic() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.confirm_delete)
-                .setIcon(R.drawable.ic_delete_red_24dp)
-                .setMessage(R.string.confirm_delete_topic)
-                .setPositiveButton(R.string.ensure, (dialog, which) -> {
-                    loadBar.setVisibility(View.VISIBLE);
-                    presenter.removeTopicList(adapter.getTopicsByDelete());
-                }).setNegativeButton(R.string.cancel, null).show();
+        if (alertDialog == null) {
+            alertDialog = new AlertDialog(this);
+            alertDialog.create();
+            alertDialog.setTitle(toolbar.getTitle());
+            alertDialog.setMessage(R.string.confirm_delete_topic);
+            alertDialog.setPositiveButton(R.string.ensure, () -> {
+                loadBar.setVisibility(View.VISIBLE);
+                presenter.removeTopicList(adapter.getTopicsByDelete());
+                alertDialog.dismiss();
+            });
+            alertDialog.setNegativeButton(R.string.cancel, () -> {
+                adapter.setDeleteMode(false);
+                alertDialog.dismiss();
+            });
+        }
+
+        if (!alertDialog.isShowing()) {
+            alertDialog.show();
+        }
     }
 
     private void setTopicsSort(boolean isNewest){
@@ -221,12 +240,27 @@ public class BookDetailActivity extends AppCompatActivity implements IBookDetail
         startActivity(intent);
     }
 
-    @Override
+    private void showAddTopicDialog() {
+        if (addTopicDialog == null) {
+            addTopicDialog = new AddTopicDialog(this);
+            addTopicDialog.create();
+            addTopicDialog.setFromAlbum(() -> addTopicFrom(true));
+            addTopicDialog.setFromCamera(() -> addTopicFrom(false));
+        }
+
+        if (!addTopicDialog.isShowing()) {
+            addTopicDialog.show();
+        }
+    }
+
     public void addTopicFrom(boolean album) {
         DestroyActivityUtil.add(this);
         Intent intent = CropImageActivity.getIntent(this, album, true);
         intent.putExtra(Constants.FROM_ACTIVITY, TAG);
         intent.putExtra(Constants.BOOK_ID, book_id == 1?-1:book_id);
         startActivity(intent);
+        if (addTopicDialog.isShowing()) {
+            addTopicDialog.dismiss();
+        }
     }
 }

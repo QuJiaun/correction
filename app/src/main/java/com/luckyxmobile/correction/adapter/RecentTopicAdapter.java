@@ -23,22 +23,26 @@ import com.luckyxmobile.correction.utils.FilesUtils;
 
 import org.litepal.LitePal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecentTopicAdapter extends RecyclerView.Adapter<ViewHolderTopicItem> {
 
-    private final List<Topic> topics;
-    private final Context context;
+    private List<Topic> topics = new ArrayList<>();
+    private Context context;
 
-    public RecentTopicAdapter(Context context, List<Topic> topics){
-
+    public RecentTopicAdapter(Context context){
         this.context = context;
+    }
+
+    public void setTopics(List<Topic> topics) {
         this.topics = topics;
     }
+
     @NonNull
     @Override
     public ViewHolderTopicItem onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.recycle_item_topic, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycle_item_topic, parent, false);
         return new ViewHolderTopicItem(view);
     }
 
@@ -47,10 +51,9 @@ public class RecentTopicAdapter extends RecyclerView.Adapter<ViewHolderTopicItem
 
 
         Topic topic = topics.get(position);
-
         TopicImage topicImage = BeanUtils.findTopicImageFirst(topic);
 
-        ImageTask.getInstance().loadTopicImage(holder.topicImage, topicImage);
+        ImageTask.getInstance().loadTopicImage(holder.topicImageView, topicImage);
 
         holder.collectBtn.setVisibility(topic.isCollection()?View.VISIBLE:View.GONE);
 

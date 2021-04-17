@@ -19,8 +19,7 @@
             android:name=".ui.activity.SettingsActivity"
             android:label="@string/main_set" />
 
-        <activity android:name=".ui.activity.PaperActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <activity android:name=".ui.activity.PaperActivity"/>
 
         <activity android:name=".ui.activity.TopicViewPageActivity" />
         <activity

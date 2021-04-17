@@ -7,7 +7,9 @@ import android.print.PrintAttributes;
 import android.print.PrintManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,9 +36,10 @@ import java.lang.reflect.Method;
  */
 public class PaperDetailActivity extends AppCompatActivity {
 
-    private String TAG = "PaperDetailActivity";
-
+    private RecyclerView paperDetailRv;
     private PaperDetailAdapter paperDetailAdapter;
+    private ProgressDialog progressDialog;
+    private ImageView nothingPaper;
     private Paper curPaper;
 
     @Override
@@ -48,35 +51,40 @@ public class PaperDetailActivity extends AppCompatActivity {
         int paperId = getIntent().getIntExtra(Constants.PAPER_ID, -1);
         curPaper = LitePal.find(Paper.class, paperId);
         if (curPaper == null) {
-            throw new RuntimeException(TAG + ": paper is null");
+            throw new RuntimeException("PaperDetailActivity : paper is null");
         }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.test_page) + " - " +curPaper.getPaperName());
         setSupportActionBar(toolbar);
-
-        setPaperDetailRv();
+        nothingPaper = findViewById(R.id.nothing_hint);
+        paperDetailRv = findViewById(R.id.paper_detail_rv);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        paperDetailAdapter.refreshCurPaper(curPaper.getId());
-        paperDetailAdapter.notifyDataSetChanged();
+        setPaperDetailRv();
+        if (paperDetailAdapter.getTopicList().isEmpty()) {
+            nothingPaper.setVisibility(View.VISIBLE);
+        } else {
+            nothingPaper.setVisibility(View.GONE);
+        }
     }
 
     private void setPaperDetailRv() {
-        RecyclerView paperDetailRv = findViewById(R.id.paper_detail_rv);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        paperDetailRv.setLayoutManager(manager);
-        paperDetailAdapter = new PaperDetailAdapter();
+        if (paperDetailAdapter == null) {
+            paperDetailAdapter = new PaperDetailAdapter();
+            LinearLayoutManager manager = new LinearLayoutManager(this);
+            paperDetailRv.setLayoutManager(manager);
+            paperDetailRv.setAdapter(paperDetailAdapter);
+            //给复习卷的item设置长按拖动
+            ItemTouchHelper.Callback callback = new ItemTouchCallback(paperDetailAdapter);
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+            itemTouchHelper.attachToRecyclerView(paperDetailRv);
+        }
         paperDetailAdapter.refreshCurPaper(curPaper.getId());
-        paperDetailRv.setAdapter(paperDetailAdapter);
-        //给复习卷的item设置长按拖动
-        ItemTouchHelper.Callback callback = new ItemTouchCallback(paperDetailAdapter);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(paperDetailRv);
-
+        paperDetailAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -122,44 +130,46 @@ public class PaperDetailActivity extends AppCompatActivity {
     }
 
     private void previewWindow() {
-
         String path = FilesUtils.getInstance().getPdfPath(curPaper);
         PdfUtils pdfUtils = PdfUtils.getInstance();
 
-        new ProgressDialog(this) {
-            @Override
-            public boolean onPreExecute() {
-                if (paperDetailAdapter.getTopicList().isEmpty()) {
-                    onToast("还没有添加题目哟...");
-                    return false;
-                } else {
-                    if (FilesUtils.getInstance().exists(path)) {
-                        onPostExecute(true);
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this) {
+                @Override
+                public boolean onPreExecute() {
+                    if (paperDetailAdapter.getTopicList().isEmpty()) {
+                        onToast("还没有添加题目哟...");
                         return false;
+                    } else {
+                        if (FilesUtils.getInstance().exists(path)) {
+                            onPostExecute(true);
+                            return false;
+                        }
+                        return true;
                     }
-                    return true;
                 }
-            }
-            @Override
-            public boolean doInBackground() throws Exception {
-                pdfUtils.init(curPaper, paperDetailAdapter.getTopicList());
-                return pdfUtils.start();
-            }
-            @Override
-            public void onPostExecute(boolean result) {
-                super.onPostExecute(result);
-                if (result) {
-                    onToast("创建chen");
-                    PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
-                    PrintAttributes.Builder builder = new PrintAttributes.Builder();
-                    builder.setColorMode(PrintAttributes.COLOR_MODE_COLOR);
-                    PrintPreviewAdapter adapter = new PrintPreviewAdapter(PaperDetailActivity.this, path);
-                    printManager.print(getString(R.string.app_name), adapter, builder.build());
-                } else {
-                    onToast("发生了点错误...");
+                @Override
+                public boolean doInBackground() throws Exception {
+                    pdfUtils.init(curPaper, paperDetailAdapter.getTopicList());
+                    return pdfUtils.start();
                 }
-            }
-        }.start();
+                @Override
+                public void onPostExecute(boolean result) {
+                    super.onPostExecute(result);
+                    if (result) {
+                        onToast("创建成功");
+                        PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+                        PrintAttributes.Builder builder = new PrintAttributes.Builder();
+                        builder.setColorMode(PrintAttributes.COLOR_MODE_COLOR);
+                        PrintPreviewAdapter adapter = new PrintPreviewAdapter(PaperDetailActivity.this, path);
+                        printManager.print(getString(R.string.app_name), adapter, builder.build());
+                    } else {
+                        onToast("发生了点错误...");
+                    }
+                }
+            };
+        }
+        progressDialog.start();
     }
 
     private void onToast(String log) {

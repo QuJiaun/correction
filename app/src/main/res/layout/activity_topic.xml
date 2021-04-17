@@ -38,16 +38,21 @@
                 layout="@layout/layout_topic_tag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="56dp"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <include
+        layout="@layout/layout_topic_access" />
 
     <TextView
         android:id="@+id/topic_create_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:visibility="gone"
         android:gravity="end"
         android:padding="8dp"
         android:layout_margin="8dp"

@@ -2,7 +2,6 @@ package com.luckyxmobile.correction.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,18 +13,16 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.global.Constants;
-import com.luckyxmobile.correction.global.MySharedPreferences;
+import com.luckyxmobile.correction.global.MyPreferences;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.ui.activity.EditTopicImageActivity;
 import com.luckyxmobile.correction.ui.activity.TopicInfoActivity;
 import com.luckyxmobile.correction.utils.BitmapUtils;
 import com.luckyxmobile.correction.utils.ImageTask;
-import com.luckyxmobile.correction.utils.OpenCVUtil;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,26 +31,35 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private final Context context;
+    private Context context;
     private boolean isShowOriginalImage;
-    private final TopicInfoListener listener;
+    private TopicInfoListener listener;
 
-    private final List<Object> typeList = new ArrayList<>();
+    private List<TopicImage> topicImageList;
+    private List<Object> typeList = new ArrayList<>();
     private int topicImageSize = 0;
     private boolean removeMode = false;
 
-    public TopicInfoAdapter(Context context, List<TopicImage> imageList) {
+    public TopicInfoAdapter(Context context) {
         this.context = context;
         this.listener = (TopicInfoListener) context;
-        this.topicImageSize = imageList.size();
-        size(imageList);
+        isShowOriginalImage = MyPreferences.getInstance().getBoolean(Constants.SHOW_ORIGINAL, true);
+    }
 
-        isShowOriginalImage = MySharedPreferences.getInstance().getBoolean(Constants.SHOW_ORIGINAL, true);
+    public void setTopicImageList(List<TopicImage> topicImageList) {
+        this.topicImageList = topicImageList;
+        this.topicImageSize = topicImageList.size();
+        size(topicImageList);
+    }
+
+    public List<TopicImage> getTopicImageList() {
+        return topicImageList;
+    }
+
+    public boolean isShowOriginalImage() {
+        return isShowOriginalImage;
     }
 
     public void setRemoveMode(boolean removeMode) {
@@ -77,32 +83,11 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             tmpMap.get(type).add(topicImage);
         }
 
+        typeList.clear();
         for (int type : tmpMap.keySet()) {
             typeList.add(type);
             List<TopicImage> topicImageList = tmpMap.get(type);
             typeList.addAll(topicImageList);
-        }
-    }
-
-    private int getTextByType(int type){
-        switch (type) {
-            case Constants.TOPIC_STEM:
-               return R.string.stem;
-
-            case Constants.TOPIC_CORRECT:
-                return R.string.correct;
-
-            case Constants.TOPIC_INCORRECT:
-                return R.string.incorrect;
-
-            case Constants.TOPIC_KEY:
-                return R.string.key;
-
-            case Constants.TOPIC_CAUSE:
-                return R.string.cause;
-
-            default:
-                return -1;
         }
     }
 
@@ -131,7 +116,7 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         if (typeList.get(position) instanceof Integer) {
             int currentType = (int) typeList.get(position);
-            currentType = getTextByType(currentType);
+            currentType = Constants.getTypeNameRes(currentType);
             TopicLabelHolder viewHolder = (TopicLabelHolder) holder;
             if (currentType != -1) {
                 viewHolder.topicLabelTv.setText(context.getText(currentType));
@@ -165,6 +150,7 @@ public class TopicInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 if (topicImageSize > 1) {
                     topicImageSize--;
                     typeList.remove(position);
+                    topicImageList.remove(topicImage);
                     notifyItemRemoved(position);
                     ImageTask.getInstance().clearTopicImage(topicImage);
                     listener.removeTopicImage(topicImage);

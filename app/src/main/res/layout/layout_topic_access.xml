@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="84dp"
+    android:layout_height="56dp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentEnd="true"
+    android:layout_marginBottom="16dp"
+    android:elevation="4dp"
+    android:background="@drawable/shape_topic_access">
+
+    <ProgressBar
+        android:id="@+id/accessTimeBar"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:indeterminate="false"
+        android:indeterminateTint="@color/highlighter_blue"
+        android:progress="10"
+        android:max="60"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:id="@+id/accessTimerTv"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:gravity="center"
+        android:text="60 s"
+        android:textColor="@color/textLight"
+        android:textSize="@dimen/text_body_size"
+        android:textStyle="bold"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:visibility="gone"
+        android:gravity="center"
+        android:text="创建时间 : 2012/01/01 \n 上次访问时间："
+        android:textColor="@color/textLight"
+        android:layout_toEndOf="@id/accessTimeBar"
+        android:layout_toStartOf="@id/totalTimers"/>
+
+    <TextView
+        android:id="@+id/totalTimers"
+        android:layout_width="28dp"
+        android:layout_height="56dp"
+        android:gravity="center|top"
+        android:text="0"
+        android:textColor="@color/textLight"
+        android:textStyle="bold"
+        android:layout_alignParentEnd="true"
+        app:drawableTopCompat="@drawable/ic_timers" />
+
+</RelativeLayout>

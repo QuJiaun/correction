@@ -29,7 +29,7 @@ import java.util.List;
 public class PaperDetailAdapter extends RecyclerView.Adapter<PaperDetailAdapter.ViewHolder> implements ItemTouchAdapter {
 
     private Paper curPaper;
-    private List<Topic> topicList;
+    private List<Topic> topicList = new ArrayList<>();
 
     public void refreshCurPaper(int paperId) {
         this.curPaper = LitePal.find(Paper.class, paperId);
@@ -117,7 +117,7 @@ public class PaperDetailAdapter extends RecyclerView.Adapter<PaperDetailAdapter.
     /**
      * 加载布局的Holder
      */
-    class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
 
         ImageView topicImageIv;
         TextView topicIndexTv;

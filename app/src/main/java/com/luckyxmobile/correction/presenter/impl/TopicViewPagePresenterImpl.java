@@ -1,7 +1,7 @@
 package com.luckyxmobile.correction.presenter.impl;
 
 import com.luckyxmobile.correction.global.Constants;
-import com.luckyxmobile.correction.global.MySharedPreferences;
+import com.luckyxmobile.correction.global.MyPreferences;
 import com.luckyxmobile.correction.model.TopicDao;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.impl.TopicDaoImpl;
@@ -20,7 +20,7 @@ public class TopicViewPagePresenterImpl implements TopicViewPagePresenter {
 
     private ITopicViewPage topicViewPage;
 
-    private MySharedPreferences sharedPreferences;
+    private MyPreferences sharedPreferences;
     private final boolean isShowTag;
 
     private final List<Topic> topicList;
@@ -34,7 +34,7 @@ public class TopicViewPagePresenterImpl implements TopicViewPagePresenter {
         curTopic = LitePal.find(Topic.class, curTopicId);
         topicList = topicDao.getTopicListByBookId(curTopic.getBook_id());
 
-        sharedPreferences = MySharedPreferences.getInstance();
+        sharedPreferences = MyPreferences.getInstance();
         isShowTag = sharedPreferences.getBoolean(Constants.SHOW_TAG_IN_TOPIC_VIEW_PAGE, true);
 
         if (!sharedPreferences.getBoolean(Constants.IS_NEWEST_ORDER, true)) {

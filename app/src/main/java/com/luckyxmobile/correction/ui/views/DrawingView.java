@@ -21,12 +21,11 @@ import com.luckyxmobile.correction.model.bean.Highlighter;
 import com.luckyxmobile.correction.model.bean.ImageParam;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.utils.BitmapUtils;
+import com.luckyxmobile.correction.utils.FilesUtils;
 import com.luckyxmobile.correction.utils.GsonUtils;
 import com.luckyxmobile.correction.utils.PaintUtil;
 import com.luckyxmobile.correction.utils.ImageTask;
 import com.luckyxmobile.correction.utils.OpenCVUtil;
-
-import org.opencv.core.Mat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -111,6 +110,10 @@ public class DrawingView extends View implements
         }
         topicImage.setOcr(false);
         setImageParam(new ImageParam());
+    }
+
+    public void saveDrawingImage() {
+        FilesUtils.getInstance().saveCacheTopicImage(topicImage, mBgBitmap);
     }
 
     public List<Highlighter> getHighlighterList() {

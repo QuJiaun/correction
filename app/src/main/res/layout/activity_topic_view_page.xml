@@ -38,7 +38,7 @@
 
         <ImageButton
             android:id="@+id/collect_button"
-            android:src="@drawable/like_button_status"
+            android:src="@drawable/ic_collect_un"
             style="@style/normal_icon_button"/>
 
         <TextView
@@ -58,7 +58,7 @@
 
         <ImageButton
             android:id="@+id/topic_info_btn"
-            android:src="@drawable/ic_info_24dp"
+            android:src="@drawable/ic_info"
             style="@style/normal_icon_button"/>
 
     </LinearLayout>

@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <integer-array name="topic_image_type_value">
+        <item>0x201</item>
+        <item>0x202</item>
+        <item>0x203</item>
+        <item>0x204</item>
+        <item>0x205</item>
+    </integer-array>
+
     <string-array name="topic_image_type">
         <item>@string/stem</item>
         <item>@string/correct</item>
@@ -11,12 +19,12 @@
 
     <string-array name="theme_choose">
         <item>跟随系统</item>
-        <item>深色模式</item>
         <item>浅色模式</item>
+        <item>深色模式</item>
     </string-array>
 
     <string-array name="theme_choose_value">
-        <item>0</item>
+        <item>-1</item>
         <item>1</item>
         <item>2</item>
     </string-array>

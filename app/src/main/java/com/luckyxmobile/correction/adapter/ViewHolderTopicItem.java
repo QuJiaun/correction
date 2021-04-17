@@ -14,7 +14,7 @@ import com.luckyxmobile.correction.model.bean.Topic;
 public class ViewHolderTopicItem extends RecyclerView.ViewHolder{
 
     ConstraintLayout layout;
-    ImageView topicImage;
+    ImageView topicImageView;
     ImageView collectBtn;
     ImageView checkBtn;
     TextView tagTv;
@@ -24,7 +24,7 @@ public class ViewHolderTopicItem extends RecyclerView.ViewHolder{
         super(itemView);
 
         layout = itemView.findViewById(R.id.item_topic_book_layout);
-        topicImage = itemView.findViewById(R.id.topic_image);
+        topicImageView = itemView.findViewById(R.id.topic_image);
         collectBtn = itemView.findViewById(R.id.collect_button);
         checkBtn = itemView.findViewById(R.id.item_Checked);
         tagTv = itemView.findViewById(R.id.tag_layout_on_topic);

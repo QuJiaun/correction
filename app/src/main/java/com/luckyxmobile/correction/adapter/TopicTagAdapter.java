@@ -1,8 +1,10 @@
 package com.luckyxmobile.correction.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Tag;
@@ -57,9 +59,7 @@ public class TopicTagAdapter extends com.zhy.view.flowlayout.TagAdapter<Tag> {
 
         CheckBox checkBox = (CheckBox) view;
         checkBox.setClickable(isItemClickable);
-        if (textColor != 0) {
-            checkBox.setTextColor(textColor);
-        }
+
         checkBox.setText(tag.getTag_name());
         if (curTopicId >= 0) {
             checkBox.setChecked(tag.getTopicSet().contains(curTopicId));
@@ -71,7 +71,10 @@ public class TopicTagAdapter extends com.zhy.view.flowlayout.TagAdapter<Tag> {
                     break;
                 }
             }
+        }
 
+        if (checkBox.isChecked() && textColor != 0) {
+            checkBox.setTextColor(textColor);
         }
 
         if (!isShowUnchecked && !checkBox.isChecked()) {

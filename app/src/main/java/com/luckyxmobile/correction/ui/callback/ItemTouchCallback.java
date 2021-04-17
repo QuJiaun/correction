@@ -14,7 +14,7 @@ import com.luckyxmobile.correction.adapter.ItemTouchHelperViewHolder;
  * 实现recycleview item长按拖动需要用到的回调接口
  */
 public class ItemTouchCallback extends ItemTouchHelper.Callback {
-    public static final float ALPHA_FULL = 1.0f;
+    private final float ALPHA_FULL = 1.0f;
     private ItemTouchAdapter itemTouchAdapter;
 
     public ItemTouchCallback(ItemTouchAdapter itemTouchAdapter) {

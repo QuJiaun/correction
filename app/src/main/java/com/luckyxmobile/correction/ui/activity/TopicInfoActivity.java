@@ -3,10 +3,12 @@ package com.luckyxmobile.correction.ui.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,13 +19,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.TopicInfoAdapter;
 import com.luckyxmobile.correction.adapter.TopicTagAdapter;
-import com.luckyxmobile.correction.global.MySharedPreferences;
+import com.luckyxmobile.correction.global.MyPreferences;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.presenter.TopicInfoViewPresenter;
 import com.luckyxmobile.correction.presenter.impl.TopicInfoViewPresenterImpl;
-import com.luckyxmobile.correction.ui.dialog.SetTopicTextDialog;
+import com.luckyxmobile.correction.ui.dialog.ImageDialog;
+import com.luckyxmobile.correction.ui.dialog.TopicTxtDialog;
 import com.luckyxmobile.correction.view.ITopicInfoView;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
@@ -37,7 +40,7 @@ import butterknife.OnClick;
 
 @SuppressLint("NonConstantResourceId")
 public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoView,
-        TopicInfoAdapter.TopicInfoListener, SetTopicTextDialog.OnBtnClickListener {
+        TopicInfoAdapter.TopicInfoListener{
 
     public static final  String TAG = TopicInfoActivity.class.getSimpleName();
 
@@ -54,11 +57,38 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
     TextView topicCreateDateTv;
     @BindView(R.id.tag_layout)
     TagFlowLayout tagLayout;
+    @BindView(R.id.accessTimeBar)
+    ProgressBar accessTimeBar;
+    @BindView(R.id.accessTimerTv)
+    TextView accessTimerTv;
+    @BindView(R.id.totalTimers)
+    TextView totalTimersTv;
 
     private MenuItem collectionMenuItem;
+    private TopicTxtDialog topicTxtDialog;
+    private ImageDialog imageDialog;
 
     private int curTopicId;
     private TopicInfoViewPresenter presenter;
+
+    private int accessTime = 60;
+    private int totalTimers = 0;
+
+    private Handler handler = new Handler();
+    private Runnable timers = new Runnable() {
+        @Override
+        public void run() {
+            if (accessTime > 0) {
+                accessTime--;
+                accessTimerTv.setText(accessTime + "");
+            } else {
+                accessTime = 60;
+                totalTimers++;
+                totalTimersTv.setText(totalTimers + "");
+            }
+            handler.postDelayed(this, 1000);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +106,14 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
     protected void onResume() {
         super.onResume();
         presenter.initTopicInfo(curTopicId);
+        accessTimeBar.setProgress(accessTime, true);
+        handler.post(timers);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(timers);
     }
 
     @Override
@@ -93,7 +131,7 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
         if (collectionMenuItem != null) {
             collectionMenuItem.setIcon(collection?
                     getDrawable(R.drawable.ic_collect):
-                    getDrawable(R.drawable.ic_uncollect)
+                    getDrawable(R.drawable.ic_collect_un)
             );
         }
     }
@@ -110,15 +148,17 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
 
     @Override
     public void setTopicImages(List<TopicImage> topicImages) {
-
-        topicInfoAdapter = new TopicInfoAdapter(this, topicImages);
+        if (topicInfoAdapter == null) {
+            topicInfoAdapter = new TopicInfoAdapter(this);
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+            topicsRv.setLayoutManager(mLayoutManager);
+            topicsRv.setItemAnimator(new DefaultItemAnimator());
+            topicsRv.setAdapter(topicInfoAdapter);
+            topicsRv.setNestedScrollingEnabled(false);
+        }
         topicInfoAdapter.setRemoveMode(false);
-
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        topicsRv.setLayoutManager(mLayoutManager);
-        topicsRv.setItemAnimator(new DefaultItemAnimator());
-        topicsRv.setAdapter(topicInfoAdapter);
-        topicsRv.setNestedScrollingEnabled(false);
+        topicInfoAdapter.setTopicImageList(topicImages);
+        topicInfoAdapter.notifyDataSetChanged();
     }
 
 
@@ -138,9 +178,20 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
     }
 
     private void showTopicTextDialog() {
-        SetTopicTextDialog setTopicTextDialog = new SetTopicTextDialog(this);
-        setTopicTextDialog.init(presenter.getCurTopic().getText());
-        setTopicTextDialog.show();
+        if (topicTxtDialog == null) {
+            topicTxtDialog = new TopicTxtDialog(this);
+            topicTxtDialog.create();
+            topicTxtDialog.setPositiveButton(R.string.ensure, () -> {
+                String text = topicTxtDialog.getTxt();
+                presenter.setTopicText(text);
+                setTopicText(text);
+                topicTxtDialog.dismiss();
+            });
+        }
+        if (!topicTxtDialog.isShowing()) {
+            topicTxtDialog.setTxt(presenter.getCurTopic().getText());
+            topicTxtDialog.show();
+        }
     }
 
     @Override
@@ -150,7 +201,15 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
 
     @Override
     public void onClickTopicImage(TopicImage topicImage) {
-
+        if (imageDialog == null) {
+            imageDialog = new ImageDialog(this);
+            imageDialog.create();
+        }
+        imageDialog.setTopicImages(topicInfoAdapter.getTopicImageList());
+        imageDialog.setImage(topicImage, topicInfoAdapter.isShowOriginalImage());
+        if (!imageDialog.isShowing()) {
+            imageDialog.show();
+        }
     }
 
     @OnClick(R.id.set_tag)
@@ -163,12 +222,6 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
     @OnClick(R.id.topic_text)
     public void onClickTopicText() {
         showTopicTextDialog();
-    }
-
-    @Override
-    public void onTopicTextBtnEnsure(String text) {
-        presenter.setTopicText(text);
-        setTopicText(text);
     }
 
     @Override
@@ -195,7 +248,7 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
         getMenuInflater().inflate(R.menu.toolbar_menu_topic, menu);
         collectionMenuItem = menu.findItem(R.id.topic_menu_like);
         menu.findItem(R.id.topic_menu_show_original).setChecked(
-                MySharedPreferences.getInstance().getBoolean(Constants.SHOW_ORIGINAL, true));
+                MyPreferences.getInstance().getBoolean(Constants.SHOW_ORIGINAL, true));
         setTopicCollection(presenter.getCurTopic().isCollection());
         return true;
     }
@@ -226,7 +279,7 @@ public class TopicInfoActivity extends AppCompatActivity implements ITopicInfoVi
 
             case R.id.topic_menu_show_original:
                 item.setChecked(!item.isChecked());
-                MySharedPreferences.getInstance().putBoolean(Constants.SHOW_ORIGINAL, item.isChecked());
+                MyPreferences.getInstance().putBoolean(Constants.SHOW_ORIGINAL, item.isChecked());
                 topicInfoAdapter.setShowOriginalImage(item.isChecked());
                 break;
 

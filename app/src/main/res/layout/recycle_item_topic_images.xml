@@ -34,7 +34,7 @@
         android:layout_height="36dp"
         android:layout_gravity="end|top"
         android:padding="6dp"
-        android:src="@drawable/ic_cancel_white_24dp"
+        android:src="@drawable/ic_cancel"
         android:background="#66ff0000"
         tools:ignore="ContentDescription" />
 

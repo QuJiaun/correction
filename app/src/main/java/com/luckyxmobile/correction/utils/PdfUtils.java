@@ -1,37 +1,20 @@
 package com.luckyxmobile.correction.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.print.PrintAttributes;
-import android.print.PrintManager;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfPageEventHelper;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.luckyxmobile.correction.R;
-import com.luckyxmobile.correction.adapter.PrintPreviewAdapter;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.global.MyApplication;
-import com.luckyxmobile.correction.global.MySharedPreferences;
+import com.luckyxmobile.correction.global.MyPreferences;
 import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 
-import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -50,7 +33,7 @@ public class PdfUtils{
     private List<Topic> topicList;
     private String filePathName;
 
-    private MySharedPreferences preferences = MySharedPreferences.getInstance();
+    private MyPreferences preferences = MyPreferences.getInstance();
     private boolean showHighlighter;
     private String printPage;
 

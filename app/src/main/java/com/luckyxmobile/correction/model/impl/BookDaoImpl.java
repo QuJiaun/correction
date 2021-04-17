@@ -2,6 +2,7 @@ package com.luckyxmobile.correction.model.impl;
 
 import android.text.TextUtils;
 
+import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Book;
 import com.luckyxmobile.correction.model.BookDao;
 import com.luckyxmobile.correction.model.DaoListener;
@@ -62,11 +63,9 @@ public class BookDaoImpl implements BookDao {
                 String.valueOf(book.getId())).find(Topic.class);
         //遍历错题集合，删除错题图片
         for (Topic topic : topicList) {
-            List<TopicImage> topicImageList = LitePal.where("topic_id=?",
-                    String.valueOf(topic.getId())).find(TopicImage.class);
-            for (TopicImage topicImage :topicImageList) {
-                topicImage.delete();
-            }
+            List<TopicImage> topicImageList = BeanUtils.findTopicAll(topic);
+            BeanUtils.removeTopicInTag(topic);
+            BeanUtils.removeTopicImageList(topicImageList);
             topic.delete();
         }
         //删除错题本
