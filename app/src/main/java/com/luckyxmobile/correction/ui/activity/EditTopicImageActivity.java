@@ -18,7 +18,7 @@ import com.luckyxmobile.correction.model.bean.ImageParam;
 import com.luckyxmobile.correction.model.bean.TopicImage;
 import com.luckyxmobile.correction.presenter.EditTopicImagePresenter;
 import com.luckyxmobile.correction.presenter.impl.EditTopicImagePresenterImpl;
-import com.luckyxmobile.correction.ui.dialog.ChooseBookDialog;
+import com.luckyxmobile.correction.ui.dialog.SelectBookDialog;
 import com.luckyxmobile.correction.ui.dialog.HighlighterTypeDialog;
 import com.luckyxmobile.correction.ui.dialog.HighlighterWidthDialog;
 import com.luckyxmobile.correction.ui.dialog.ImageParamDialog;
@@ -61,7 +61,7 @@ public class EditTopicImageActivity extends AppCompatActivity{
     @BindView(R.id.drawing_view_tool_ocr)
     CheckView ocrBtn;
 
-    private ChooseBookDialog chooseBookDialog;
+    private SelectBookDialog selectBookDialog;
     private ImageParamDialog imageParamDialog;
     private HighlighterTypeDialog highlighterTypeDialog;
     private HighlighterWidthDialog highlighterWidthDialog;
@@ -197,18 +197,18 @@ public class EditTopicImageActivity extends AppCompatActivity{
             return;
         }
 
-        if (chooseBookDialog == null) {
-            chooseBookDialog = new ChooseBookDialog(this);
-            chooseBookDialog.create();
-            chooseBookDialog.setEnsureBtn(() ->
-                    onFinished(chooseBookDialog.getCurBook(),
-                    chooseBookDialog.getCurImageType())
+        if (selectBookDialog == null) {
+            selectBookDialog = new SelectBookDialog(this);
+            selectBookDialog.create();
+            selectBookDialog.setEnsureBtn(() ->
+                    onFinished(selectBookDialog.getCurBook(),
+                    selectBookDialog.getCurImageType())
             );
         }
 
-        chooseBookDialog.setCurBook(curBookId);
-        if (!chooseBookDialog.isShowing()) {
-            chooseBookDialog.show();
+        selectBookDialog.setCurBook(curBookId);
+        if (!selectBookDialog.isShowing()) {
+            selectBookDialog.show();
         }
     }
 

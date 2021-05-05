@@ -32,10 +32,10 @@ public class BookDaoImpl implements BookDao {
     @Override
     public boolean saveBook(Book book) {
 
-        if (book.getId() > 0) return updateBook(book);
+        if (book.isSaved()) return updateBook(book);
 
         //判断 命名是否重复
-        if (existBookName(book.getName(), false)) {
+        if (existBookName(book.getName())) {
             listener.onToast(book.getName() + " 已存在！");
             return false;
         }
@@ -76,11 +76,14 @@ public class BookDaoImpl implements BookDao {
     @Override
     public boolean updateBook(Book book) {
 
-        if (book.getId() <= 0) return saveBook(book);
+        if (!book.isSaved()) return saveBook(book);
 
-        if (existBookName(book.getName(), true)) {
-            listener.onToast(book.getName() + " 已存在！");
-            return false;
+        if (existBookName(book.getName())) {
+            Book tmp = LitePal.find(Book.class, book.getId());
+            if (!book.getName().equals(tmp.getName())) {
+                listener.onToast(book.getName() + " 已存在！");
+                return false;
+            }
         }
 
         if (TextUtils.isEmpty(book.getCover())) {
@@ -93,18 +96,12 @@ public class BookDaoImpl implements BookDao {
             }
         }
 
-        book.update(book.getId());
+        book.save();
         return true;
     }
 
-    private boolean existBookName(String name, boolean isSave) {
+    private boolean existBookName(String name) {
         List<Book> books = LitePal.where("name=?", name).find(Book.class);
-        if (books != null && !books.isEmpty()) {
-            if (isSave) {
-                return books.size() > 1;
-            }
-            return true;
-        }
-        return false;
+        return books != null && !books.isEmpty();
     }
 }

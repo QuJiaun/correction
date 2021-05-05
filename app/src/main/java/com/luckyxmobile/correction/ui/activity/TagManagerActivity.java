@@ -18,7 +18,7 @@ import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.BeanUtils;
 import com.luckyxmobile.correction.model.bean.Tag;
 import com.luckyxmobile.correction.ui.dialog.AlertDialog;
-import com.luckyxmobile.correction.ui.dialog.TagDialog;
+import com.luckyxmobile.correction.ui.dialog.EditTextDialog;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -43,7 +43,7 @@ public class TagManagerActivity extends AppCompatActivity {
     /**全部标签集合*/
     private List<Tag> allTagList = new ArrayList<>();
 
-    private TagDialog tagDialog;
+    private EditTextDialog editTextDialog;
     private AlertDialog alertDialog;
 
     private int curTopicId = -1;
@@ -204,43 +204,51 @@ public class TagManagerActivity extends AppCompatActivity {
     }
 
     private void showTagDialog(Tag tag) {
-        if (tagDialog == null) {
-            tagDialog = new TagDialog(this);
-            tagDialog.create();
-            tagDialog.setPositiveButton(R.string.ensure, () -> {
-                Tag result = tagDialog.getTag();
-                String tagName = result.getTag_name();
-                if (TextUtils.isEmpty(tagName)) {
-                    tagDialog.onError(R.string.empty_input);
-                } else if (tagName.length() > 8) {
-                    tagDialog.onError(R.string.input_error);
-                } else if (BeanUtils.existsTag(tagName)) {
-                    tagDialog.onError(R.string.hint_repeated_tag);
-                }  else {
-                    if (curTopicId > 0) {
-                        result.getTopicSet().add(curTopicId);
-                        chooseTagList.add(0, result);
-                        tagLayoutChoose.onChanged();
-                    }
-
-                    if (result.getId() <= 0) {
-                        allTagList.add(0, result);
-                    } else {
-                        int index = allTagList.indexOf(result);
-                        allTagList.remove(index);
-                        allTagList.add(index, result);
-                    }
-                    tagLayoutAll.onChanged();
-                    result.save();
-                    tagDialog.dismiss();
-                }
+        if (editTextDialog == null) {
+            editTextDialog = new EditTextDialog(this);
+            editTextDialog.create();
+            editTextDialog.setTitle(R.string.tags);
+            editTextDialog.setTextHint(R.string.input_tag_name);
+            editTextDialog.setMaxLength(8);
+            editTextDialog.setNegativeButton(R.string.cancel, () -> {
+                editTextDialog.dismiss();
+                isDelete = false;
+                tagLayoutAll.onChanged();
             });
         }
+        editTextDialog.setText(tag==null?null:tag.getTag_name());
+        editTextDialog.setPositiveButton(R.string.ensure, () -> {
+            String tagName = editTextDialog.getText();
+            if (TextUtils.isEmpty(tagName)) return;
 
-        tagDialog.setTag(tag);
-        if (!tagDialog.isShowing()) {
-            tagDialog.show();
-        }
+            if (BeanUtils.existsTag(tagName)) {
+                if (tag == null || !tag.isSaved() || !tagName.equals(tag.getTag_name())) {
+                    editTextDialog.onError(R.string.hint_repeated_tag);
+                } else {
+                    editTextDialog.dismiss();
+                }
+            } else {
+                Tag result = tag==null?new Tag(tagName):tag;
+                result.setTag_name(tagName);
+                if (curTopicId > 0) {
+                    result.getTopicSet().add(curTopicId);
+                    chooseTagList.add(0, result);
+                    tagLayoutChoose.onChanged();
+                }
+
+                if (!result.isSaved()) {
+                    allTagList.add(0, result);
+                } else {
+                    int index = allTagList.indexOf(result);
+                    allTagList.remove(index);
+                    allTagList.add(index, result);
+                }
+                result.save();
+                tagLayoutAll.onChanged();
+                editTextDialog.dismiss();
+            }
+        });
+        editTextDialog.show();
     }
 
     private void deleteTag(final int position) {

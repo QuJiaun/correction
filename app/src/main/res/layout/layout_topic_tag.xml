@@ -15,18 +15,18 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:layout_marginBottom="1dp"
-        android:background="@color/colorWhite">
+        android:background="@color/layout_background2">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_marginStart="16dp"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="@string/more_tag"
+            android:textColor="@color/textDark"
             android:textSize="@dimen/text_body_size"
-            android:textStyle="bold"
-            android:textColor="@color/textDark"/>
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/set_tag"
@@ -34,7 +34,7 @@
             android:layout_height="match_parent"
             android:text="@string/tags"
             android:textColor="@color/btn_icon"
-            android:background="@color/colorWhite"/>
+            android:background="@color/layout_background2"/>
 
     </LinearLayout>
 
@@ -45,7 +45,7 @@
         android:padding="8dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:background="@color/colorWhite"
+        android:background="@color/layout_background2"
         zhy:max_select="-1"/>
 
 </LinearLayout>

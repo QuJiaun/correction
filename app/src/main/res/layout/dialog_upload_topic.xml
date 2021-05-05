@@ -13,8 +13,9 @@
         android:padding="8dp"
         android:gravity="center"
         android:text="@string/choose_from_camera"
+        android:textColor="@color/textDark"
         android:drawableStart="@drawable/ic_camera"
-        android:drawableTint="@android:color/black"
+        android:drawableTint="@color/textDark"
         android:drawablePadding="8dp"
         android:background="?android:attr/selectableItemBackground"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
@@ -32,8 +33,9 @@
         android:padding="8dp"
         android:gravity="center"
         android:text="@string/choose_from_album"
+        android:textColor="@color/textDark"
         android:drawableStart="@drawable/ic_album"
-        android:drawableTint="@android:color/black"
+        android:drawableTint="@color/textDark"
         android:drawablePadding="8dp"
         android:background="?android:attr/selectableItemBackground"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"/>

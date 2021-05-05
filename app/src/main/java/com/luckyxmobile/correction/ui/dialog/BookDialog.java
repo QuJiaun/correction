@@ -12,8 +12,11 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.textfield.TextInputLayout;
 import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.model.bean.Book;
+
+import org.litepal.LitePal;
 
 public class BookDialog extends CommonDialog{
 
@@ -23,6 +26,7 @@ public class BookDialog extends CommonDialog{
 
     private ImageButton deleteImageBtn;
     private ImageView bookCoverView;
+    private TextInputLayout textInputLayout;
     private EditText bookNameEt;
 
     private Book book;
@@ -32,14 +36,21 @@ public class BookDialog extends CommonDialog{
         super.onCreate(savedInstanceState);
 
         bookCoverView = findViewById(R.id.coverImg);
-        bookNameEt = findViewById(R.id.bookNameEdt);
+        bookNameEt = findViewById(R.id.edit_text);
+        textInputLayout = findViewById(R.id.text_input_layout);
         deleteImageBtn = findViewById(R.id.delete_book_cover);
 
+        textInputLayout.setCounterMaxLength(15);
+        textInputLayout.setHint(getContext().getString(R.string.notebook_name_hint));
         setNegativeButton(R.string.cancel, this::dismiss);
     }
 
     public void setBook(Book book) {
-        this.book = book==null?new Book():book;
+        if (book == null) {
+            this.book = new Book();
+        } else {
+            this.book = LitePal.find(Book.class, book.getId());
+        }
 
         String bookName = this.book.getName();
         if (!TextUtils.isEmpty(bookName)) {

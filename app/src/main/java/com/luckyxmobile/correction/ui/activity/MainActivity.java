@@ -24,7 +24,6 @@ import com.luckyxmobile.correction.R;
 import com.luckyxmobile.correction.adapter.HeadBookAdapter;
 import com.luckyxmobile.correction.adapter.RecentTopicAdapter;
 import com.luckyxmobile.correction.model.bean.Book;
-import com.luckyxmobile.correction.model.bean.Paper;
 import com.luckyxmobile.correction.model.bean.Topic;
 import com.luckyxmobile.correction.presenter.MainViewPresenter;
 import com.luckyxmobile.correction.presenter.impl.MainViewPresenterImpl;

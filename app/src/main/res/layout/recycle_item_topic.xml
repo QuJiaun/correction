@@ -9,7 +9,7 @@
     android:clipToPadding="false"
     android:layout_marginBottom="8dp"
     android:foreground="?android:attr/selectableItemBackgroundBorderless"
-    android:background="#88ffffff">
+    android:background="@color/layout_background2">
 
     <ImageView
         android:id="@+id/topic_image"

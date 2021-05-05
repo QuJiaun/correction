@@ -10,9 +10,8 @@
             android:id="@+id/coverImg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:padding="8dp"
-            android:minHeight="200dp"
+            android:minHeight="120dp"
             android:background="@drawable/shape_box_fillet_shadow_view"
             android:scaleType="fitCenter"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -36,23 +35,10 @@
             app:layout_constraintTop_toTopOf="@id/coverImg"
             app:layout_constraintEnd_toEndOf="@id/coverImg"/>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <include
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="15"
-            app:layout_constraintTop_toBottomOf="@id/coverImg">
-
-                <EditText
-                    android:id="@+id/bookNameEdt"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:inputType="text"
-                    android:hint="@string/notebook_name_hint"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
+            layout="@layout/dialog_edit_text"
+            app:layout_constraintTop_toBottomOf="@id/coverImg"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

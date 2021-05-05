@@ -36,6 +36,6 @@ public class AddTopicDialog extends CommonDialog{
 
     @Override
     public int getDialogContentLayout() {
-        return R.layout.upload_topic_dialog;
+        return R.layout.dialog_upload_topic;
     }
 }

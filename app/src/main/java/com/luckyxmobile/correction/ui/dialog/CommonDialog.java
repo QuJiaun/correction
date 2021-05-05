@@ -83,6 +83,12 @@ public abstract class CommonDialog extends Dialog {
         titleTv.setText(titleId);
     }
 
+    @Override
+    public void dismiss() {
+        hintTv.removeCallbacks(hideHint);
+        hintTv.setVisibility(View.GONE);
+        super.dismiss();
+    }
 
     public void setPositiveButton(int textId, Runnable runnable) {
         positiveButton.setVisibility(View.VISIBLE);

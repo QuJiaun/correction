@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ChooseBookDialog extends CommonBottomDialog{
+public class SelectBookDialog extends CommonBottomDialog{
 
-    public ChooseBookDialog(@NonNull Context context) {
+    public SelectBookDialog(@NonNull Context context) {
         super(context);
     }
 

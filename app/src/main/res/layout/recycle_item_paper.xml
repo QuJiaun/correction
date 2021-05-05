@@ -22,7 +22,7 @@
         android:gravity="center|start"
         android:layout_marginStart="16dp"
         android:text="语文复习卷001"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/textDark"
         android:textSize="@dimen/topic_paper_text_size" />
 
     <ImageButton

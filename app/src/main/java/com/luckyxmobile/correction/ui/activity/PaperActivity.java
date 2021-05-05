@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.print.PrintAttributes;
 import android.print.PrintManager;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -25,7 +24,7 @@ import com.luckyxmobile.correction.adapter.PaperAdapter;
 import com.luckyxmobile.correction.adapter.PrintPreviewAdapter;
 import com.luckyxmobile.correction.global.Constants;
 import com.luckyxmobile.correction.model.bean.Paper;
-import com.luckyxmobile.correction.ui.dialog.PaperDialog;
+import com.luckyxmobile.correction.ui.dialog.EditTextDialog;
 import com.luckyxmobile.correction.ui.dialog.ProgressDialog;
 import com.luckyxmobile.correction.utils.FilesUtils;
 import com.luckyxmobile.correction.utils.PdfUtils;
@@ -50,7 +49,7 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
     @BindView(R.id.new_paper_btn)
     Button newPaperBtn;
 
-    private PaperDialog paperDialog;
+    private EditTextDialog editTextDialog;
     private Animation showAnim, hideAnim;
 
     @Override
@@ -110,56 +109,49 @@ public class PaperActivity extends AppCompatActivity implements PaperAdapter.OnI
     }
 
     private void showPaperDialog(Paper paper) {
-        if (paperDialog == null) {
-            paperDialog = new PaperDialog(this);
-            paperDialog.create();
-            paperDialog.setPositiveButton(R.string.ensure, () -> {
-                Paper result = paperDialog.getPaper();
-                if (checkPaperName(result)) {
-                    if (result.getId() > 0) {
-                        paperAdapter.refresh(result);
-                    } else {
-                        paperAdapter.addPaper(result);
-                    }
-                    result.save();
-                    setPaperNothing(paperAdapter.isEmpty());
-                    paperDialog.dismiss();
-                }
-            });
-
-            paperDialog.setNeutralButton(R.string.select_topics, () -> {
-                Paper result = paperDialog.getPaper();
-                if (checkPaperName(result)) {
-                    if (result.getId() > 0) {
-                        paperAdapter.refresh(result);
-                    } else {
-                        paperAdapter.addPaper(result);
-                    }
-                    result.save();
-                    setPaperNothing(paperAdapter.isEmpty());
-                    paperDialog.dismiss();
-                    Intent intent = new Intent(this, SelectTopicActivity.class);
-                    intent.putExtra(Constants.PAPER_ID, result.getId());
-                    startActivity(intent);
-                }
+        if (editTextDialog == null) {
+            editTextDialog = new EditTextDialog(this);
+            editTextDialog.create();
+            editTextDialog.setTitle(R.string.new_test_page);
+            editTextDialog.setTextHint(R.string.test_page);
+            editTextDialog.setMaxLength(15);
+            editTextDialog.setNegativeButton(R.string.cancel, () -> {
+                editTextDialog.dismiss();
             });
         }
-        paperDialog.setPaper(paper);
-        if (!paperDialog.isShowing()) {
-            paperDialog.show();
-        }
-    }
-
-    private boolean checkPaperName(Paper paper) {
-        String paperName = paper.getPaperName();
-        if (TextUtils.isEmpty(paperName)) {
-            paperDialog.onError(R.string.empty_input);
-            return false;
-        } else if (paperName.length() > 15) {
-            paperDialog.onError(R.string.input_error);
-            return false;
-        }
-        return true;
+        editTextDialog.setPositiveButton(R.string.ensure, ()-> {
+            String paperName = editTextDialog.getText();
+            if (null == paperName) return;
+            Paper result = paper==null?new Paper():paper;
+            result.setPaperName(paperName);
+            if (result.isSaved()) {
+                paperAdapter.refresh(result);
+            } else {
+                paperAdapter.addPaper(result);
+            }
+            result.save();
+            setPaperNothing(paperAdapter.isEmpty());
+            editTextDialog.dismiss();
+        });
+        editTextDialog.setNeutralButton(R.string.select_topics, ()->{
+            String paperName = editTextDialog.getText();
+            if (null == paperName) return;
+            Paper result = paper==null?new Paper():paper;
+            result.setPaperName(paperName);
+            if (result.isSaved()) {
+                paperAdapter.refresh(result);
+            } else {
+                paperAdapter.addPaper(result);
+            }
+            result.save();
+            setPaperNothing(paperAdapter.isEmpty());
+            editTextDialog.dismiss();
+            Intent intent = new Intent(this, SelectTopicActivity.class);
+            intent.putExtra(Constants.PAPER_ID, result.getId());
+            startActivity(intent);
+        });
+        editTextDialog.setText(paper==null?null:paper.getPaperName());
+        editTextDialog.show();
     }
 
     @Override
